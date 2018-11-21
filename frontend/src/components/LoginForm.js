@@ -61,14 +61,8 @@ class FormContainer extends Component {
           />
           <Button title="Log in" />
         </form>
-        <div
-          style={{
-            display: 'grid',
-            borderTop: '1px solid rgba(73, 73, 128, 0.52)',
-            marginTop: 20
-          }}
-        >
-          <h4 style={{ marginBottom: 5 }}>Or use alternatives:</h4>
+        <AuthButtonWrapper>
+          <h4>Or use alternatives:</h4>
           <AuthButton
             theme="#3b5998"
             title="Log in using Facebook"
@@ -84,13 +78,23 @@ class FormContainer extends Component {
             title="Log in using Twitter"
             action={e => this.handleAuth(e, 'tw')}
           />
-        </div>
+        </AuthButtonWrapper>
       </>
     );
   }
 }
 
 export default FormContainer;
+
+const AuthButtonWrapper = styled.div`
+  display: grid;
+  border-top: 1px solid rgba(73, 73, 128, 0.52);
+  margin-top: 20px;
+
+  h4 {
+    margin-bottom: 5px;
+  }
+`;
 
 export const Button = props => {
   const { title } = props;
