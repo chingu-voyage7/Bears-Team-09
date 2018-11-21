@@ -21,5 +21,12 @@
   "plugins": ["prettier", "json", "markdown", "html"],
   "env": {
     "jest": true
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
   }
 }
