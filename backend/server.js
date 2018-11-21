@@ -1,13 +1,18 @@
 require("dotenv").config();
 const { Client } = require("pg");
-const client = new Client();
 
 (async function() {
-  await client.connect();
-
-  const res = await client.query("SELECT $1::text as message", [
-    "Hello world!"
-  ]);
-  console.log(res.rows[0].message); // Hello world!
-  await client.end();
+  const client = new Client({
+    user: process.env.PGUSER,
+    host: process.env.PGHOST,
+    database: process.env.PGDB,
+    password: process.env.PGPASSWORD,
+    port: process.env.PGPORT
+  });
+  client.connect();
+  console.log("Connected");
+  client.query("SELECT * from events", (err, res) => {
+    console.log(err, res);
+    client.end();
+  });
 })();
