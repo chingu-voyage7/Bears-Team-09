@@ -10,9 +10,10 @@ const { Client } = require("pg");
     port: process.env.PGPORT
   });
   client.connect();
-  console.log("Connected");
-  client.query("SELECT * from events", (err, res) => {
-    console.log(err, res);
-    client.end();
-  });
+  console.log("DB connection successful");
+  client
+    .query("SELECT * from events")
+    .then(console.log)
+    .catch(console.log)
+    .finally(() => client.end());
 })();
