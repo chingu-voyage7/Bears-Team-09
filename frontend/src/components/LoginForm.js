@@ -19,13 +19,13 @@ class FormContainer extends Component {
   handleAuth(e, type) {
     // Method to be used if we implement auth
     // with Google, Twitter, Facebook, etc.
-    e.preventDefault(this);
+    e.preventDefault();
     console.log(`Auth with ${type}`);
   }
 
   handleSubmit(e) {
     // Login submission actions would be here
-    e.preventDefault(this);
+    e.preventDefault();
     console.log('Submitting a form');
     // Handle failed login state
 
