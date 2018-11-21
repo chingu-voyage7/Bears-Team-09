@@ -14,6 +14,7 @@
     "func-names": ["off", "as-needed"],
     "semi": "error",
     "linebreak-style": "off",
+    "no-param-reassign": ["error", { "props": false }],
     "react/prefer-stateless-function": 0,
     "react/jsx-filename-extension": 0,
     "react/jsx-one-expression-per-line": 0,
