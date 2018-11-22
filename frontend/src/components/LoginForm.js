@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Input from './Input';
+import AuthButton from './AuthButton';
+import LoginButton from './LoginButton';
 
 class FormContainer extends Component {
   constructor(props) {
@@ -16,21 +17,20 @@ class FormContainer extends Component {
     this.handleAuth = this.handleAuth.bind(this);
   }
 
-  handleAuth(e, type) {
+  handleAuth = (e, type) => {
     // Method to be used if we implement auth
     // with Google, Twitter, Facebook, etc.
     e.preventDefault();
     console.log(`Auth with ${type}`);
-  }
+  };
 
-  handleSubmit(e) {
+  handleSubmit = e => {
     // Login submission actions would be here
     e.preventDefault();
     console.log('Submitting a form');
     // Handle failed login state
-
     // Handle Success login state -> redirect
-  }
+  };
 
   handleInput(e) {
     // Method that syncs current input with state
@@ -59,7 +59,7 @@ class FormContainer extends Component {
             handleChange={this.handleInput}
             required
           />
-          <Button title="Log in" />
+          <LoginButton title="Log in" />
         </form>
         <AuthButtonWrapper>
           <h4>Or use alternatives:</h4>
@@ -94,52 +94,4 @@ const AuthButtonWrapper = styled.div`
   h4 {
     margin-bottom: 5px;
   }
-`;
-
-export const Button = props => {
-  const { title } = props;
-  return <StyledButton type="submit">{title}</StyledButton>;
-};
-
-Button.propTypes = {
-  title: PropTypes.string.isRequired
-};
-
-const StyledButton = styled.button`
-  color: white;
-  font-size: 1rem;
-  background: #3d0e98;
-  border: 0px;
-  border-radius: 5px;
-  padding: 5px;
-  padding-left: 7px;
-  padding-right: 7px;
-  cursor: pointer;
-  font-weight: 600;
-`;
-
-export const AuthButton = props => {
-  const { theme, action, title } = props;
-  return (
-    <StyledAuthBtn theme={theme} onClick={action}>
-      {title}
-    </StyledAuthBtn>
-  );
-};
-
-AuthButton.propTypes = {
-  title: PropTypes.string.isRequired,
-  action: PropTypes.func.isRequired,
-  theme: PropTypes.string.isRequired
-};
-
-const StyledAuthBtn = styled.button`
-  border: 0;
-  padding: 10px;
-  margin-top: 5px;
-  cursor: pointer;
-  border-radius: 2px;
-  color: white;
-  background: ${props => props.theme};
-  font-size: 1rem;
 `;
