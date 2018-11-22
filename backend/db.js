@@ -1,7 +1,8 @@
 require("dotenv").config();
 const { Client } = require("pg");
+console.log(process.env.PGUSER);
 
-(async function() {
+async function connect() {
   const client = new Client({
     user: process.env.PGUSER,
     host: process.env.PGHOST,
@@ -9,11 +10,8 @@ const { Client } = require("pg");
     password: process.env.PGPASSWORD,
     port: process.env.PGPORT
   });
-  client.connect();
-  console.log("DB connection successful");
-  client
-    .query("SELECT * from events")
-    .then(console.log)
-    .catch(console.log)
-    .finally(() => client.end());
-})();
+  await client.connect().then(console.log("DB connection successful"));
+  return client;
+}
+
+module.exports = connect;
