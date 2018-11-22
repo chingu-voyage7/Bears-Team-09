@@ -4,7 +4,7 @@
   "description": "Add-project-description-here | Voyage-7 | https://chingu.io/",
   "main": "index.js",
   "scripts": {
-    "lint": "npx eslint . --fix",
+    "lint": "npx eslint .",
     "pretest": "npm run lint",
     "test": "echo \"No tests\""
   },
