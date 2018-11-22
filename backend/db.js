@@ -10,7 +10,9 @@ async function connect() {
     password: process.env.PGPASSWORD,
     port: process.env.PGPORT
   });
-  await client.connect().then(console.log("DB connection successful"));
+  await client
+    .connect()
+    .catch(err => console.log("DB connection failed: ", err));
   return client;
 }
 
