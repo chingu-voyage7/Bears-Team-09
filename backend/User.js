@@ -3,6 +3,7 @@ const connect = require("./db");
 class User {
   constructor(email) {
     this.email = email;
+    this.saveDataToSelf = this.saveDataToSelf.bind(this);
   }
 
   async readData() {
@@ -39,7 +40,7 @@ class User {
 
   async delete() {
     const client = await connect();
-    const query = `DELETE from users WHERE email = '${this.email}'`;
+    const query = `DELETE FROM users WHERE email = '${this.email}'`;
     return client.query(query).finally(() => client.end());
   }
 }
