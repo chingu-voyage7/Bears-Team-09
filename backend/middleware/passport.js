@@ -17,7 +17,7 @@ passport.use(
       const user = new User(email);
       user.getUserInfo()
         .then(user => bcrypt.compare(password, user.password))
-        .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, false, {message: 'Incorrect credentials1'}))
+        .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, false, 'Incorrect password'))
         .catch(err => done(null, false, err));
   }
 ));

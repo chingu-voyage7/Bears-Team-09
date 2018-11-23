@@ -15,9 +15,9 @@ class User {
                         password: hashedPassword
                     });
                 })
-                .catch(err => reject({message: err}))
+                .catch(err => reject(err))
             } else {
-                return reject({message: 'Incorrect credentials'});
+                return reject('User not found');
             }
         });
     }

@@ -7,7 +7,7 @@ const express = require('express'),
 router.post('/login', function (req, res, next) {
     passport.authenticate('local', {session: false}, (err, user, info) => {
         if (err || !user) {
-            return res.status(400).json({...info});
+            return res.status(400).json({message: info});
         }
 
        req.login(user, {session: false}, (err) => {
