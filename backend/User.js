@@ -3,51 +3,68 @@ const connect = require("./db");
 class User {
   constructor(email) {
     this.email = email;
-    this.getUserInfo = this.getUserInfo.bind(this);
   }
 
-  async getUserInfo() {
+  async readData() {
     const client = await connect();
+    const query = `SELECT * from users WHERE email = '${this.email}'`;
     return client
-      .query(`SELECT * from users WHERE email = '${this.email}'`)
+      .query(query)
       .then(res => res.rows[0])
-      .catch(console.log)
+      .then(this.saveDataToSelf)
       .finally(() => client.end());
   }
-  async setPassword(password) {
+
+  saveDataToSelf(data) {
+    Object.keys(data).forEach(key => {
+      this[key] = data[key];
+    });
+    return this;
+  }
+
+  async writeData() {
     const client = await connect();
-    return client
-      .query(`UPDATE users SET password = '${password}' WHERE email = '${this.email}'`)
-      .catch(console.log)
-      .finally(() => client.end());
+    const query = this.assembleQuery(Object.getOwnPropertyNames(this));
+    return client.query(query).finally(() => client.end());
+  }
+
+  assembleQuery(properties) {
+    let query = "UPDATE users SET ";
+    query = properties
+      .reduce((acc, property) => `${acc} ${property} = '${this[property].toString()}',`, query)
+      .replace(/,$/g, ""); // strip comma at the end
+    query += ` WHERE email = '${this.email}'`;
+    return query;
+  }
+
+  async delete() {
+    const client = await connect();
+    const query = `DELETE from users WHERE email = '${this.email}'`;
+    return client.query(query).finally(() => client.end());
   }
 }
 
-//Usage example
-//Create a user
-const testUser = new User("test@test.com");
+module.exports = User;
 
-//Get user info
-testUser
-  .getUserInfo()
-  .then(console.log)
-  .catch(console.log);
-testUser
-  .setPassword("newpwd")
-  .then(console.log)
-  .catch(console.log);
-// returns a promise that resolves to a user object:
-// { email: 'test@test.com',
-// first_name: 'test',
-// last_name: 'test',
-// bio: null,
-// events: null,
-// password: 'newhash' }
+// // Usage example
+// // Create a user
+// const testUser = new User("test@test.com");
 
-// //Update user info
+// // Update user
+// testUser.bio = "New bio 2";
+// testUser.password = "New hash 2";
 // testUser
-//   .setUserInfo({password, firstName, lastName, bio})
+//   .writeData()
 //   .then(console.log)
 //   .catch(console.log);
-// // returns a promise that resolves to a user object
 
+// // Get user info
+// testUser
+//   .readData()
+//   .then(console.log)
+//   .catch(console.log);
+
+// console.log(testUser.password); // New hash 2
+
+// // Delete user
+// testUser.delete();
