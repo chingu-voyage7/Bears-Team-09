@@ -32,8 +32,9 @@ class FormContainer extends Component {
     // Register new user
     e.preventDefault();
 
-    //Perform password validation
-    if (this.state.password !== this.state.confirmPassword) {
+    // Perform password validation
+    const { password, confirmPassword } = this.state;
+    if (password !== confirmPassword) {
       console.log(`passwords do not match`);
       this.setState({ passwordsDontMatch: true });
     } else {
@@ -53,6 +54,7 @@ class FormContainer extends Component {
   }
 
   render() {
+    const { passwordsDontMatch } = this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
@@ -97,7 +99,7 @@ class FormContainer extends Component {
             required
           />
           <LoginButton title="Register" />
-          {this.state.passwordsDontMatch && (
+          { passwordsDontMatch && (
             <StyledErrorMsg>Make sure that passwords match!</StyledErrorMsg>
           )}
         </form>
