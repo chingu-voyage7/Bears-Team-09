@@ -1,6 +1,5 @@
 require("dotenv").config();
 const { Client } = require("pg");
-console.log(process.env.PGUSER);
 
 async function connect() {
   const client = new Client({
