@@ -1,4 +1,5 @@
 const connect = require("./db");
+const { assembleQuery } = require("./helpers");
 
 class Event {
   constructor(id) {
@@ -8,15 +9,17 @@ class Event {
 
   async create() {
     const client = await connect();
-    const query = `INSERT INTO events (id) VALUES ('${this.data.id}')`;
-    return client.query(query).finally(() => client.end());
+    const query = `INSERT INTO events (id) VALUES ($1)`;
+    const values = [this.data.id];
+    return client.query(query, values).finally(() => client.end());
   }
 
   async readData() {
     const client = await connect();
-    const query = `SELECT * from events WHERE id = '${this.data.id}'`;
+    const query = `SELECT * from events WHERE id = $1`;
+    const values = [this.data.id];
     return client
-      .query(query)
+      .query(query, values)
       .then(res => {
         if (res.rows.length === 0) throw new Error("Event not found");
         else {
@@ -37,17 +40,8 @@ class Event {
 
   async writeData() {
     const client = await connect();
-    const query = this.assembleQuery(Object.getOwnPropertyNames(this.data));
-    return client.query(query).finally(() => client.end());
-  }
-
-  assembleQuery(properties) {
-    let query = "UPDATE events SET ";
-    query = properties
-      .reduce((acc, property) => `${acc} ${property} = '${this.data[property].toString()}',`, query)
-      .replace(/,$/g, ""); // strip comma at the end
-    query += ` WHERE id = '${this.data.id}'`;
-    return query;
+    const [query, values] = assembleQuery({ data: this.data, tableName: this.tableName, pk: this.pk });
+    return client.query(query, values).finally(() => client.end());
   }
 
   async delete() {
@@ -59,17 +53,17 @@ class Event {
 
 module.exports = Event;
 
-// // Usage example
-// // Create an event object
+// Usage example
+// Create an event object
 // const testEvent = new Event("123");
 
-// // Create event in DB
+// Create event in DB
 // testEvent.create();
 
-// // Update event object
+// Update event object
 // testEvent.data.description = "Get drunk";
 // testEvent.data.city = "Toronto";
-// // Save changes to DB
+// Save changes to DB
 // testEvent
 //   .writeData()
 //   .then(console.log)
