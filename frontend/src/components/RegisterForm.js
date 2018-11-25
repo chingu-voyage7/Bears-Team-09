@@ -21,11 +21,10 @@ class FormContainer extends Component {
     this.handleAuth = this.handleAuth.bind(this);
   }
 
-  handleAuth = (e, type) => {
+  handleAuth = e => {
     // Method to be used if we implement auth
     // with Google, Twitter, Facebook, etc.
     e.preventDefault();
-    console.log(`Auth with ${type}`);
   };
 
   handleSubmit = e => {
@@ -35,10 +34,8 @@ class FormContainer extends Component {
     // Perform password validation
     const { password, confirmPassword } = this.state;
     if (password !== confirmPassword) {
-      console.log(`passwords do not match`);
       this.setState({ passwordsDontMatch: true });
     } else {
-      console.log(`passwords matching`);
       this.setState({ passwordsDontMatch: false });
     }
 
@@ -99,7 +96,7 @@ class FormContainer extends Component {
             required
           />
           <LoginButton title="Register" />
-          { passwordsDontMatch && (
+          {passwordsDontMatch && (
             <StyledErrorMsg>Make sure that passwords match!</StyledErrorMsg>
           )}
         </form>
