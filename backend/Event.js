@@ -1,53 +1,12 @@
-const connect = require("./db");
-const { assembleQuery } = require("./helpers");
+const Table = require("./Table");
 
-class Event {
+class Event extends Table {
   constructor(id) {
+    super();
     this.data = { id };
+    this.tableName = "events";
+    this.pk = "id";
     this.saveDataToSelf = this.saveDataToSelf.bind(this);
-  }
-
-  async create() {
-    const client = await connect();
-    const query = `INSERT INTO events (id) VALUES ($1)`;
-    const values = [this.data.id];
-    return client.query(query, values).finally(() => client.end());
-  }
-
-  async readData() {
-    const client = await connect();
-    const query = `SELECT * from events WHERE id = $1`;
-    const values = [this.data.id];
-    return client
-      .query(query, values)
-      .then(res => {
-        if (res.rows.length === 0) throw new Error("Event not found");
-        else {
-          this.saveDataToSelf(res.rows[0]);
-          return this;
-        }
-      })
-      .then(this.saveDataToSelf)
-      .finally(() => client.end());
-  }
-
-  saveDataToSelf(data) {
-    Object.keys(data).forEach(key => {
-      this.data[key] = data[key];
-    });
-    return this;
-  }
-
-  async writeData() {
-    const client = await connect();
-    const [query, values] = assembleQuery({ data: this.data, tableName: this.tableName, pk: this.pk });
-    return client.query(query, values).finally(() => client.end());
-  }
-
-  async delete() {
-    const client = await connect();
-    const query = `DELETE FROM events WHERE id = '${this.data.id}'`;
-    return client.query(query).finally(() => client.end());
   }
 }
 
