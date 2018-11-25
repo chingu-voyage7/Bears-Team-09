@@ -1,22 +1,27 @@
 const connect = require("./db");
+const { assembleQuery } = require("./helpers");
 
 class User {
   constructor(email) {
     this.data = { email };
+    this.tableName = "users";
+    this.pk = "email";
     this.saveDataToSelf = this.saveDataToSelf.bind(this);
   }
 
   async create() {
     const client = await connect();
-    const query = `INSERT INTO users (email) VALUES ('${this.data.email}')`;
-    return client.query(query).finally(() => client.end());
+    const query = `INSERT INTO users (email) VALUES ($1)`;
+    const values = [this.data.email];
+    return client.query(query, values).finally(() => client.end());
   }
 
   async readData() {
     const client = await connect();
-    const query = `SELECT * from users WHERE email = '${this.data.email}'`;
+    const query = `SELECT * from users WHERE email = $1`;
+    const values = [this.data.email];
     return client
-      .query(query)
+      .query(query, values)
       .then(res => {
         if (res.rows.length === 0) throw new Error("User not found");
         else {
@@ -36,23 +41,15 @@ class User {
 
   async writeData() {
     const client = await connect();
-    const query = this.assembleQuery(Object.getOwnPropertyNames(this.data));
-    return client.query(query).finally(() => client.end());
-  }
-
-  assembleQuery(properties) {
-    let query = "UPDATE users SET ";
-    query = properties
-      .reduce((acc, property) => `${acc} ${property} = '${this.data[property].toString()}',`, query)
-      .replace(/,$/g, ""); // strip comma at the end
-    query += ` WHERE email = '${this.data.email}'`;
-    return query;
+    const [query, values] = assembleQuery({ data: this.data, tableName: this.tableName, pk: this.pk });
+    return client.query(query, values).finally(() => client.end());
   }
 
   async delete() {
     const client = await connect();
-    const query = `DELETE FROM users WHERE email = '${this.data.email}'`;
-    return client.query(query).finally(() => client.end());
+    const query = `DELETE FROM users WHERE email = $1`;
+    const values = [this.data.email];
+    return client.query(query, values).finally(() => client.end());
   }
 }
 
@@ -62,8 +59,8 @@ module.exports = User;
 // // Create a user object
 // const testUser = new User("test@test.com");
 
-// // Save new user to DB
-// testUser.create();
+// // // Save new user to DB
+// // testUser.create();
 
 // // Update user object
 // testUser.data.bio = "New bio 2";
