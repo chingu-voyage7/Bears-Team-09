@@ -3,14 +3,11 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: sans-serif;
 }
 
 input[type='text'],
 input[type='email'],
 input[type='password'] {
   box-sizing: border-box;
-}
-
-.App {
-  font-family: sans-serif;
 }
