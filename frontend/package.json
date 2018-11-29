@@ -3,27 +3,21 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "next": "^7.0.2",
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "react-scripts": "2.1.1",
     "styled-components": "^4.1.1"
   },
   "scripts": {
-    "lint": "eslint src/**/*.js src/**/*.jsx",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "lint": "eslint pages/**/*.js components/**/*.js",
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "devDependencies": {
     "babel-eslint": "^9.0.0",
+    "babel-plugin-styled-components": "^1.9.1",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^3.3.0",

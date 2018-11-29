@@ -2,23 +2,23 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import RegisterForm from '../components/RegisterForm';
 
-class LoginPage extends Component {
+class Register extends Component {
   render() {
     return (
-      <LoginWrapper>
+      <RegisterWrapper>
         <InputSection>
           <Title>Register</Title>
           <p>If you already have account: [log in!]</p>
           <RegisterForm />
         </InputSection>
-      </LoginWrapper>
+      </RegisterWrapper>
     );
   }
 }
 
-export default LoginPage;
+export default Register;
 
-const LoginWrapper = styled.div`
+const RegisterWrapper = styled.div`
   background: #fafafa;
   height: 100vh;
   display: flex;
