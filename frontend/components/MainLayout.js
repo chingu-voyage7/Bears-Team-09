@@ -1,17 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { createGlobalStyle } from 'styled-components';
+import Navbar from './Navbar';
 import Footer from "./Footer";
 
 const MainLayout = props => {
   const { children } = props;
   return (
     <div>
+      <Navbar />
       {children}
       <Footer />
       <GlobalStyle />
     </div>
-);};
+)};
 
 export default MainLayout;
 

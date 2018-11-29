@@ -23,7 +23,8 @@ export default LoginPage;
 
 const LoginWrapper = styled.div`
   background: #fafafa;
-  height: 100vh;
+  padding-top: 100px;
+  padding-bottom: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
