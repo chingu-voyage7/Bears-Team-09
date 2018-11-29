@@ -1,24 +1,8 @@
 import React from 'react';
-import { createGlobalStyle } from 'styled-components';
+import MainLayout from '../components/MainLayout';
 
-const GlobalStyle = createGlobalStyle`
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: sans-serif;
-}
-
-  input[type='text'],
-  input[type='email'],
-  input[type='password'] {
-    box-sizing: border-box;
-}
-`;
 export default () => (
-  <>
+  <MainLayout>
     <div>Home</div>
-    <GlobalStyle />
-  </>
+  </MainLayout>
 );

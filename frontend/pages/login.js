@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import LoginForm from '../components/LoginForm';
+import MainLayout from '../components/MainLayout';
 
 class LoginPage extends Component {
   render() {
     return (
-      <LoginWrapper>
-        <InputSection>
-          <Title>Log in</Title>
-          <p>If you have no account: [register!]</p>
-          <LoginForm />
-        </InputSection>
-      </LoginWrapper>
+      <MainLayout>
+        <LoginWrapper>
+          <InputSection>
+            <Title>Log in</Title>
+            <p>If you have no account: [register!]</p>
+            <LoginForm />
+          </InputSection>
+        </LoginWrapper>
+      </MainLayout>
     );
   }
 }

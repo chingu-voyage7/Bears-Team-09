@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import RegisterForm from '../components/RegisterForm';
+import MainLayout from '../components/MainLayout';
 
 class Register extends Component {
   render() {
     return (
-      <RegisterWrapper>
-        <InputSection>
-          <Title>Register</Title>
-          <p>If you already have account: [log in!]</p>
-          <RegisterForm />
-        </InputSection>
-      </RegisterWrapper>
+      <MainLayout>
+        <RegisterWrapper>
+          <InputSection>
+            <Title>Register</Title>
+            <p>If you already have account: [log in!]</p>
+            <RegisterForm />
+          </InputSection>
+        </RegisterWrapper>
+      </MainLayout>
     );
   }
 }
