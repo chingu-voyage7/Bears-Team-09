@@ -1,14 +1,23 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { createGlobalStyle } from 'styled-components';
+import Footer from "./Footer";
 
-const MainLayout = props => (
-  <div>
-    {props.children}
-    <GlobalStyle />
-  </div>
-);
+const MainLayout = props => {
+  const { children } = props;
+  return (
+    <div>
+      {children}
+      <Footer />
+      <GlobalStyle />
+    </div>
+);};
 
 export default MainLayout;
+
+MainLayout.propTypes = {
+  children: PropTypes.node.isRequired
+};
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -25,3 +34,4 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
 }
 `;
+
