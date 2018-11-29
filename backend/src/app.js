@@ -5,7 +5,7 @@ const express = require('express'),
       logger = require('morgan'),
       bodyParser = require('body-parser'),
       passport = require('./middleware/passport'),
-      port = 8000;
+      port = process.env.PORT || 8000;;
 
 app.use(logger('dev'));
 app.use(bodyParser.json());

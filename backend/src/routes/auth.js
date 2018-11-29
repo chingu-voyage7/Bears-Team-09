@@ -2,7 +2,8 @@ const express = require('express'),
       passport = require('../middleware/passport'),
       jwt = require('jsonwebtoken'),
       router = express.Router(),
-      secret = process.env.JWT_SECRET || 'Default_JWT-Secret';
+      secret = process.env.JWT_SECRET || 'Default_JWT-Secret',
+      JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || '1 hour';
 
 router.post('/login', function (req, res, next) {
     passport.authenticate('local', {session: false}, (err, user, info) => {
@@ -14,7 +15,7 @@ router.post('/login', function (req, res, next) {
            if (err) {
                res.send(err);
            }
-           const token = jwt.sign({id: user.email}, secret, {expiresIn: '1 min'});
+           const token = jwt.sign({id: user.email}, secret, {expiresIn: JWT_EXP_THRESHOLD});
            return res.json({...user, token});
         });
     })(req, res);

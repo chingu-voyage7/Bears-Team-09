@@ -19,7 +19,7 @@ passport.use(
         .then(user => bcrypt.compare(password, user.password))
         .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, false, 'Incorrect password'))
         .catch(err => done(null, false, err));
-  }
+    }
 ));
 
 passport.use(
