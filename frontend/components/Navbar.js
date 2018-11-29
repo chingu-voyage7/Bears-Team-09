@@ -3,31 +3,22 @@ import Link from 'next/link';
 import styled from 'styled-components';
 
 class Navbar extends React.Component {
-  constructor() {
-    super();
-    this.handleLogout = this.handleLogout.bind(this);
-  }
-
-  handleLogout() {
-    //logout
-  }
-
   render() {
     return (
       <StyledNav>
         <ul>
-          <li className="home">
+          <li>
             <Link href="/">
               <NavLink>Home</NavLink>
             </Link>
           </li>
-          <li className="events">
+          <li>
             <Link href="/events">
               <NavLink>Events</NavLink>
             </Link>
           </li>
-          <li className="profile">
-            <Link href="/protected">
+          <li>
+            <Link href="/profile">
               <NavLink>Profile</NavLink>
             </Link>
           </li>
@@ -37,20 +28,20 @@ class Navbar extends React.Component {
           <li>
             <UnAuthSection>
               <Link href="/login">
-                <LoginBtn className="login-btn">Login</LoginBtn>
+                <LoginBtn>Login</LoginBtn>
               </Link>
 
               <Link href="/register">
-                <RegisterBtn className="register-btn">Register</RegisterBtn>
+                <RegisterBtn>Register</RegisterBtn>
               </Link>
             </UnAuthSection>
           </li>
           <li>
             <AuthSection>
-              <span className="avatar" aria-label="person-emoji" role="img">
+              <span aria-label="person-emoji" role="img">
                 🙎
               </span>
-              <a onClick={this.handleLogout}>Logout</a>
+              <button type="button">Logout</button>
             </AuthSection>
           </li>
         </ul>
@@ -67,6 +58,7 @@ const RegisterBtn = styled.a`
   border-radius: 3px;
   background: white;
   color: #6071ec;
+  margin-left: 10px;
 `;
 
 const LoginBtn = styled.a`
@@ -77,6 +69,7 @@ const LoginBtn = styled.a`
 
 const NavLink = styled.a`
   color: inherit;
+  margin-left: 20px;
   &:hover {
     color: gold;
   }
@@ -96,7 +89,6 @@ const StyledNav = styled.nav`
   }
 
   a {
-    margin-left: 5px;
     cursor: pointer;
     transition: all 300ms ease-out;
     text-decoration: none;
@@ -125,8 +117,18 @@ const AuthSection = styled.div`
   span {
     font-size: 1.7rem;
   }
+
+  button {
+    margin-left: 10px;
+    color: white;
+    border: 1px solid white;
+    border-radius: 0;
+    background: #b74e3a45;
+    cursor: pointer;
+  }
 `;
-        {/*
+{
+  /*
     <AuthContext.Consumer>
       {({ userAuth, login, logout }) => (
         <>
@@ -139,4 +141,5 @@ const AuthSection = styled.div`
         </>
       )}
     </AuthContext.Consumer>
-    */}
+    */
+}
