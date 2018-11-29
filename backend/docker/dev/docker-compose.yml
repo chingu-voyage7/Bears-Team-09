@@ -27,5 +27,7 @@ services:
       - PGPORT=5432
       - JWT_SECRET=SIMPLE_SECRET_FOR_TEST
       - JWT_EXP_THRESHOLD=1 day
+    ports:
+      - "8000:8000"
     depends_on:
       - db
