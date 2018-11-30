@@ -14,11 +14,11 @@ passport.use(
       passwordField: 'password'
     },
     function (email, password, done) {
-      const user = new User(email);
-      user.getUserInfo()
-        .then(user => bcrypt.compare(password, user.password))
+      const user = new User({email});
+      return user.read()
+        .then(data => data.length ? bcrypt.compare(password, data[0].password) : false)
         .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, false, 'Incorrect password'))
-        .catch(err => done(null, false, err));
+        .catch(err => done(err, false));
     }
 ));
 
@@ -28,9 +28,9 @@ passport.use(
       secretOrKey : secret
     },
     function (jwtPayload, done) {
-      const user = new User(jwtPayload.id);
-      return user.getUserInfo()
-        .then(user => done(null, user))
+      const user = new User({email: jwtPayload.pk});
+      return user.read()
+        .then(data =>  done(null, data[0]))
         .catch(err => done(err, false, err));
       }
 ));

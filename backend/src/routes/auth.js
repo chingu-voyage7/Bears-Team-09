@@ -12,7 +12,7 @@ router.post('/login', function (req, res) {
 
        req.login(user, {session: false}, (err) => {
            if (err) {
-               res.send(err);
+               res.json(err);
            }
            const token = user.refreshToken();
            return res.json({...user.data, token});
@@ -32,8 +32,12 @@ router.post('/register', function (req, res) {
         user = new User({...rest, password: hash});
         return user.create();
     })
-    .then(() => res.json({...user.data, token: user.refreshToken()}))
-    .catch(err => res.send(err));
+    .then(() => {
+        delete user.data.password;
+        const token = user.refreshToken();
+        return res.json({...user.data, token});
+    })
+    .catch(err => res.json(err));
 });
 
 module.exports = router;

@@ -18,3 +18,7 @@ module.exports = {
     });
   }
 };
+
+
+// run migrations with
+// DATABASE_URL=postgres://postgres:123456@docker.vm/postgres npm run migrate up
