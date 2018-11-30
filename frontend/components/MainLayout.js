@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { createGlobalStyle } from 'styled-components';
 import Navbar from './Navbar';
-import Footer from "./Footer";
+import Footer from './Footer';
 
 const MainLayout = props => {
   const { children } = props;
@@ -13,7 +13,8 @@ const MainLayout = props => {
       <Footer />
       <GlobalStyle />
     </div>
-)};
+  );
+};
 
 export default MainLayout;
 
@@ -36,4 +37,3 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
 }
 `;
-

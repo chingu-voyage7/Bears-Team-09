@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
+import { UserConsumer } from './UserProvider';
 
 class Navbar extends React.Component {
   render() {
@@ -25,25 +26,34 @@ class Navbar extends React.Component {
           <Logo>
             <p>[Logo]</p>
           </Logo>
-          <li>
-            <UnAuthSection>
-              <Link href="/login">
-                <LoginBtn>Login</LoginBtn>
-              </Link>
+          <UserConsumer>
+            {({ userAuth, logout }) =>
+              userAuth ? (
+                <li>
+                  <AuthSection>
+                    <span aria-label="person-emoji" role="img">
+                      🙎
+                    </span>
+                    <button onClick={logout} type="button">
+                      Logout
+                    </button>
+                  </AuthSection>
+                </li>
+              ) : (
+                <li>
+                  <UnAuthSection>
+                    <Link href="/login">
+                      <LoginBtn>Login</LoginBtn>
+                    </Link>
 
-              <Link href="/register">
-                <RegisterBtn>Register</RegisterBtn>
-              </Link>
-            </UnAuthSection>
-          </li>
-          <li>
-            <AuthSection>
-              <span aria-label="person-emoji" role="img">
-                🙎
-              </span>
-              <button type="button">Logout</button>
-            </AuthSection>
-          </li>
+                    <Link href="/register">
+                      <RegisterBtn>Register</RegisterBtn>
+                    </Link>
+                  </UnAuthSection>
+                </li>
+              )
+            }
+          </UserConsumer>
         </ul>
       </StyledNav>
     );
@@ -127,19 +137,3 @@ const AuthSection = styled.div`
     cursor: pointer;
   }
 `;
-{
-  /*
-    <AuthContext.Consumer>
-      {({ userAuth, login, logout }) => (
-        <>
-          <div>Auth State:{userAuth ? "Logged In" : "Logged out"} </div>
-          {userAuth ? (
-            <button onClick={logout}>Turn Off</button>
-          ) : (
-            <button onClick={login}>Turn On</button>
-          )}
-        </>
-      )}
-    </AuthContext.Consumer>
-    */
-}
