@@ -1,40 +1,19 @@
-const Table = require("./Table");
+const Table = require("./Table"),
+      jwt = require('jsonwebtoken'),
+      SECRET = process.env.JWT_SECRET || 'Default_JWT-Secret',
+      JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || '1 hour';
 
 class User extends Table {
-  constructor(email) {
+  constructor(data) {
     super();
-    this.data = { email };
+    this.data = data;
     this.tableName = "users";
     this.pk = "email";
-    this.saveDataToSelf = this.saveDataToSelf.bind(this);
+  }
+
+  refreshToken() {
+    return jwt.sign({pk: this.data[this.pk]}, SECRET, {expiresIn: JWT_EXP_THRESHOLD});
   }
 }
 
 module.exports = User;
-
-// // Usage example
-// // Create a user object
-// const testUser = new User("test2@test.com");
-
-// // Save new user to DB
-// testUser.create();
-
-// // Update user object
-// testUser.data.bio = "New bio 4";
-// testUser.data.password = "New hash 4";
-// // Save changes to DB
-// testUser
-//   .writeData()
-//   .then(console.log)
-//   .catch(console.log);
-
-// // Populate user object with data from DB
-// testUser
-//   .readData()
-//   .then(console.log)
-//   .catch(console.log);
-
-// console.log(testUser.password); // New hash 2
-
-// // Delete user
-// testUser.delete();
