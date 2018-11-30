@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import LoginForm from '../components/LoginForm';
+import MainLayout from '../components/MainLayout';
 
 class LoginPage extends Component {
   render() {
     return (
-      <LoginWrapper>
-        <InputSection>
-          <Title>Log in</Title>
-          <p>If you have no account: [register!]</p>
-          <LoginForm />
-        </InputSection>
-      </LoginWrapper>
+      <MainLayout>
+        <LoginWrapper>
+          <InputSection>
+            <Title>Log in</Title>
+            <p>If you have no account: [register!]</p>
+            <LoginForm />
+          </InputSection>
+        </LoginWrapper>
+      </MainLayout>
     );
   }
 }
@@ -20,7 +23,8 @@ export default LoginPage;
 
 const LoginWrapper = styled.div`
   background: #fafafa;
-  height: 100vh;
+  padding-top: 100px;
+  padding-bottom: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
