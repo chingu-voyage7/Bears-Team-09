@@ -1,11 +1,10 @@
 const express = require('express'),
       passport = require('../middleware/passport'),
-      jwt = require('jsonwebtoken'),
+      User = require('../models/User'),
       router = express.Router(),
-      secret = process.env.JWT_SECRET || 'Default_JWT-Secret',
-      JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || '1 hour';
+      bcrypt = require('bcrypt');
 
-router.post('/login', function (req, res, next) {
+router.post('/login', function (req, res) {
     passport.authenticate('local', {session: false}, (err, user, info) => {
         if (err || !user) {
             return res.status(400).json({message: info});
@@ -15,10 +14,26 @@ router.post('/login', function (req, res, next) {
            if (err) {
                res.send(err);
            }
-           const token = jwt.sign({id: user.email}, secret, {expiresIn: JWT_EXP_THRESHOLD});
-           return res.json({...user, token});
+           const token = user.refreshToken();
+           return res.json({...user.data, token});
         });
     })(req, res);
+});
+
+router.post('/register', function (req, res) {
+    const {password, ...rest} = req.body;
+    // temporary, replace with propper validation
+    if (!password) {
+        res.status(400).json({message: 'password not set'});;
+    };
+    let user;
+    bcrypt.hash(password, 10)
+    .then(hash => {
+        user = new User({...rest, password: hash});
+        return user.create();
+    })
+    .then(() => res.json({...user.data, token: user.refreshToken()}))
+    .catch(err => res.send(err));
 });
 
 module.exports = router;
