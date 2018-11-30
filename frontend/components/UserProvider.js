@@ -5,7 +5,7 @@ const UserContext = React.createContext();
 class UserProvider extends Component {
   state = {
     user: 'guest',
-    userAuth: true
+    userAuth: false
   };
 
   constructor() {
