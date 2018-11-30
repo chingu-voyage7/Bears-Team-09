@@ -9,10 +9,10 @@ class EventList extends Component {
       {
         id: 3,
         title: 'hiking',
-        description: 'lots of bears on this hike need a friend',
+        description: 'lots of bears on this hike need a friend'
       },
       { id: 4, title: 'concert', description: 'I do not wanna go alone' },
-      { id: 5, title: 'workout', description: 'Lifting heavy need a spotter' },
+      { id: 5, title: 'workout', description: 'Lifting heavy need a spotter' }
     ];
     return (
       <div>

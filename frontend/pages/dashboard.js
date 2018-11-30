@@ -1,14 +1,20 @@
 import React, { Component } from 'react';
-import EventList from './EventList';
+import styled from 'styled-components';
+import EventList from '../components/EventList';
+
 class Dashboard extends Component {
   render() {
     return (
-      <div>
+      <Container>
         <h1>Dashboard</h1>
         <EventList />
-      </div>
+      </Container>
     );
   }
 }
 
 export default Dashboard;
+
+const Container = styled.div`
+  text-align: center;
+`;
