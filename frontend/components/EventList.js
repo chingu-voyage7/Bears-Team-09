@@ -16,9 +16,9 @@ class EventList extends Component {
     ];
     return (
       <div>
-        {events.map(event => {
-          return <EventListItem key={event.id} {...event} />;
-        })}
+        {events.map(event => (
+          <EventListItem key={event.id} {...event} />
+        ))}
       </div>
     );
   }

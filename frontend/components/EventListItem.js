@@ -6,7 +6,7 @@ class EventListItem extends Component {
     console.log('clicked');
   };
 
-  render({ id, title, description } = this.props) {
+  render({  title, description } = this.props) {
     return (
       <ItemContainer>
         <Item onClick={this.clickHandler}>
