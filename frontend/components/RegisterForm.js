@@ -1,27 +1,20 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import NoSSR from "react-no-ssr";
+// import NoSSR from "react-no-ssr";
 import Input from "./Input";
 import AuthButton from "./AuthButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
 import LoginButton from "./LoginButton";
 
 class RegisterForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      firstName: "",
-      lastName: "",
-      password: "",
-      confirmPassword: "",
-      email: "",
-      passwordsDontMatch: false
-    };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleInput = this.handleInput.bind(this);
-    this.handleAuth = this.handleAuth.bind(this);
-  }
+  state = {
+    firstName: "",
+    lastName: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+    passwordsDontMatch: false
+  };
 
   handleAuth = e => {
     // Method to be used if we implement auth
@@ -45,17 +38,17 @@ class RegisterForm extends Component {
     // Handle Success register state -> redirect
   };
 
-  handleInput(e) {
+  handleInput = e => {
     // Method that syncs current input with state
     const { name, value } = e.target;
     const inputValue = { ...this.state, [name]: value };
     this.setState(inputValue);
-  }
+  };
 
   render() {
     const { passwordsDontMatch } = this.state;
     return (
-      <NoSSR>
+      <>
         <form onSubmit={this.handleSubmit}>
           <Input
             id="firstName"
@@ -96,10 +89,10 @@ class RegisterForm extends Component {
         <AuthButtonWrapper>
           <h4>Or use alternatives:</h4>
           <AuthButton theme="#3b5998" title="Register using Facebook" onClick={e => this.handleAuth(e, "fb")} />
-          <AuthButton theme="#ea4335" title="Register using Google" onClick={e => this.handleAuth(e, "gl")} />
+          <GoogleRegisterButton theme="#ea4335" title="Register using Google" onClick={e => this.handleAuth(e, "gl")} />
           <AuthButton theme="#1da1f2" title="Register using Twitter" onClick={e => this.handleAuth(e, "tw")} />
         </AuthButtonWrapper>
-      </NoSSR>
+      </>
     );
   }
 }

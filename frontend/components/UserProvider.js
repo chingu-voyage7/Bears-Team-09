@@ -11,6 +11,7 @@ class UserProvider extends Component {
   };
 
   logIn = data => {
+    console.log(`Logged in as ${data.profileObj.givenName} ${data.profileObj.familyName}`);
     this.setState({ loggedIn: true, firstName: data.profileObj.givenName, lastName: data.profileObj.familyName });
   };
 
@@ -24,7 +25,7 @@ class UserProvider extends Component {
 
   render() {
     return (
-      <UserContext.Provider value={{ ...this.state, login: this.logIn, logout: this.logOut }}>
+      <UserContext.Provider value={{ ...this.state, logIn: this.logIn, logOut: this.logOut }}>
         {this.props.children}
       </UserContext.Provider>
     );
