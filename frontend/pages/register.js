@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import RegisterForm from '../components/RegisterForm';
 import MainLayout from '../components/MainLayout';
 
+
 class Register extends Component {
   render() {
     return (
