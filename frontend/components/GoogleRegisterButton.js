@@ -1,33 +1,42 @@
-import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { GoogleLogin } from "react-google-login";
-import NoSSR from "react-no-ssr";
+import React, { Component } from "react";
 import { UserConsumer } from "./UserProvider";
 import config from "../config.json";
 
-const GoogleRegisterButton = props => {
-  const { theme, onClick, title } = props;
-  return (
-    <NoSSR>
-      <UserConsumer>
-        {context => (
-          <GoogleLogin
-            clientId={config.GOOGLE_CLIENT_ID}
-            buttonText="Login"
-            onSuccess={context.logIn}
-            onFailure={console.error}
-            render={renderProps => (
-              <StyledAuthBtn onClick={renderProps.onClick} onKeyPress={renderProps.onClick} theme={theme}>
-                {title}
-              </StyledAuthBtn>
-            )}
-          />
-        )}
-      </UserConsumer>
-    </NoSSR>
-  );
-};
+class GoogleRegisterButton extends Component {
+  state = {};
+
+  async componentDidMount() {
+    const { GoogleLogin } = await import("react-google-login");
+    this.setState({ GoogleLogin });
+  }
+
+  render = () => {
+    const { theme, onClick, title } = this.props;
+    const { GoogleLogin } = this.state;
+
+    if (GoogleLogin)
+      return (
+        <UserConsumer>
+          {context => (
+            <GoogleLogin
+              clientId={config.GOOGLE_CLIENT_ID}
+              buttonText="Login"
+              onSuccess={context.logIn}
+              onFailure={console.error}
+              render={renderProps => (
+                <StyledAuthBtn onClick={renderProps.onClick} onKeyPress={renderProps.onClick} theme={theme}>
+                  {title}
+                </StyledAuthBtn>
+              )}
+            />
+          )}
+        </UserConsumer>
+      );
+    return null;
+  };
+}
 
 GoogleRegisterButton.propTypes = {
   title: PropTypes.string.isRequired,

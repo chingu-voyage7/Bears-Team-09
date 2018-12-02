@@ -1,20 +1,26 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-// import NoSSR from "react-no-ssr";
-import Input from "./Input";
-import AuthButton from "./AuthButton";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import Input from './Input';
+import AuthButton from './AuthButton';
+import LoginButton from './LoginButton';
 import GoogleRegisterButton from "./GoogleRegisterButton";
-import LoginButton from "./LoginButton";
 
-class RegisterForm extends Component {
-  state = {
-    firstName: "",
-    lastName: "",
-    password: "",
-    confirmPassword: "",
-    email: "",
-    passwordsDontMatch: false
-  };
+class FormContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      firstName: '',
+      lastName: '',
+      password: '',
+      confirmPassword: '',
+      email: '',
+      passwordsDontMatch: false
+    };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInput = this.handleInput.bind(this);
+    this.handleAuth = this.handleAuth.bind(this);
+  }
 
   handleAuth = e => {
     // Method to be used if we implement auth
@@ -38,12 +44,12 @@ class RegisterForm extends Component {
     // Handle Success register state -> redirect
   };
 
-  handleInput = e => {
+  handleInput(e) {
     // Method that syncs current input with state
     const { name, value } = e.target;
     const inputValue = { ...this.state, [name]: value };
     this.setState(inputValue);
-  };
+  }
 
   render() {
     const { passwordsDontMatch } = this.state;
@@ -66,7 +72,14 @@ class RegisterForm extends Component {
             handleChange={this.handleInput}
             required
           />
-          <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Email"
+            handleChange={this.handleInput}
+            required
+          />
           <Input
             id="password"
             name="password"
@@ -84,20 +97,34 @@ class RegisterForm extends Component {
             required
           />
           <LoginButton title="Register" />
-          {passwordsDontMatch && <StyledErrorMsg>Make sure that passwords match!</StyledErrorMsg>}
+          {passwordsDontMatch && (
+            <StyledErrorMsg>Make sure that passwords match!</StyledErrorMsg>
+          )}
         </form>
         <AuthButtonWrapper>
           <h4>Or use alternatives:</h4>
-          <AuthButton theme="#3b5998" title="Register using Facebook" onClick={e => this.handleAuth(e, "fb")} />
-          <GoogleRegisterButton theme="#ea4335" title="Register using Google" onClick={e => this.handleAuth(e, "gl")} />
-          <AuthButton theme="#1da1f2" title="Register using Twitter" onClick={e => this.handleAuth(e, "tw")} />
+          <AuthButton
+            theme="#3b5998"
+            title="Register using Facebook"
+            onClick={e => this.handleAuth(e, 'fb')}
+          />
+          <GoogleRegisterButton
+            theme="#ea4335"
+            title="Register using Google"
+            onClick={e => this.handleAuth(e, 'gl')}
+          />
+          <AuthButton
+            theme="#1da1f2"
+            title="Register using Twitter"
+            onClick={e => this.handleAuth(e, 'tw')}
+          />
         </AuthButtonWrapper>
       </>
     );
   }
 }
 
-export default RegisterForm;
+export default FormContainer;
 
 const AuthButtonWrapper = styled.div`
   display: grid;
