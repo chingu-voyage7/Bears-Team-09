@@ -14,10 +14,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 
 app.use('/auth', authRouter);
-app.use('/users', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-    console.log(req, res, next);
-    next();
-}, usersRouter);
+app.use('/users', passport.authenticate('jwt', {session: false}), usersRouter);
 app.use('/activities', passport.authenticate('jwt', {session: false}), activitiesRouter);
 app.use('/places', passport.authenticate('jwt', {session: false}), placesRouter);
 app.use('/events', passport.authenticate('jwt', {session: false}), eventsRouter);
