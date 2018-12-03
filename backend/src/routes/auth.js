@@ -13,7 +13,7 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res) => {
 router.post('/login', function (req, res) {
     passport.authenticate('local', {session: false}, (err, user, info) => {
         if (err || !user) {
-            return res.status(400).json({message: info});
+            return res.status(400).json({message: info.message});
         }
 
        req.login(user, {session: false}, (err) => {
