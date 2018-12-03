@@ -4,6 +4,12 @@ const express = require('express'),
       router = express.Router(),
       bcrypt = require('bcrypt');
 
+router.get('/', passport.authenticate('jwt', {session: false}), (req, res) => {
+    const user = new User(req.user),
+          token = user.refreshToken();
+    return res.json({token});
+});
+
 router.post('/login', function (req, res) {
     passport.authenticate('local', {session: false}, (err, user, info) => {
         if (err || !user) {
@@ -12,10 +18,11 @@ router.post('/login', function (req, res) {
 
        req.login(user, {session: false}, (err) => {
            if (err) {
-               res.json(err);
+               return res.json(err);
            }
+           delete user.data.password;
            const token = user.refreshToken();
-           return res.json({...user.data, token});
+           return res.json({email: user.email, ...user.data, token});
         });
     })(req, res);
 });
@@ -24,7 +31,7 @@ router.post('/register', function (req, res) {
     const {password, ...rest} = req.body;
     // temporary, replace with propper validation
     if (!password) {
-        res.status(400).json({message: 'password not set'});;
+        return res.status(400).json({message: 'password not set'});
     };
     let user;
     bcrypt.hash(password, 10)
@@ -32,12 +39,13 @@ router.post('/register', function (req, res) {
         user = new User({...rest, password: hash});
         return user.create();
     })
-    .then(() => {
-        delete user.data.password;
+    .then(() => user.read())
+    .then(([data]) => {
         const token = user.refreshToken();
-        return res.json({...user.data, token});
+        delete data.password;
+        return res.json({...data, token});
     })
-    .catch(err => res.json(err));
+    .catch(err => res.status(400).json({message: err.message}));
 });
 
 module.exports = router;
