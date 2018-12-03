@@ -2,17 +2,17 @@ exports.shorthands = undefined;
 
 exports.up = (pgm) => {
     pgm.createTable('users', {
-        email: { type: 'varchar(254)', primaryKey: true},
-        first_name: {type: 'varchar(30)'},
-        last_name: {type: 'varchar(150)'},
-        password: {type: 'varchar(128)'},
-        bio: {type: 'varchar(500)'}
+        email: { type: 'varchar(256)', primaryKey: true},
+        first_name: {type: 'varchar(128)'},
+        last_name: {type: 'varchar(128)'},
+        password: {type: 'varchar(256)'},
+        bio: {type: 'varchar(1024)'}
     });
 
 /*****************************************************************************/
     pgm.createTable('activities', {
         id: 'id',
-        name: {type: 'varchar(250)', notNull: true, unique: true}
+        name: {type: 'varchar(256)', notNull: true, unique: true}
     });
 
     pgm.createIndex('activities', 'name');
@@ -20,8 +20,8 @@ exports.up = (pgm) => {
 /*****************************************************************************/
     pgm.createTable('places', {
         id: 'id',
-        country: {type: 'varchar(250)', notNull: true},
-        city: {type: 'varchar(250)', notNull: true}
+        country: {type: 'varchar(256)', notNull: true},
+        city: {type: 'varchar(256)', notNull: true}
     });
 
     pgm.addConstraint('places', 'places_event_country_city_uniq', {
@@ -31,7 +31,7 @@ exports.up = (pgm) => {
 /*****************************************************************************/
     pgm.createTable('events', {
         id: 'id',
-        name: {type: 'varchar(250)', notNull: true},
+        name: {type: 'varchar(256)', notNull: true},
         description: {type: 'text'},
         activity: {
             type: 'integer',
@@ -42,13 +42,12 @@ exports.up = (pgm) => {
         },
         place: {
             type: 'integer',
-            notNull: true,
             references: '"places"',
             deferrable: true,
             deferred: true
         },
-        date_from: {type: 'datetime', notNull: true},
-        date_to: {type: 'datetime', notNull: true},
+        date_from: {type: 'datetime'},
+        date_to: {type: 'datetime'},
         minpeople: {
             type: 'integer',
             notNull: true,
@@ -71,7 +70,7 @@ exports.up = (pgm) => {
             deferred: true
         },
         user_id: {
-            type: 'varchar(254)',
+            type: 'varchar(256)',
             notNull: true,
             references: '"users"',
             deferrable: true,
