@@ -25,8 +25,8 @@ passport.use(
           }
           return false;
         })
-        .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, false, 'Incorrect credentials'))
-        .catch(err => done(err, false));
+        .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, false, 'Incorrect username or password'))
+        .catch(err => done(null, false, err));
     }
 ));
 
@@ -42,7 +42,7 @@ passport.use(
           delete data.password;
           return done(null, data);
         })
-        .catch(err => done(err, false, err));
+        .catch(err => done(err));
       }
 ));
 
