@@ -11,11 +11,11 @@ const DB_DATA = {
 module.exports = {
   query: async (text, params) => {
     const client = new Client(DB_DATA);
-    await client.connect();
-    return client.query(text, params).then(res => {
-      client.end();
-      return res.rows;
-    });
+    return client.connect()
+                 .catch(() => { throw new Error('DB connection error');})
+                 .then(() => client.query(text, params))
+                 .then(res => res.rows)
+                 .finally(() => client.end())
   }
 };
 
