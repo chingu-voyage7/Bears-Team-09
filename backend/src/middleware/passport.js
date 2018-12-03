@@ -16,8 +16,16 @@ passport.use(
     function (email, password, done) {
       const user = new User({email});
       return user.read()
-        .then(data => data.length ? bcrypt.compare(password, data[0].password) : false)
-        .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, false, 'Incorrect password'))
+        .then(([data]) => {
+          if (data) {
+            const isAuthenticated = bcrypt.compare(password, data.password);
+            delete data.password;
+            user.data = data;
+            return isAuthenticated;
+          }
+          return false;
+        })
+        .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, false, 'Incorrect credentials'))
         .catch(err => done(err, false));
     }
 ));
@@ -30,7 +38,10 @@ passport.use(
     function (jwtPayload, done) {
       const user = new User({email: jwtPayload.pk});
       return user.read()
-        .then(data =>  done(null, data[0]))
+        .then(([data]) => {
+          delete data.password;
+          return done(null, data);
+        })
         .catch(err => done(err, false, err));
       }
 ));
