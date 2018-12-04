@@ -15,6 +15,7 @@ module.exports = {
                  .catch(() => { throw new Error('DB connection error');})
                  .then(() => client.query(text, params))
                  .then(res => res.rows)
+                 .catch(err => { throw new Error(err.message);})
                  .finally(() => client.end())
   }
 };
