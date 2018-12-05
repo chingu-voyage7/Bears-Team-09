@@ -1,23 +1,26 @@
 {
-  "name": "frontend",
+  "name": "Bears-Team-09",
   "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "next": "^7.0.2",
-    "prop-types": "^15.6.2",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "styled-components": "^4.1.1"
-  },
+  "description": "Add-project-description-here | Voyage-7 | https://chingu.io/",
+  "main": "index.js",
   "scripts": {
-    "lint": "eslint pages/**/*.js components/**/*.js",
-    "dev": "next",
-    "build": "next build",
-    "start": "next start"
+    "lint": "npx eslint .",
+    "pretest": "npm run lint",
+    "test": "echo \"No tests\""
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chingu-voyage7/Bears-Team-09.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chingu-voyage7/Bears-Team-09/issues"
+  },
+  "homepage": "https://github.com/chingu-voyage7/Bears-Team-09#readme",
   "devDependencies": {
     "babel-eslint": "^9.0.0",
-    "babel-plugin-styled-components": "^1.9.1",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^3.3.0",
@@ -35,5 +38,6 @@
     "eslint-plugin-react": "^7.11.1",
     "eslint-plugin-standard": "^4.0.0",
     "prettier": "^1.15.2"
-  }
+  },
+  "dependencies": {}
 }
