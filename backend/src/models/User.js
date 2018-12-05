@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Table = require('./Table');
 
@@ -19,6 +20,19 @@ class User extends Table {
 
   refreshToken() {
     return jwt.sign({pk: this[this.pk]}, SECRET, {expiresIn: JWT_EXP_THRESHOLD});
+  }
+
+  hashPassword() {
+    return bcrypt.hash(this.data.password, 10)
+                 .then(hash => { this.data.password = hash; });
+  }
+
+  create() {
+    return 'password' in this.data ? this.hashPassword().then(() => super.create()) : super.create();
+  }
+
+  update() {
+    return 'password' in this.data ? this.hashPassword().then(() => super.update()) : super.update();
   }
 }
 

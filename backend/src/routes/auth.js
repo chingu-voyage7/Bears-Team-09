@@ -1,5 +1,4 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const passport = require('../middleware/passport');
 const User = require('../models/User');
 
@@ -30,17 +29,13 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-    const {password, ...rest} = req.body;
+    const {password} = req.body;
     // temporary, replace with propper validation
     if (!password) {
         return res.status(400).json({message: 'password not set'});
     };
-    let user;
-    bcrypt.hash(password, 10)
-    .then(hash => {
-        user = new User({...rest, password: hash});
-        return user.create();
-    })
+    const user = new User(req.body);
+    user.create()
     .then(() => user.read())
     .then(([data]) => {
         const token = user.refreshToken();
