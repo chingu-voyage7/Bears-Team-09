@@ -56,6 +56,10 @@ class Table {
 
   update() {
     validate(this);
+    // have to delete `pk` from `data` to avoid updating it
+    if (this.pk in this.data) {
+      delete this.data[this.pk];
+    }
     let index = 1;
     const prepared = Object.keys(this.data).reduce((accumulator, val) => {
         accumulator.keys.push(`${val} = $${index++}`);
