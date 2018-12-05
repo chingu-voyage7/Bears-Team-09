@@ -18,11 +18,13 @@
     "react/prefer-stateless-function": 0,
     "react/jsx-filename-extension": 0,
     "react/jsx-one-expression-per-line": 0,
-    "import/no-unresolved": 0
+    "import/no-unresolved": 0,
+    "no-unused-expressions": "off"
   },
-  "plugins": ["prettier", "json", "markdown", "html"],
+  "plugins": ["prettier", "json", "markdown", "html", "chai-friendly"],
   "env": {
-    "jest": true
+    "jest": true,
+    "mocha": true
   },
   "settings": {
     "import/resolver": {
