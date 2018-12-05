@@ -1,201 +1,164 @@
 const chai = require('chai');
-const chaiHttp = require('chai-http');
 
 const { expect } = chai;
 
-chai.use(chaiHttp);
+const db = require('../models/db');
+const User = require('../models/User');
 
-const url = process.env.API_URL || 'http://localhost:8000/';
-
-const assert = (result, prop) => expect(result).to.have.nested.property(prop);
-const assertNot = (result, prop) => expect(result).to.not.have.nested.property(prop);
-
-const testUser = {
+const userData = {
     email: 'kenny@gmail.com',
     password: 'qwerty123'
 };
 
-const updatedTestUser = {
+let firstPassword;
+
+const updatedUserData = {
+    email: 'kenny@gmail.com',
     password: '123456',
-    first_name: "Kenny",
-    last_name: "McCormick",
-    bio: "Lorem ipsum"
+    first_name: 'Kenny',
+    last_name: 'McCormick',
+    bio: 'lorem ipsum'
 };
 
-let testUserToken;
-
-describe('Check DB is available', () => {
-    let result;
+describe('DB is accessible', () => {
+    let error;
     before((done) => {
-        chai.request(url)
-            .options('auth/register')
-            .end((err, res) => {
-                expect(err).to.be.null;
-                result = res;
-                done();
-            });
+        db.query("SELECT 1;")
+        .then(() => {
+            console.log('Got response from DB');
+        })
+        .catch((err) => {
+            error = err;
+        })
+        .finally(() => done());
     });
-    it('should return status code 200', () => assert(result, 'status').to.equal(200));
-
+    it('Should pass without errors', () => expect(error).to.be.undefined);
 });
 
-describe('Register new user', () => {
+describe('DB has all tables', () => {
     let result;
+    let error;
     before((done) => {
-        chai.request(url)
-            .post('auth/register')
-            .send(testUser)
-            .end((err, res) => {
-                expect(err).to.be.null;
+        db.query("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = $1;", ['public'])
+        .then((res) => {
+            result = res.reduce((acc, val) => {
+                acc.push(val.tablename);
+                return acc;
+            }, []);
+        })
+        .catch((err) => {
+            error = err;
+        })
+        .finally(() => done());
+    });
+    it('Should pass without errors', () => expect(error).to.be.undefined);
+
+    it('Should contain users', () => expect(result).to.contain('users'));
+
+    it('Should contain users', () => expect(result).to.contain('events'));
+
+    it('Should contain users', () => expect(result).to.contain('places'));
+
+    it('Should contain users', () => expect(result).to.contain('activities'));
+
+    it('Should contain users', () => expect(result).to.contain('event_attendees'));
+});
+
+describe('Test User Model', () => {
+    describe('Create user', () => {
+        let result;
+        let error;
+        before((done) => {
+            const user = new User({...userData});
+            user.create()
+            .then(res => {
                 result = res;
-                done();
-            });
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+
+        it('Pass without error', () => expect(error).to.be.undefined);
+
+        it('Return empty array', () => expect(result).to.be.empty);
     });
 
-    it('should return status code 201', () => assert(result, 'status').to.equal(201));
-
-    it('should return same email', () => assert(result, 'body.email').to.equal(testUser.email));
-
-    it('should not return password', () => assertNot(result, 'body.password'));
-
-    it('should return token', () => assert(result, 'body.token').to.be.not.null);
-});
-
-describe('Perform login', () => {
-    let result;
-    before((done) => {
-        chai.request(url)
-            .post('auth/login')
-            .send(testUser)
-            .end((err, res) => {
-                expect(err).to.be.null;
+    describe('Read user info', () => {
+        let result;
+        let error;
+        before((done) => {
+            const user = new User({...userData});
+            user.read()
+            .then(res => {
                 result = res;
-                testUserToken = res.body.token;
-                done();
-            });
-    });
-
-    it('should return status code 200', () => assert(result, 'status').to.equal(200));
-
-    it('should return same email', () => assert(result, 'body.email').to.equal(testUser.email));
-
-    it('should not return password', () => assertNot(result, 'body.password'));
-
-    it('should return token', () => assert(result, 'body.token').to.be.not.null);
-});
-
-describe('Get user info', () => {
-    describe('Get info without Authorization header', () => {
-        let result;
-        before((done) => {
-            chai.request(url)
-                .get('users')
-                .end((err, res) => {
-                    expect(err).to.be.null;
-                    result = res;
-                    done();
-                });
+                firstPassword = result[0].password;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
         });
 
-        it('should return status code 401', () => assert(result, 'status').to.equal(401));
+        it('Pass without error', () => expect(error).to.be.undefined);
+
+        it('Return 1 element', () => expect(result).to.length(1));
+
+        it('Should return email', () => expect(result[0]).to.have.nested.property('email'));
+
+        it('Should return password', () => expect(result[0]).to.have.nested.property('password'));
+
+        it('Should return first name', () => expect(result[0]).to.have.nested.property('first_name'));
+
+        it('Should return last name', () => expect(result[0]).to.have.nested.property('last_name'));
+
+        it('Should return bio', () => expect(result[0]).to.have.nested.property('bio'));
+    });
+
+    describe('Update user', () => {
+        let result;
+        let error;
+
+        before((done) => {
+            const user = new User({...updatedUserData});
+            user.update()
+            .then(() => user.read())
+            .then(res => { [result] = res; })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+
+        it('Pass without error', () => expect(error).to.be.undefined);
+
+        it('Return new password', () => expect(result.password).to.not.equal(firstPassword));
+
+        it('Return new first name', () => expect(result.first_name).to.equal(updatedUserData.first_name));
+
+        it('Return new last name', () => expect(result.last_name).to.equal(updatedUserData.last_name));
+
+        it('Return new bio', () => expect(result.bio).to.equal(updatedUserData.bio));
 
     });
 
-    describe('Get info with Authorization header', () => {
+    describe('Delete user', () => {
         let result;
+        let error;
         before((done) => {
-            chai.request(url)
-                .get('users')
-                .set('Authorization', `Bearer ${testUserToken}`)
-                .end((err, res) => {
-                    expect(err).to.be.null;
-                    result = res;
-                    done();
-                });
+            const user = new User({...userData});
+            user.delete()
+            .then(() => user.read())
+            .then(res => { result = res; })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
         });
 
-        it('should return status code 200', () => assert(result, 'status').to.equal(200));
+        it('Pass without error', () => expect(error).to.be.undefined);
 
-        it('should return same email', () => assert(result, 'body.email').to.equal(testUser.email));
-
-        it('should return empty fist name', () => assert(result, 'body.first_name').to.be.null);
-
-        it('should return empty last name', () => assert(result, 'body.last_name').to.be.null);
-
-        it('should return empty bio', () => assert(result, 'body.bio').to.be.null);
-
-        it('should not return password', () => assertNot(result, 'body.password'));
-
-        it('should not return token', () => assertNot(result, 'body.token'));
-    });
-});
-
-describe('Update user info', () => {
-    describe('Update without Authorization header', () => {
-        let result;
-        before((done) => {
-            chai.request(url)
-                .put('users')
-                .send()
-                .end((err, res) => {
-                    expect(err).to.be.null;
-                    result = res;
-                    done();
-                });
-        });
-
-        it('should return status code 401', () => assert(result, 'status').to.equal(401));
-    });
-
-    describe('Update with Authorization header', () => {
-        let result;
-        before((done) => {
-            chai.request(url)
-                .put('users')
-                .set('Authorization', `Bearer ${testUserToken}`)
-                .send(updatedTestUser)
-                .end((err, res) => {
-                    expect(err).to.be.null;
-                    result = res;
-                    done();
-                });
-        });
-
-        it('should return status code 200', () => assert(result, 'status').to.equal(200));
-
-        it('should return same email', () => assert(result, 'body.email').to.equal(testUser.email));
-
-        it('should return new fist name', () => assert(result, 'body.first_name').to.equal(updatedTestUser.first_name));
-
-        it('should return new last name', () => assert(result, 'body.last_name').to.equal(updatedTestUser.last_name));
-
-        it('should return new bio', () => assert(result, 'body.bio').to.equal(updatedTestUser.bio));
-
-        it('should not return password', () => assertNot(result, 'body.password'));
-
-        it('should not return token', () => assertNot(result, 'body.token'));
-    });
-
-    describe('Login with updated password', () => {
-        let result;
-        before((done) => {
-            chai.request(url)
-                .post('auth/login')
-                .send({email: testUser.email, password: updatedTestUser.password})
-                .end((err, res) => {
-                    expect(err).to.be.null;
-                    result = res;
-                    testUserToken = res.body.token;
-                    done();
-                });
-        });
-
-    it('should return status code 200', () => assert(result, 'status').to.equal(200));
-
-    it('should return same email', () => assert(result, 'body.email').to.equal(testUser.email));
-
-    it('should not return password', () => assertNot(result, 'body.password'));
-
-    it('should return token', () => assert(result, 'body.token').to.be.not.null);
+        it('Return empty array', () => expect(result).to.length(0));
     });
 });
