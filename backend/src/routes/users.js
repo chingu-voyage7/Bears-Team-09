@@ -1,9 +1,10 @@
-const express = require('express'),
-      router = express.Router(),
-      User = require('../models/User');
+const express = require('express');
+const User = require('../models/User');
+
+const router = express.Router();
 
 // this one will be protected
-router.get('/', function (req, res) {
+router.get('/', (req, res) => {
   res.json(req.user);
 });
 
@@ -11,13 +12,13 @@ router.get('/', function (req, res) {
 //     res.json({message: 'delete user placeholder'})
 // });
 
-router.put('/', function (req, res) {
+router.put('/', (req, res) => {
   const user = new User(req.user);
   user.data = req.body;
   user.update()
   .then(() => user.read())
   .then(([data]) => {
-    delete data.password
+    delete data.password;
     return res.json(data);
   })
   .catch(res.json);

@@ -9,7 +9,6 @@ exports.up = (pgm) => {
         bio: {type: 'varchar(1024)'}
     });
 
-/*****************************************************************************/
     pgm.createTable('activities', {
         id: 'id',
         name: {type: 'varchar(256)', notNull: true, unique: true}
@@ -17,7 +16,6 @@ exports.up = (pgm) => {
 
     pgm.createIndex('activities', 'name');
 
-/*****************************************************************************/
     pgm.createTable('places', {
         id: 'id',
         country: {type: 'varchar(256)', notNull: true},
@@ -28,7 +26,6 @@ exports.up = (pgm) => {
         unique: ['country', 'city']
     });
 
-/*****************************************************************************/
     pgm.createTable('events', {
         id: 'id',
         name: {type: 'varchar(256)', notNull: true},
@@ -58,7 +55,6 @@ exports.up = (pgm) => {
         }
     });
 
-/*****************************************************************************/
     // Bridge table for many-to-many relationsheep between `events` and `users`
     pgm.createTable('event_attendees', {
         id: 'id',
@@ -85,7 +81,7 @@ exports.up = (pgm) => {
     // `Unique together` constraint
     pgm.addConstraint('event_attendees', 'app_event_attendees_event_id_user_id_uniq', {
         unique: ['user_id', 'event_id']
-    })
+    });
 };
 
 exports.down = (pgm) => {

@@ -16,7 +16,7 @@ module.exports = {
                  .then(() => client.query(text, params))
                  .then(res => res.rows)
                  .catch(err => { throw new Error(err.message);})
-                 .finally(() => client.end())
+                 .finally(() => client.end());
   }
 };
 
