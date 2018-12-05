@@ -40,7 +40,7 @@ router.post('/register', (req, res) => {
     .then(([data]) => {
         const token = user.refreshToken();
         delete data.password;
-        return res.json({...data, token});
+        return res.status(201).json({...data, token});
     })
     .catch(err => res.status(400).json({message: err.message}));
     return res;
