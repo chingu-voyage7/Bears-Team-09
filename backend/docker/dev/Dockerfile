@@ -9,16 +9,7 @@ COPY ./src /app
 WORKDIR /app
 
 RUN apk update && \
-    apk add --no-cache --virtual .gyp \
-    autoconf \
-    automake \
-    g++ \
-    libpng-dev \
-    libtool \
-    make \
-    nasm \
-    python \
-    git \
-  && npm install \
-  && npm rebuild bcrypt --build-from-source \
-  && apk del .gyp
+    apk --no-cache add --virtual builds-deps build-base python && \
+    npm install && \
+    npm rebuild bcrypt --build-from-source && \
+    apk del virtual
