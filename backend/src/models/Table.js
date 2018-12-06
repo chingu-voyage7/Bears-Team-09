@@ -41,13 +41,19 @@ class Table {
     return db.query(text, prepared.values);
   }
 
-  read(params={}, useAND=true) {
+  read(params={}, useAND=true, operator='=') {
+    const SEARCH_OPERATORS = {
+      '=': '=',
+      '~': '~',
+      'LIKE': 'LIKE'
+    };
+    const op = SEARCH_OPERATORS[operator] || '=';
     let text = `SELECT * FROM ${this.tableName}`;
     let values = [];
     if (Object.keys(params).length !== 0) {
       let i = 1;
       const searchCriterias = Object.keys(params).reduce((acc, key) => {
-        acc.text.push(`${key} = $${i++}`);
+        acc.text.push(`${key} ${op} $${i++}`);
         acc.values.push(params[key]);
         return acc;
       }, {text: [], values: []});
