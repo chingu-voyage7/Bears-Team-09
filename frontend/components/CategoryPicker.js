@@ -11,7 +11,7 @@ class CategoryPicker extends Component {
     super();
     this.state = {
       popupOpen: false,
-      activeCategory: 'Category',
+      activeCategory: 'category',
       categories: []
     };
     this.handleCategorySelection = this.handleCategorySelection.bind(this);
@@ -88,18 +88,21 @@ const CategoryWrapper = styled.div`
     padding: 5px;
     border-radius: 2px;
     box-shadow: rgba(0,0,0,.5) 0 3px 10px 0;
+    z-index: 1;
   }
 `
 
 const CategoryBox = styled.div`
-  text-transform: capitalize;
   width: 140px;
   padding: 2px;
   cursor: pointer;
-  font-size: 1.2rem;
+  text-align: center;
+  font-size: 1rem;
+  border: 1px solid rgba(0,0,0,.12);
+  color: #757575;
+  background-color: #FFF;
   border-radius: 2px;
-  border: 1px solid black;
-  transition: all 0.1s 0.1s ease-out;
+  transition: all 100ms ease-out;
   &:hover {
     background: purple;
     color: white;
