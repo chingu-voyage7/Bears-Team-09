@@ -9,7 +9,7 @@ COPY ./src /app
 WORKDIR /app
 
 RUN apk update && \
-    apk --no-cache add --virtual builds-deps build-base python && \
+    apk --no-cache add --virtual deps build-base python && \
     npm install && \
     npm rebuild bcrypt --build-from-source && \
-    apk del virtual
+    apk del deps
