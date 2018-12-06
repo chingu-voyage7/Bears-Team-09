@@ -8,8 +8,6 @@ COPY ./src /app
 
 WORKDIR /app
 
-RUN npm install
-
 RUN apk update && \
     apk add --no-cache --virtual .gyp \
     autoconf \
