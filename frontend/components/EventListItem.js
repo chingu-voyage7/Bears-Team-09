@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import Link from 'next/link';
 
 class EventListItem extends Component {
-  clickHandler = () => {
-    console.log('clicked');
-  };
-
-  render({  title, description } = this.props) {
+  render({ id, title, description } = this.props) {
     return (
-      <ItemContainer>
-        <Item onClick={this.clickHandler}>
-          <h3>{title}</h3>
-          <p>{description}</p>
-        </Item>
-      </ItemContainer>
+      <Link href={`/event?id=${id}`} as={`event/${title}`}>
+        <ItemContainer>
+          <Item>
+            <h3>{title}</h3>
+            <p>{description}</p>
+          </Item>
+        </ItemContainer>
+      </Link>
     );
   }
 }
@@ -33,6 +32,5 @@ const Item = styled.div`
   padding: 1em;
   text-align: center;
   width: 80%;
-
   cursor: pointer;
 `;
