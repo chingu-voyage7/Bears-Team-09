@@ -31,6 +31,12 @@ class User extends Table {
     return 'password' in this.data ? this.hashPassword().then(() => super.create()) : super.create();
   }
 
+  read() {
+    const params = {};
+    params[this.pk] = this[this.pk];
+    return super.read(params);
+  }
+
   update() {
     return 'password' in this.data ? this.hashPassword().then(() => super.update()) : super.update();
   }

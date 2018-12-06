@@ -42,16 +42,20 @@ class Table {
     return db.query(text, prepared.values);
   }
 
-  read() {
-    validate(this);
-    const text = `SELECT * FROM ${this.tableName} WHERE ${this.pk} = $1;`;
-    const values = [this[this.pk]];
+  read(params={}, useAND=true) {
+    let text = `SELECT * FROM ${this.tableName}`;
+    let values = [];
+    let i = 1;
+    if (params !== {}) {
+      const searchCriterias = Object.keys(params).reduce((acc, key) => {
+        acc.text.push(`${key} = $${i++}`);
+        acc.values.push(params[key]);
+        return acc;
+      }, {text: [], values: []});
+      text += ` WHERE ${searchCriterias.text.join(` ${useAND ? 'AND' : 'OR'} `)}`;
+      ({values} = searchCriterias);
+    }
     return db.query(text, values);
-  }
-
-  list() {
-    const text = `SELECT * FROM ${this.tableName};`;
-    return db.query(text);
   }
 
   update() {
