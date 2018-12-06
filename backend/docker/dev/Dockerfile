@@ -10,16 +10,16 @@ WORKDIR /app
 
 RUN npm install
 
-# RUN apk add --no-cache --virtual .gyp \
-#     autoconf \
-#     automake \
-#     g++ \
-#     libpng-dev \
-#     libtool \
-#     make \
-#     nasm \
-#     python \
-#     git \
-#   && npm install \
-#   && npm rebuild bcrypt --build-from-source \
-#   && apk del .gyp
+RUN apk add --no-cache --virtual .gyp \
+    autoconf \
+    automake \
+    g++ \
+    libpng-dev \
+    libtool \
+    make \
+    nasm \
+    python \
+    git \
+  && npm install \
+  && npm rebuild bcrypt --build-from-source \
+  && apk del .gyp

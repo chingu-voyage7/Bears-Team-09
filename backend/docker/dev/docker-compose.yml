@@ -28,8 +28,6 @@ services:
       - DATABASE_URL=postgres://postgres:qwerty123@db:5432/postgres
       - JWT_SECRET=SIMPLE_SECRET_FOR_TEST
       - JWT_EXP_THRESHOLD=1 day
-    ports:
-      - "8000:8000"
     depends_on:
       - db
     command: run start
@@ -39,6 +37,6 @@ services:
       context: ../../
       dockerfile: ./docker/dev/Dockerfile-integration
     environment:
-      - API_URL=http://app:8000
+      - API_URL=http://app:8000/
     depends_on:
       - app
