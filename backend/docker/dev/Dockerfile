@@ -10,7 +10,8 @@ WORKDIR /app
 
 RUN npm install
 
-RUN apk add --no-cache --virtual .gyp \
+RUN apk update && \
+    apk add --no-cache --virtual .gyp \
     autoconf \
     automake \
     g++ \
