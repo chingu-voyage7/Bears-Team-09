@@ -1,0 +1,11 @@
+FROM node:10.14.1-alpine
+
+ENTRYPOINT [ "npm" ]
+
+CMD [ "test" ]
+
+COPY ./integration_tests /app
+
+WORKDIR /app
+
+RUN npm install
