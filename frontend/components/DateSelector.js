@@ -22,10 +22,16 @@ class DateSelector extends React.Component {
     return (
       <DatePickerStylingWrapper>
       <DatePicker
+        popperPlacement="top"
+        popperModifiers={{
+          offset: {
+            enabled: true,
+            offset: '30px, 10px'
+        }}}
         todayButton="today"
         selected={this.state.startDate}
         onChange={this.handleChange}
-        placeholderText="Pick Date"
+        placeholderText="time"
       />
       </DatePickerStylingWrapper>
     );
@@ -36,13 +42,27 @@ export default DateSelector;
 
 const DatePickerStylingWrapper = styled.div`
     input {
+      cursor: pointer;
       padding: 5px;
       border-radius: 3px;
       outline: 0;
-      width: 80px;
+      width: 100px;
       text-align: center;
       font-size: 1rem;
       border: 1px solid rgba(0,0,0,.12);
       color: #757575;
     }
+
+    input:hover {
+      background: purple;
+      color: white;
+    }
+
+    input:hover {
+      background-color: purple;
+    }
+
+    input:hover::placeholder {
+      color: white;
+  }
 `;
