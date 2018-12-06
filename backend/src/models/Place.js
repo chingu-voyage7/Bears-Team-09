@@ -1,7 +1,7 @@
 const Table = require('./Table');
 
 class Place extends Table {
-  constructor(data) {
+  constructor(data={}) {
     const pk = 'id';
     const tableName = 'places';
     const ACCEPTED_FIELDS = ['country', 'city'];

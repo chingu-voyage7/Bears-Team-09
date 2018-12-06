@@ -6,7 +6,7 @@ const SECRET = process.env.JWT_SECRET || 'Default_JWT-Secret';
 const JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || '1 day';
 
 class User extends Table {
-  constructor(data) {
+  constructor(data={}) {
     const pk = 'email';
     const tableName = 'users';
     const ACCEPTED_FIELDS = ['email', 'first_name', 'last_name', 'password', 'bio'];

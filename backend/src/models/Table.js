@@ -7,18 +7,18 @@ function validate(table) {
   if (table.pk === undefined) {
     throw Error('PK name is not set');
   };
-  if (table[table.pk] === undefined) {
-    throw Error(`'${table.pk}' is not set`);
-  }
+  // if (table[table.pk] === undefined) {
+  //   throw Error(`'${table.pk}' is not set`);
+  // }
 }
 
 class Table {
-  constructor(tableName, pk, data) {
+  constructor(tableName, pk, data = {}) {
     this.tableName = tableName;
     this.pk = pk;
     if (pk in data) {
       this[pk] = data[pk];
-      delete data[pk];
+      // delete data[pk];
     };
     this.data = data;
   }
@@ -34,8 +34,7 @@ class Table {
       },
       {keys: [], indexes: [], values: []}
     );
-    prepared.values.push(this[this.pk]);
-    const text = `INSERT INTO ${this.tableName} (${prepared.keys.join(', ')}, ${this.pk}) VALUES (${prepared.indexes.join(', ')}, $${index});`;
+    const text = `INSERT INTO ${this.tableName} (${prepared.keys.join(', ')}) VALUES (${prepared.indexes.join(', ')});`;
     // eventually it will result in:
     // text: INSERT INTO users (first_name, last_name, password, email) VALUES ($1, $2, $3, $4);
     // prepared.values: ['Kenny', 'McCormick', '$2b$10$XBUfi5ztRo0EKQ5XaOVEf.KXdU8km1.SFm9fybKE3bjk8L5qTVMNe', 'kenny@gmail.com']
@@ -45,8 +44,8 @@ class Table {
   read(params={}, useAND=true) {
     let text = `SELECT * FROM ${this.tableName}`;
     let values = [];
-    let i = 1;
-    if (params !== {}) {
+    if (Object.keys(params).length !== 0) {
+      let i = 1;
       const searchCriterias = Object.keys(params).reduce((acc, key) => {
         acc.text.push(`${key} = $${i++}`);
         acc.values.push(params[key]);
@@ -54,7 +53,7 @@ class Table {
       }, {text: [], values: []});
       text += ` WHERE ${searchCriterias.text.join(` ${useAND ? 'AND' : 'OR'} `)}`;
       ({values} = searchCriterias);
-    }
+    };
     return db.query(text, values);
   }
 
