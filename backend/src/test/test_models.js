@@ -5,6 +5,7 @@ const { expect } = chai;
 const db = require('../models/db');
 const User = require('../models/User');
 const Place = require('../models/Place');
+const Activity = require('../models/Activity');
 
 const userData = {
     email: 'kenny@gmail.com',
@@ -279,5 +280,122 @@ describe('Test Place Model', () => {
         it('Should pass without errors', () => expect(error).to.be.undefined);
 
         it(`Should be ${placeData.length - 1} entries in the DB table`, () => expect(result.length).to.equal(placeData.length - 1));
+    });
+});
+
+
+describe('Test Activity Model', () => {
+
+    const activitiesData = [
+        { name: "Sport Avtivities"},
+        { name: "Sport Events"},
+        { name: "Fishing"}
+    ];
+
+    activitiesData.forEach((data, pos) => {
+        describe(`Create an activity #${pos + 1}`, () =>{
+            let result;
+            let error;
+            before((done) => {
+                const activity = new Activity({...data});
+                activity.create()
+                .then(res => {
+                    result = res;
+                })
+                .catch(err => {
+                    error = err;
+                })
+                .finally(() => done());
+            });
+
+            it('Should pass without errors', () => expect(error).to.be.undefined);
+
+            it('Return empty array', () => expect(result).to.length(0));
+        });
+    });
+
+    describe('List all activitys', () =>{
+        let result;
+        let error;
+        before((done) => {
+            const activity = new Activity();
+            activity.read()
+            .then(res => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it('Should return same amount of activitys', () => expect(result.length).to.equal(activitiesData.length));
+
+        it('Should return id of the activity', () => expect(result[0]).to.have.nested.property('id'));
+
+        it('Should return country of the activity', () => expect(result[0]).to.have.nested.property('name'));
+    });
+
+    describe('Find activity by name', () =>{
+        let result;
+        let error;
+        before((done) => {
+            const activity = new Activity({name: activitiesData[0].name});
+            activity.search()
+            .then(res => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it('Should return 1 row', () => expect(result).to.length(1));
+    });
+
+    describe('Find all activities which country contains "Sport"', () =>{
+        let result;
+        let error;
+        before((done) => {
+            const activity = new Activity({name: 'Sport'});
+            activity.search()
+            .then(res => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it('Should return 2 rows', () => expect(result).to.length(2));
+    });
+
+    describe('Delete a activity', () =>{
+        let result;
+        let error;
+        before((done) => {
+            // Get id of first entry
+            const activity = new Activity({...activitiesData[0]});
+            activity.read()
+            .then(res => res[0].id)
+            .then(id => (new Activity({id})).delete())
+            .then(() => (new Activity()).read())
+            .then((res) => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it(`Should be ${activitiesData.length - 1} entries in the DB table`, () => expect(result.length).to.equal(activitiesData.length - 1));
     });
 });
