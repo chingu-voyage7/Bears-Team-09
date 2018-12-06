@@ -4,6 +4,7 @@ const { expect } = chai;
 
 const db = require('../models/db');
 const User = require('../models/User');
+const Place = require('../models/Place');
 
 const userData = {
     email: 'kenny@gmail.com',
@@ -160,5 +161,123 @@ describe('Test User Model', () => {
         it('Pass without error', () => expect(error).to.be.undefined);
 
         it('Return empty array', () => expect(result).to.length(0));
+    });
+});
+
+describe('Test Place Model', () => {
+
+    const placeData = [
+        { country: "Canada", city: "Toronto" },
+        { country: "United States of America", city: "Washington" },
+        { country: "Cambodia", city: "Paris" }
+    ];
+
+    placeData.forEach((data, pos) => {
+        describe(`Create a place #${pos + 1}`, () =>{
+            let result;
+            let error;
+            before((done) => {
+                const place = new Place({...data});
+                place.create()
+                .then(res => {
+                    result = res;
+                })
+                .catch(err => {
+                    error = err;
+                })
+                .finally(() => done());
+            });
+
+            it('Should pass without errors', () => expect(error).to.be.undefined);
+
+            it('Return empty array', () => expect(result).to.length(0));
+        });
+    });
+
+    describe('List all places', () =>{
+        let result;
+        let error;
+        before((done) => {
+            const place = new Place();
+            place.read()
+            .then(res => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it('Should return same amount of places', () => expect(result.length).to.equal(placeData.length));
+
+        it('Should return id of the place', () => expect(result[0]).to.have.nested.property('id'));
+
+        it('Should return country of the place', () => expect(result[0]).to.have.nested.property('country'));
+
+        it('Should return city of the place', () => expect(result[0]).to.have.nested.property('city'));
+    });
+
+    describe('Find place by country', () =>{
+        let result;
+        let error;
+        before((done) => {
+            const place = new Place({country: placeData[0].country});
+            place.search()
+            .then(res => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it('Should return 1 row', () => expect(result).to.length(1));
+    });
+
+    describe('Find all places which country contains Ca', () =>{
+        let result;
+        let error;
+        before((done) => {
+            const place = new Place({country: 'Ca'});
+            place.search()
+            .then(res => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it('Should return 2 rows', () => expect(result).to.length(2));
+    });
+
+    describe('Delete a place', () =>{
+        let result;
+        let error;
+        before((done) => {
+            // Get id of first entry
+            const place = new Place({...placeData[0]});
+            place.read()
+            .then(res => res[0].id)
+            .then(id => (new Place({id})).delete())
+            .then(() => (new Place()).read())
+            .then((res) => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it(`Should be ${placeData.length - 1} entries in the DB table`, () => expect(result.length).to.equal(placeData.length - 1));
     });
 });
