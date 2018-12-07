@@ -5,26 +5,67 @@ import PropTypes from 'prop-types';
 
 export class event extends Component {
   state = {
-    date: 'Tuesday, December 4, 2018',
-    title: 'Campus Open House + Q&A',
-    img: 'http://www.highpoint.edu/media/home/Tree-Campus-USA-2.jpg'
+    event: {
+      id: '',
+      name: '',
+      date: '',
+      title: '',
+      img: ''
+    }
   };
 
   componentDidMount() {
+    const testData = [
+      {
+        name: 'Bike Academy',
+        date: 'Tuesday, December 4, 2018',
+        title: 'Bike Race Across America',
+        img:
+          'https://3.bp.blogspot.com/-ut3A91d91wM/VKX-mrfUSyI/AAAAAAAC6S8/hNweMslPA8o/s1600/Talking%2Brace.jpg'
+      },
+      {
+        name: 'The Best Coding School of the World',
+        date: 'Tuesday, December 4, 2018',
+        title: 'Campus Open House + Q&A',
+        img: 'http://www.highpoint.edu/media/home/Tree-Campus-USA-2.jpg'
+      },
+      {
+        name: 'The Best Coding School of the World',
+        date: 'Tuesday, December 4, 2018',
+        title: 'Campus Open House + Q&A',
+        img: 'http://www.highpoint.edu/media/home/Tree-Campus-USA-2.jpg'
+      },
+      {
+        name: 'The Best Coding School of the World',
+        date: 'Tuesday, December 4, 2018',
+        title: 'Campus Open House + Q&A',
+        img: 'http://www.highpoint.edu/media/home/Tree-Campus-USA-2.jpg'
+      },
+      {
+        name: 'The Best Coding School of the World',
+        date: 'Tuesday, December 4, 2018',
+        title: 'Campus Open House + Q&A',
+        img: 'http://www.highpoint.edu/media/home/Tree-Campus-USA-2.jpg'
+      }
+    ];
+
     const { router } = this.props;
-    console.log(router);
-    this.setState({ id: router.query.id });
+    const { name, date, title, img } = testData[router.query.id - 1];
+    //console.log(router);
+    //this.setState({ id: router.query.id });
+    this.setState({ name, date, title, img });
   }
 
   render() {
-    const { id, date, title, img } = this.state;
+    const { id } = this.state;
+    const { name, date, title, img } = this.state;
 
     const theme = { background: `center / cover no-repeat url(${img})` };
     return (
       <Header>
         <Date>{date}</Date>
         <Title>{title}</Title>
-        <Host>Hosted by: {id}</Host>
+        <Host>Hosted by: {name}</Host>
         <ThemeProvider theme={theme}>
           <Img />
         </ThemeProvider>
