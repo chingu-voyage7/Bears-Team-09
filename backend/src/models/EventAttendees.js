@@ -16,14 +16,14 @@ class EventAttendee extends Table {
   }
 
   _read(text, fieldName, idValue) {
-    const where = ` WHERE ${this.tablename}.${fieldName} = $1`;
+    const where = ` WHERE ${this.tableName}.${fieldName} = $1`;
     return db.query(text + where, [idValue]);
   }
 
   getAllAttendees(eventId) {
     const text = `
       SELECT users.first_name, users.last_name, users.bio FROM users
-      INNER JOIN ${this.tablename} ON users.email = ${this.tablename}.user_id`;
+      INNER JOIN ${this.tableName} ON users.email = ${this.tableName}.user_id`;
     return this._read(text, 'event_id', eventId);
   }
 
@@ -31,9 +31,10 @@ class EventAttendee extends Table {
     const text = `SELECT events.id, events.name, events.description,
       activities.name as activity, places.country, places.city,
       events.date_from, events.date_to, events.minpeople, events.maxpeople FROM events
-      INNER JOIN ${this.tablename} ON events.id = ${this.tablename}.event_id
+      INNER JOIN ${this.tableName} ON events.id = ${this.tableName}.event_id
       INNER JOIN activities ON events.activity = activities.id
       LEFT JOIN places ON places.id = events.place`;
+      console.log(text);
       return this._read(text, 'user_id', userId);
   }
 }
