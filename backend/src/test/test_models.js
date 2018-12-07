@@ -6,21 +6,7 @@ const db = require('../models/db');
 const User = require('../models/User');
 const Place = require('../models/Place');
 const Activity = require('../models/Activity');
-
-const userData = {
-    email: 'kenny@gmail.com',
-    password: 'qwerty123'
-};
-
-let firstPassword;
-
-const updatedUserData = {
-    email: 'kenny@gmail.com',
-    password: '123456',
-    first_name: 'Kenny',
-    last_name: 'McCormick',
-    bio: 'lorem ipsum'
-};
+const Events = require('../models/Event');
 
 describe('DB is accessible', () => {
     let error;
@@ -57,16 +43,31 @@ describe('DB has all tables', () => {
 
     it('Should contain users', () => expect(result).to.contain('users'));
 
-    it('Should contain users', () => expect(result).to.contain('events'));
+    it('Should contain events', () => expect(result).to.contain('events'));
 
-    it('Should contain users', () => expect(result).to.contain('places'));
+    it('Should contain places', () => expect(result).to.contain('places'));
 
-    it('Should contain users', () => expect(result).to.contain('activities'));
+    it('Should contain activities', () => expect(result).to.contain('activities'));
 
-    it('Should contain users', () => expect(result).to.contain('event_attendees'));
+    it('Should contain event_attendees', () => expect(result).to.contain('event_attendees'));
 });
 
 describe('Test User Model', () => {
+    const userData = {
+        email: 'kenny@gmail.com',
+        password: 'qwerty123'
+    };
+
+    let firstPassword;
+
+    const updatedUserData = {
+        email: 'kenny@gmail.com',
+        password: '123456',
+        first_name: 'Kenny',
+        last_name: 'McCormick',
+        bio: 'lorem ipsum'
+    };
+
     describe('Create user', () => {
         let result;
         let error;
@@ -166,7 +167,6 @@ describe('Test User Model', () => {
 });
 
 describe('Test Place Model', () => {
-
     const placeData = [
         { country: "Canada", city: "Toronto" },
         { country: "United States of America", city: "Washington" },
@@ -203,6 +203,7 @@ describe('Test Place Model', () => {
             place.read()
             .then(res => {
                 result = res;
+                res.forEach((row, pos) => { placeData[pos].id = row.id; });
             })
             .catch(err => {
                 error = err;
@@ -283,13 +284,11 @@ describe('Test Place Model', () => {
     });
 });
 
-
 describe('Test Activity Model', () => {
-
     const activitiesData = [
-        { name: "Sport Avtivities"},
-        { name: "Sport Events"},
-        { name: "Fishing"}
+        { name: "Sport Activities" },
+        { name: "Sport Events" },
+        { name: "Fishing" }
     ];
 
     activitiesData.forEach((data, pos) => {
@@ -314,7 +313,7 @@ describe('Test Activity Model', () => {
         });
     });
 
-    describe('List all activitys', () =>{
+    describe('List all activities', () =>{
         let result;
         let error;
         before((done) => {
@@ -322,6 +321,7 @@ describe('Test Activity Model', () => {
             activity.read()
             .then(res => {
                 result = res;
+                res.forEach((row, pos) => { activitiesData[pos].id = row.id; });
             })
             .catch(err => {
                 error = err;
@@ -397,5 +397,163 @@ describe('Test Activity Model', () => {
         it('Should pass without errors', () => expect(error).to.be.undefined);
 
         it(`Should be ${activitiesData.length - 1} entries in the DB table`, () => expect(result.length).to.equal(activitiesData.length - 1));
+    });
+});
+
+describe('Test Event Model', () => {
+    const eventsData = [
+        {
+            name: 'Fishing',
+            description: 'Some description',
+            activity: 2,
+            maxpeople: 4
+        },
+        {
+            name: 'Dancing',
+            description: 'Some description',
+            activity: 2,
+            maxpeople: 4
+        },
+        {
+            name: 'Singing',
+            description: 'Some description',
+            activity: 3,
+            place: 2,
+            date_from: new Date(),
+            date_to: new Date(),
+            maxpeople: 10
+        },
+        {
+            name: 'Doing nothing',
+            description: 'Some description',
+            activity: 2,
+            place: 2,
+            date_from: new Date(),
+            date_to: new Date(),
+            maxpeople: 2
+        },
+    ];
+
+    eventsData.forEach((data, pos) => {
+        describe(`Create an event #${pos + 1}`, () =>{
+            let result;
+            let error;
+            before((done) => {
+                const ev = new Events({...data});
+                ev.create()
+                .then(res => {
+                    result = res;
+                })
+                .catch(err => {
+                    error = err;
+                })
+                .finally(() => done());
+            });
+
+            it('Should pass without errors', () => expect(error).to.be.undefined);
+
+            it('Should return an empty array', () => expect(result).to.length(0));
+        });
+    });
+
+    describe('List all events', () =>{
+        let result;
+        let error;
+        before((done) => {
+            const ev = new Events();
+            ev.read()
+            .then(res => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it('Should return same amount of events', () => expect(result.length).to.equal(eventsData.length));
+
+        it('Should return id of the event', () => expect(result[0]).to.have.nested.property('id'));
+
+        it('Should return name of the event', () => expect(result[0]).to.have.nested.property('name'));
+
+        it('Should return description of the event', () => expect(result[0]).to.have.nested.property('description'));
+
+        it('Should return activity of the event', () => expect(result[0]).to.have.nested.property('activity'));
+
+        it('Should return place of the event', () => expect(result[0]).to.have.nested.property('country'));
+
+        it('Should return place of the event', () => expect(result[0]).to.have.nested.property('city'));
+
+        it('Should return date_from of the event', () => expect(result[0]).to.have.nested.property('date_from'));
+
+        it('Should return date_to of the event', () => expect(result[0]).to.have.nested.property('date_to'));
+
+        it('Should return minpeople of the event', () => expect(result[0]).to.have.nested.property('minpeople'));
+
+        it('Should return maxpeople of the event', () => expect(result[0]).to.have.nested.property('maxpeople'));
+    });
+
+    describe('Find event by name', () =>{
+        let result;
+        let error;
+        before((done) => {
+            const ev = new Events({name: eventsData[0].name});
+            ev.read()
+            .then(res => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it('Should return 1 row', () => expect(result).to.length(1));
+    });
+
+    describe('Find all events which name has "D"', () =>{
+        let result;
+        let error;
+        before((done) => {
+            const ev = new Events({name: 'D'});
+            ev.read(true, '~')
+            .then(res => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it('Should return 2 rows', () => expect(result).to.length(2));
+    });
+
+    describe('Delete an event', () =>{
+        let result;
+        let error;
+        before((done) => {
+            // Get id of first entry
+            const ev = new Events({...eventsData[0]});
+            ev.read()
+            .then(res => res[0].id)
+            .then(id => (new Events({id})).delete())
+            .then(() => (new Events()).read())
+            .then((res) => {
+                result = res;
+            })
+            .catch(err => {
+                error = err;
+            })
+            .finally(() => done());
+        });
+
+        it('Should pass without errors', () => expect(error).to.be.undefined);
+
+        it(`Should be ${eventsData.length - 1} entries in the DB table`, () => expect(result.length).to.equal(eventsData.length - 1));
     });
 });
