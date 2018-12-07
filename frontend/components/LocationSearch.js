@@ -5,7 +5,8 @@ class LocationSearch extends Component {
   constructor(){
     super();
     this.state = {
-      currentInput: ''
+      currentInput: '',
+      locations : []
     };
     this.handleChange = this.handleChange.bind(this);
     this.clearInput = this.clearInput.bind(this);
@@ -19,6 +20,26 @@ class LocationSearch extends Component {
 
   clearInput(){
     this.setState({currentInput: ''});
+  }
+
+  componentDidMount() {
+    //mock the API call
+    setTimeout(
+    function() {
+      const locations = [
+        { country: "Canada", city: "Toronto" },
+        { country: "Germany", city: "Berlin" },
+        { country: "United States", city: "New York" },
+        { country: "United States", city: "Seattle" },
+        { country: "United Kingdom", city: "London" },
+        { country: "France", city: "Paris" },
+        { country: "Canada", city: "Victoria" },
+      ];
+      this.setState({locations});
+    }
+    .bind(this),
+      1500
+    );
   }
 
   render(){
