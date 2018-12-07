@@ -22,7 +22,7 @@ class DateSelector extends React.Component {
     return (
       <DatePickerStylingWrapper>
       <DatePicker
-        popperPlacement="top"
+        popperPlacement="bottom"
         popperModifiers={{
           offset: {
             enabled: true,
