@@ -41,7 +41,8 @@ passport.use(
       return user.read()
         .then(([data]) => {
           delete data.password;
-          return done(null, data);
+          user.data = data;
+          return done(null, user);
         })
         .catch(err => done(err));
       }
