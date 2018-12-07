@@ -7,9 +7,6 @@ function validate(table) {
   if (table.pk === undefined) {
     throw Error('PK name is not set');
   };
-  // if (table[table.pk] === undefined) {
-  //   throw Error(`'${table.pk}' is not set`);
-  // }
 }
 
 class Table {
@@ -42,15 +39,18 @@ class Table {
   }
 
   read(params={}, useAND=true, operator='=') {
+    validate(this);
     const SEARCH_OPERATORS = {
       '=': '=',
       '~': '~',
+      '>': '>',
+      '<': '<',
       'LIKE': 'LIKE'
     };
-    const op = SEARCH_OPERATORS[operator] || '=';
     let text = `SELECT * FROM ${this.tableName}`;
     let values = [];
     if (Object.keys(params).length !== 0) {
+      const op = SEARCH_OPERATORS[operator] || '=';
       let i = 1;
       const searchCriterias = Object.keys(params).reduce((acc, key) => {
         acc.text.push(`${key} ${op} $${i++}`);
