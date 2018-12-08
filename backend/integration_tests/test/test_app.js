@@ -53,12 +53,6 @@ describe('Register new user', () => {
     });
 
     it('should return status code 201', () => assert(result, 'status').to.equal(201));
-
-    it('should return same email', () => assert(result, 'body.email').to.equal(testUser.email));
-
-    it('should not return password', () => assertNot(result, 'body.password'));
-
-    it('should return token', () => assert(result, 'body.token').to.be.not.null);
 });
 
 describe('Perform login', () => {
@@ -76,10 +70,6 @@ describe('Perform login', () => {
     });
 
     it('should return status code 200', () => assert(result, 'status').to.equal(200));
-
-    it('should return same email', () => assert(result, 'body.email').to.equal(testUser.email));
-
-    it('should not return password', () => assertNot(result, 'body.password'));
 
     it('should return token', () => assert(result, 'body.token').to.be.not.null);
 });
@@ -115,6 +105,8 @@ describe('Get user info', () => {
         });
 
         it('should return status code 200', () => assert(result, 'status').to.equal(200));
+
+        it('should return id', () => assert(result, 'body').to.have.nested.property('id'));
 
         it('should return same email', () => assert(result, 'body.email').to.equal(testUser.email));
 
@@ -162,18 +154,6 @@ describe('Update user info', () => {
         });
 
         it('should return status code 200', () => assert(result, 'status').to.equal(200));
-
-        it('should return same email', () => assert(result, 'body.email').to.equal(testUser.email));
-
-        it('should return new fist name', () => assert(result, 'body.first_name').to.equal(updatedTestUser.first_name));
-
-        it('should return new last name', () => assert(result, 'body.last_name').to.equal(updatedTestUser.last_name));
-
-        it('should return new bio', () => assert(result, 'body.bio').to.equal(updatedTestUser.bio));
-
-        it('should not return password', () => assertNot(result, 'body.password'));
-
-        it('should not return token', () => assertNot(result, 'body.token'));
     });
 
     describe('Login with updated password', () => {
@@ -191,10 +171,6 @@ describe('Update user info', () => {
         });
 
     it('should return status code 200', () => assert(result, 'status').to.equal(200));
-
-    it('should return same email', () => assert(result, 'body.email').to.equal(testUser.email));
-
-    it('should not return password', () => assertNot(result, 'body.password'));
 
     it('should return token', () => assert(result, 'body.token').to.be.not.null);
     });

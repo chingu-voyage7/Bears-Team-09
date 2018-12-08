@@ -1,6 +1,6 @@
-const APIError = require('../utils/APIError.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const APIError = require('../utils/APIError.js');
 const Table = require('./Table');
 
 const SECRET = process.env.JWT_SECRET || 'Default_JWT-Secret';
