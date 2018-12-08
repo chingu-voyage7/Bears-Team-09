@@ -5,24 +5,22 @@ const User = require('../models/User');
 const router = express.Router();
 
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res) => {
-    const user = new User(req.user);
-    const token = user.refreshToken();
+    const token = req.user.refreshToken();
     return res.json({token});
 });
 
 router.post('/login', (req, res) => {
-    passport.authenticate('local', {session: false}, (err, user, info) => {
+    passport.authenticate('local', {session: false}, (err, user) => {
         if (err || !user) {
-            return res.status(400).json({message: info.message});
+            return res.status(err.statusCode || 400).json({message: err.message});
         }
 
         req.login(user, {session: false}, (error) => {
            if (error) {
-               return res.json(error);
+               return res.status(400).json({message: error.message});
            }
-           delete user.data.password;
            const token = user.refreshToken();
-           return res.json({email: user.email, ...user.data, token});
+           return res.json({token});
         });
         return res;
     })(req, res);
@@ -36,13 +34,8 @@ router.post('/register', (req, res) => {
     };
     const user = new User(req.body);
     user.create()
-    .then(() => user.read())
-    .then(([data]) => {
-        const token = user.refreshToken();
-        delete data.password;
-        return res.status(201).json({...data, token});
-    })
-    .catch(err => res.status(400).json({message: err.message}));
+    .then(() => {res.status(201).json();})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
     return res;
 });
 
