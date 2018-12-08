@@ -2,6 +2,7 @@ import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styled from "styled-components";
+
 class DateSelector extends React.Component {
   constructor(props) {
     super(props);
@@ -40,7 +41,7 @@ class DateSelector extends React.Component {
 
 export default DateSelector;
 
-const DatePickerStylingWrapper = styled.div`
+const DatePickerStylingWrapper = styled.div `
     input {
       cursor: pointer;
       padding: 5px;

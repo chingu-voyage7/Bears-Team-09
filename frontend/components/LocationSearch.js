@@ -2,68 +2,76 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 class LocationSearch extends Component {
-  constructor(){
+  constructor() {
     super();
     this.state = {
       currentInput: '',
-      locations : []
+      suggestionPopup: false,
+      suggestions: [],
+      locations: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.clearInput = this.clearInput.bind(this);
 
   }
 
-  handleChange(e){
-    console.log(e.target.value);
-    this.setState({currentInput: e.target.value});
+  handleChange(e) {
+    const { locations } = this.state;
+    this.setState({ currentInput: e.target.value });
+    const currentValue = e.target.value;
+    const suggestions = locations.filter(city => city.toLowerCase().match(currentValue.toLowerCase(), 'gmi'));
+    this.setState({ suggestions });
   }
 
-  clearInput(){
-    this.setState({currentInput: ''});
+  clearInput() {
+    this.setState({ currentInput: '' });
   }
 
   componentDidMount() {
     //mock the API call
     setTimeout(
-    function() {
-      const locations = [
-        { country: "Canada", city: "Toronto" },
-        { country: "Germany", city: "Berlin" },
-        { country: "United States", city: "New York" },
-        { country: "United States", city: "Seattle" },
-        { country: "United Kingdom", city: "London" },
-        { country: "France", city: "Paris" },
-        { country: "Canada", city: "Victoria" },
-      ];
-      this.setState({locations});
-    }
-    .bind(this),
+      function() {
+        const locations = [
+          { country: "Canada", city: "Toronto" },
+          { country: "Germany", city: "Berlin" },
+          { country: "United States", city: "New York" },
+          { country: "United States", city: "Seattle" },
+          { country: "United Kingdom", city: "London" },
+          { country: "France", city: "Paris" },
+          { country: "Canada", city: "Victoria" },
+        ];
+        const locationArray = locations.map(locationObject => locationObject.city);
+        this.setState({ locations: locationArray });
+      }
+      .bind(this),
       1500
     );
   }
 
-  render(){
-    const { currentInput } = this.state;
-    return(
+  render() {
+    const { currentInput, suggestions, suggestionPopup } = this.state;
+    const suggestionList = suggestions.map(city => <li>{city}</li>);
+    return (
       <div style={{width: 150}}>
       <SearchBarWrapper>
         <StyledSearchBar placeholder="location" type="text" onChange={this.handleChange} value={this.state.currentInput}/>
         {currentInput.length !== 0 && <ClearButton onClick={this.clearInput}>x</ClearButton>}
       </SearchBarWrapper>
+      {suggestionPopup && <ul>{suggestionList}</ul>}
       </div>
-      );
+    );
   }
 }
 
 export default LocationSearch;
 
-const SearchBarWrapper = styled.div`
+const SearchBarWrapper = styled.div `
   position: relative;
   vertical-align: middle;
   line-height: 1.3;
 `
 
-const StyledSearchBar = styled.input`
+const StyledSearchBar = styled.input `
   text-align: center;
   font-size: 1rem;
   border: 1px solid rgba(0,0,0,.12);
@@ -79,7 +87,7 @@ const StyledSearchBar = styled.input`
 
 `;
 
-const ClearButton = styled.button`
+const ClearButton = styled.button `
     font-size: 1.1rem;
     position: absolute;
     right: -2px;
