@@ -7,6 +7,8 @@ const User = require('../models/User');
 const Place = require('../models/Place');
 const Activity = require('../models/Activity');
 const Events = require('../models/Event');
+const Attendee = require('../models/EventAttendee');
+
 
 describe('DB is accessible', () => {
     let error;
@@ -63,8 +65,8 @@ describe('Test User Model', () => {
     const updatedUserData = {
         email: 'kenny@gmail.com',
         password: '123456',
-        first_name: 'Kenny',
-        last_name: 'McCormick',
+        firstname: 'Kenny',
+        lastname: 'McCormick',
         bio: 'lorem ipsum'
     };
 
@@ -74,7 +76,8 @@ describe('Test User Model', () => {
         before((done) => {
             const user = new User({...userData});
             user.create()
-            .then(res => {
+            .then(() => user.read())
+            .then((res) => {
                 result = res;
             })
             .catch(err => {
@@ -83,16 +86,16 @@ describe('Test User Model', () => {
             .finally(() => done());
         });
 
-        it('Pass without error', () => expect(error).to.be.undefined);
+        it('Should pass without error', () => expect(error).to.be.undefined);
 
-        it('Return empty array', () => expect(result).to.be.empty);
+        it('Should return 1 row', () => expect(result).to.have.length(1));
     });
 
     describe('Read user info', () => {
         let result;
         let error;
         before((done) => {
-            const user = new User({...userData});
+            const user = new User({email: userData.email});
             user.read()
             .then(res => {
                 result = res;
@@ -104,17 +107,19 @@ describe('Test User Model', () => {
             .finally(() => done());
         });
 
-        it('Pass without error', () => expect(error).to.be.undefined);
+        it('Should pass without error', () => expect(error).to.be.undefined);
 
-        it('Return 1 element', () => expect(result).to.length(1));
+        it('Should return 1 element', () => expect(result).to.length(1));
+
+        it('Should return id', () => expect(result[0]).to.have.nested.property('id'));
 
         it('Should return email', () => expect(result[0]).to.have.nested.property('email'));
 
         it('Should return password', () => expect(result[0]).to.have.nested.property('password'));
 
-        it('Should return first name', () => expect(result[0]).to.have.nested.property('first_name'));
+        it('Should return first name', () => expect(result[0]).to.have.nested.property('firstname'));
 
-        it('Should return last name', () => expect(result[0]).to.have.nested.property('last_name'));
+        it('Should return last name', () => expect(result[0]).to.have.nested.property('lastname'));
 
         it('Should return bio', () => expect(result[0]).to.have.nested.property('bio'));
     });
@@ -124,10 +129,16 @@ describe('Test User Model', () => {
         let error;
 
         before((done) => {
-            const user = new User({...updatedUserData});
-            user.update()
+            const user = new User({email: userData.email});
+            user.read()
+            .then(() => {
+                user.data = updatedUserData;
+                return user.update();
+            })
             .then(() => user.read())
-            .then(res => { [result] = res; })
+            .then(([res]) => {
+                result = res;
+            })
             .catch(err => {
                 error = err;
             })
@@ -138,31 +149,30 @@ describe('Test User Model', () => {
 
         it('Return new password', () => expect(result.password).to.not.equal(firstPassword));
 
-        it('Return new first name', () => expect(result.first_name).to.equal(updatedUserData.first_name));
+        it('Should return new first name', () => expect(result.firstname).to.equal(updatedUserData.firstname));
 
-        it('Return new last name', () => expect(result.last_name).to.equal(updatedUserData.last_name));
+        it('Should return new last name', () => expect(result.lastname).to.equal(updatedUserData.lastname));
 
-        it('Return new bio', () => expect(result.bio).to.equal(updatedUserData.bio));
-
+        it('Should return new bio', () => expect(result.bio).to.equal(updatedUserData.bio));
     });
 
     describe('Delete user', () => {
-        let result;
         let error;
         before((done) => {
-            const user = new User({...userData});
-            user.delete()
+            const user = new User({email: userData.email});
+            user.read()
+            .then(() => user.delete())
             .then(() => user.read())
-            .then(res => { result = res; })
             .catch(err => {
                 error = err;
             })
             .finally(() => done());
         });
 
-        it('Pass without error', () => expect(error).to.be.undefined);
+        it('Should return "Not Found" error', () => expect(error.message).to.equal('Not found'));
 
-        it('Return empty array', () => expect(result).to.length(0));
+        it('Should contain statusCode', () => expect(error).to.have.nested.property('statusCode'));
+
     });
 });
 
@@ -405,31 +415,31 @@ describe('Test Event Model', () => {
         {
             name: 'Fishing',
             description: 'Some description',
-            activity: 2,
+            activityid: 2,
             maxpeople: 4
         },
         {
             name: 'Dancing',
             description: 'Some description',
-            activity: 2,
+            activityid: 2,
             maxpeople: 4
         },
         {
             name: 'Singing',
             description: 'Some description',
-            activity: 3,
-            place: 2,
-            date_from: new Date(),
-            date_to: new Date(),
+            activityid: 3,
+            placeid: 2,
+            datefrom: new Date(),
+            dateto: new Date(),
             maxpeople: 10
         },
         {
             name: 'Doing nothing',
             description: 'Some description',
-            activity: 2,
-            place: 2,
-            date_from: new Date(),
-            date_to: new Date(),
+            activityid: 2,
+            placeid: 2,
+            datefrom: new Date(),
+            dateto: new Date(),
             maxpeople: 2
         },
     ];
@@ -445,6 +455,7 @@ describe('Test Event Model', () => {
                     result = res;
                 })
                 .catch(err => {
+                    console.log(err);
                     error = err;
                 })
                 .finally(() => done());
@@ -486,9 +497,9 @@ describe('Test Event Model', () => {
 
         it('Should return place of the event', () => expect(result[0]).to.have.nested.property('city'));
 
-        it('Should return date_from of the event', () => expect(result[0]).to.have.nested.property('date_from'));
+        it('Should return datefrom of the event', () => expect(result[0]).to.have.nested.property('datefrom'));
 
-        it('Should return date_to of the event', () => expect(result[0]).to.have.nested.property('date_to'));
+        it('Should return dateto of the event', () => expect(result[0]).to.have.nested.property('dateto'));
 
         it('Should return minpeople of the event', () => expect(result[0]).to.have.nested.property('minpeople'));
 
@@ -519,7 +530,7 @@ describe('Test Event Model', () => {
         let error;
         before((done) => {
             const ev = new Events({name: 'D'});
-            ev.read(true, '~')
+            ev.read('~')
             .then(res => {
                 result = res;
             })
@@ -555,5 +566,92 @@ describe('Test Event Model', () => {
         it('Should pass without errors', () => expect(error).to.be.undefined);
 
         it(`Should be ${eventsData.length - 1} entries in the DB table`, () => expect(result.length).to.equal(eventsData.length - 1));
+    });
+});
+
+describe('Test EventAttendee Model', () => {
+    let error;
+    let user1;
+    let user2;
+    let event1;
+    let event2;
+    let event3;
+    describe('Populate db', () =>{
+        beforeEach((done) => {
+            user1 = new User({email: 'AAA@mail.com', password: '123456'});
+            user1.create()
+            .then(() => user1.read())
+            .then(() => {
+                user2 = new User({email: 'BBB@mail.com', password: '123456'});
+                return user2.create();
+            })
+            .then(() => user2.read())
+            .then(() => {
+                event1 = new Events({
+                    name: 'Event A',
+                    description: 'Some description',
+                    activityid: 2,
+                    maxpeople: 4
+                });
+                return event1.create();
+            })
+            .then(() => {
+                event2 = new Events({
+                    name: 'Event B',
+                    description: 'Some description',
+                    activityid: 2,
+                    maxpeople: 4
+                });
+                return event2.create();
+            })
+            .then(() => {
+                event3 = new Events({
+                    name: 'Event C',
+                    description: 'Some description',
+                    activityid: 2,
+                    maxpeople: 4
+                });
+                return event3.create();
+            })
+            .then(() => (new Events()).read())
+            .then((data) => {[event1, event2, event3] = data.slice(-3);})
+            .then(() => (new Attendee({userid: user1.data.id, eventid: event1.id})).create())
+            .then(() => (new Attendee({userid: user1.data.id, eventid: event2.id})).create())
+            .then(() => (new Attendee({userid: user1.data.id, eventid: event3.id})).create())
+            .then(() => (new Attendee({userid: user2.data.id, eventid: event1.id})).create())
+            .then(() => (new Attendee({userid: user2.data.id, eventid: event3.id})).create())
+            .catch(err => {error = err;})
+            .finally(() => {done();});
+        });
+
+        it('Should run without errors', () => expect(error).to.be.undefined);
+    });
+
+    describe('Get all events attended by User1', () => {
+        let result;
+        before((done) => {
+            (new Attendee({userid: user1.data.id})).getAllEvents()
+            .then(res => {result = res;})
+            .catch(err => {error = err;})
+            .finally(() => {done();});
+        });
+
+        it('Should run without errors', () => expect(error).to.be.undefined);
+
+        it ('Should return 3 entries', () => expect(result).to.be.length(3));
+    });
+
+    describe('Get all events attended by User2', () => {
+        let result;
+        before((done) => {
+            (new Attendee({userid: user2.data.id})).getAllEvents()
+            .then(res => {result = res;})
+            .catch(err => {error = err;})
+            .finally(() => {done();});
+        });
+
+        it('Should run without errors', () => expect(error).to.be.undefined);
+
+        it ('Should return 2 entries', () => expect(result).to.be.length(2));
     });
 });
