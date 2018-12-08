@@ -17,17 +17,9 @@ passport.use(
    (email, password, done) => {
       const user = new User({email});
       return user.read()
-        .then(([data]) => {
-          if (data) {
-            const isAuthenticated = bcrypt.compare(password, data.password);
-            delete data.password;
-            user.data = data;
-            return isAuthenticated;
-          }
-          return false;
-        })
-        .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, false, new Error('Incorrect username or password')))
-        .catch(err => done(null, false, err));
+        .then(([data]) => bcrypt.compare(password, data.password))
+        .then(isAuthenticated => isAuthenticated ? done(null, user) : done( {message: 'Incorrect username or password', statusCode: 401}))
+        .catch(err => done(err));
     }
 ));
 
@@ -37,14 +29,10 @@ passport.use(
       secretOrKey : secret
     },
    (jwtPayload, done) => {
-      const user = new User({email: jwtPayload.pk});
+      const user = new User({id: jwtPayload.id});
       return user.read()
-        .then(([data]) => {
-          delete data.password;
-          user.data = data;
-          return done(null, user);
-        })
-        .catch(err => done(err));
+        .then(() => done(null, user))
+        .catch(err => done({message: err.message, statusCode: 401}));
       }
 ));
 
