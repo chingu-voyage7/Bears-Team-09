@@ -1,5 +1,6 @@
 const express = require('express');
 const Activity = require('../models/Activity');
+const APIError = require('../utils/APIError.js');
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ router.get('/:id', (req, res) => {
     activity.read()
     .then(([data]) => {
         if (data === undefined) {
-            throw {message: 'Not found', statusCode: 404};
+            throw new APIError('Not found', 404);
         }
         res.json(data);
     })

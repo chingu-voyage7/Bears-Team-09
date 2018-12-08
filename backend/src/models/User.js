@@ -1,3 +1,4 @@
+const APIError = require('../utils/APIError.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Table = require('./Table');
@@ -35,7 +36,7 @@ class User extends Table {
     return super.read()
                 .then((data) => {
                   if (data.length === 0) {
-                    throw {message: 'Not found', statusCode: 404};
+                    throw new APIError('Not found', 404);
                   } else if (data.length === 1) {
                     const {password, ...rest} = data[0];
                     this.data = rest;
