@@ -13,12 +13,8 @@ class Activity extends Table {
     super(tableName, pk, data);
   }
 
-  read() {
-    return super.read(this.data);
-  }
-
   search() {
-    return super.read(this.data, false, '~');
+    return super.read('~', 'OR');
   }
 }
 

@@ -7,9 +7,9 @@ const JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || '1 day';
 
 class User extends Table {
   constructor(data={}) {
-    const pk = 'email';
+    const pk = 'id';
     const tableName = 'users';
-    const ACCEPTED_FIELDS = ['email', 'first_name', 'last_name', 'password', 'bio'];
+    const ACCEPTED_FIELDS = ['id', 'email', 'firstName', 'lastName', 'password', 'bio'];
     Object.keys(data).forEach(key => {
       if (!ACCEPTED_FIELDS.includes(key)) {
             delete data[key];
@@ -19,7 +19,7 @@ class User extends Table {
   }
 
   refreshToken() {
-    return jwt.sign({pk: this[this.pk]}, SECRET, {expiresIn: JWT_EXP_THRESHOLD});
+    return jwt.sign({id: this.data[this.pk]}, SECRET, {expiresIn: JWT_EXP_THRESHOLD});
   }
 
   hashPassword() {
@@ -28,13 +28,21 @@ class User extends Table {
   }
 
   create() {
-    return 'password' in this.data ? this.hashPassword().then(() => super.create()) : super.create();
+    return this.hashPassword().then(() => super.create()).then(() => {delete this.data.password;});
   }
 
   read() {
-    const params = {};
-    params[this.pk] = this[this.pk];
-    return super.read(params);
+    return super.read()
+                .then((data) => {
+                  if (data.length === 0) {
+                    throw {message: 'Not found', statusCode: 404};
+                  } else if (data.length === 1) {
+                    const {password, ...rest} = data[0];
+                    this.data = rest;
+                    this[this.pk] = this.data[this.pk];
+                  }
+                  return data;
+                });
   }
 
   update() {
