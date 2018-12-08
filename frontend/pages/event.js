@@ -66,17 +66,26 @@ export class event extends Component {
 
     const theme = { background: `center / cover no-repeat url(${img})` };
     return (
-      <Header>
-        <Date>{date}</Date>
-        <Title>{title}</Title>
-        <Host>Hosted by: {name}</Host>
-        <ThemeProvider theme={theme}>
-          <Img />
-        </ThemeProvider>
-      </Header>
+      <Container>
+        <Header>
+          <Date>{date}</Date>
+          <Title>{title}</Title>
+          <Host>Hosted by: {name}</Host>
+          <ThemeProvider theme={theme}>
+            <Img />
+          </ThemeProvider>
+        </Header>
+      </Container>
     );
   }
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
 
 const Header = styled.div`
   display: flex;
@@ -93,7 +102,7 @@ const Title = styled.div`
 `;
 const Img = styled.div`
   background: ${props => props.theme.background};
-  width: 50%;
+  width: 500px;
   height: 500px;
 `;
 
