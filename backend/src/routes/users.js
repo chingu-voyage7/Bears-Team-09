@@ -1,11 +1,14 @@
 const express = require('express');
-const Attendee = require('../models/EventAttendees');
+const User = require('../models/User');
+const Attendee = require('../models/EventAttendee');
 
 const router = express.Router();
 
-// this one will be protected
 router.get('/', (req, res) => {
-  res.json(req.user.data);
+  const user = new User({id: req.user.id});
+  user.read()
+  .then(() => {res.json(user.data);})
+  .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
 router.delete('/', (req, res) => {
@@ -15,24 +18,24 @@ router.delete('/', (req, res) => {
 });
 
 router.put('/', (req, res) => {
-  const { user } = req;
-  user.data = req.body;
-  user.update()
+  req.user.data = req.body;
+  req.user.update()
   .then(() => {res.json();})
   .catch(err => {res.status(err.statusCode || 400).json({message: err.message}); });
 });
 
 router.get('/events', (req, res) => {
-  const attendee = new Attendee();
-  attendee.getAllEvents(req.user[req.user.pk])
+  const attendee = new Attendee({userid: req.user[req.user.pk]});
+  attendee.getAllEvents()
   .then(data => {res.json({events: data});})
   .catch(err => {res.status(err.statusCode || 400).json({message: err.message}); });
 });
 
 router.get('/:id/events', (req, res) => {
-  const attendee = new Attendee();
-  attendee.getAllEvents(req.params.id)
+  const attendee = new Attendee({userid: req.params.id});
+  attendee.getAllEvents()
   .then(data => {res.json({events: data});})
   .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
+
 module.exports = router;

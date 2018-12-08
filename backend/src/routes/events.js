@@ -1,6 +1,6 @@
 const express = require('express');
 const Event = require('../models/Event');
-const Attendee = require('../models/EventAttendees');
+const Attendee = require('../models/EventAttendee');
 
 const eventRouter = express.Router();
 
@@ -19,8 +19,8 @@ eventRouter.post('/', (req, res) => {
     .then(() => newEvent.read())
     .then(([data]) => {
         const attendee = new Attendee({
-            user_id: req.user[req.user.pk],
-            event_id: data.id
+            userid: req.user[req.user.pk],
+            eventid: data.id
         });
         return attendee.create();
     })
@@ -36,7 +36,7 @@ eventRouter.get('/:id', (req, res) => {
     newEvent.read()
     .then(([data]) => {
         if (data === undefined) {
-            throw new {message: 'Not found', statusCode: 404};
+            throw {message: 'Not found', statusCode: 404};
         }
         res.json(data);
     })
@@ -51,7 +51,7 @@ eventRouter.delete('/:id', (req, res) => {
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
-// update and event
+// update an event
 eventRouter.put('/:id', (req, res) => {
     const newEvent = new Event({id: req.params.id});
     newEvent.data = req.body;
@@ -63,8 +63,8 @@ eventRouter.put('/:id', (req, res) => {
 // subscribe to attend an event
 eventRouter.post('/:id/attend', (req, res) => {
     const attendee = new Attendee({
-        user_id: req.user[req.user.pk],
-        event_id: req.params.id
+        userid: req.user[req.user.pk],
+        eventid: req.params.id
     });
     attendee.create()
     .then(() => {res.status(201).json();})
@@ -74,14 +74,10 @@ eventRouter.post('/:id/attend', (req, res) => {
 // unsubscribe from attending an event
 eventRouter.delete('/:id/attend', (req, res) => {
     const attendee = new Attendee({
-        user_id: req.user[req.user.pk],
-        event_id: req.params.id
+        userid: req.user[req.user.pk],
+        eventid: req.params.id
     });
-    attendee.read()
-    .then(([data]) => {
-        attendee[attendee.pk] = data[attendee.pk];
-        return attendee.delete();
-    })
+    attendee.delete()
     .then(() => {res.status(204).json();})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });

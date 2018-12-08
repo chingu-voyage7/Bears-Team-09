@@ -7,16 +7,15 @@ const router = express.Router();
 router.get('/', (req, res) => {
     const activity = new Activity();
     activity.read()
-    .then(data => {res.json(data);})
-    .catch(err => {res.status(400).json({message: err.message});});
+    .then(data => {res.json({activities: data});})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
 router.post('/', (req, res) => {
     const activity = new Activity(req.body);
     activity.create()
-    .then(() => activity.read())
-    .then(([data]) => {res.json(data);})
-    .catch(err => {res.status(400).json({message: err.message});});
+    .then(() => {res.status(201).json();})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
 router.get('/:id', (req, res) => {
@@ -24,28 +23,26 @@ router.get('/:id', (req, res) => {
     activity.read()
     .then(([data]) => {
         if (data === undefined) {
-            res.status(404).json({message: 'Not found'});
-            return;
+            throw {message: 'Not found', statusCode: 404};
         }
         res.json(data);
     })
-    .catch(err => {res.status(400).json({message: err.message});});
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
 router.delete('/:id', (req, res) => {
     const activity = new Activity({id: req.params.id});
     activity.delete()
     .then(() => {res.status(204).json();})
-    .catch(err => {res.status(400).json({message: err.message});});
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
 router.put('/:id', (req, res) => {
     const activity = new Activity({id: req.params.id});
     activity.data = req.body;
     activity.update()
-    .then(() => activity.read())
-    .then(([data]) => {res.json(data);})
-    .catch(err => {res.status(400).json({message: err.message});});
+    .then(() => {res.json();})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
 module.exports = router;
