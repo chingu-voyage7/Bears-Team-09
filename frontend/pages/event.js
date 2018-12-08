@@ -24,28 +24,32 @@ export class event extends Component {
           'https://3.bp.blogspot.com/-ut3A91d91wM/VKX-mrfUSyI/AAAAAAAC6S8/hNweMslPA8o/s1600/Talking%2Brace.jpg'
       },
       {
-        name: 'The Best Coding School of the World',
+        name: 'Bakers of America',
         date: 'Tuesday, December 4, 2018',
-        title: 'Campus Open House + Q&A',
-        img: 'http://www.highpoint.edu/media/home/Tree-Campus-USA-2.jpg'
+        title: 'Baking contest',
+        img:
+          'https://www.bakersjoy.com/wp-content/uploads/2013/08/baking-and-cooking-advice.jpg'
       },
       {
-        name: 'The Best Coding School of the World',
+        name: 'Mary Gretchen',
         date: 'Tuesday, December 4, 2018',
-        title: 'Campus Open House + Q&A',
-        img: 'http://www.highpoint.edu/media/home/Tree-Campus-USA-2.jpg'
+        title: 'Need a hiking friend',
+        img:
+          'http://www.destination360.com/north-america/us/rhode-island/images/s/hiking.jpg'
       },
       {
-        name: 'The Best Coding School of the World',
+        name: 'Mary Ellen',
         date: 'Tuesday, December 4, 2018',
-        title: 'Campus Open House + Q&A',
-        img: 'http://www.highpoint.edu/media/home/Tree-Campus-USA-2.jpg'
+        title: 'In need of a friend for a concert',
+        img:
+          'http://www.appareil-auditif.pro/wp-content/uploads/2013/11/Bouchons-oreille-concert-boule-quies.jpg'
       },
       {
-        name: 'The Best Coding School of the World',
+        name: 'Flex Wheeler',
         date: 'Tuesday, December 4, 2018',
-        title: 'Campus Open House + Q&A',
-        img: 'http://www.highpoint.edu/media/home/Tree-Campus-USA-2.jpg'
+        title: 'I need a workout buddy for motivation',
+        img:
+          'https://pbs.twimg.com/profile_images/868967197971972096/5L2k2MEU_400x400.jpg'
       }
     ];
 
