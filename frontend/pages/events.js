@@ -8,9 +8,10 @@ import LocationSearch from '../components/LocationSearch';
 //using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS
 //there may be a cleaner solution that I am not aware of
 import dynamic from 'next/dynamic'
-const DateSelectorDynamic = dynamic(() => import('../components/DateSelector'), {
-  ssr: false
-})
+const DateSelectorDynamic = dynamic(() =>
+  import ('../components/DateSelector'), {
+    ssr: false
+  })
 
 
 
@@ -51,7 +52,7 @@ class Dashboard extends Component {
 
 export default Dashboard;
 
-const TopPanel = styled.div`
+const TopPanel = styled.div `
   padding-left: 100px;
   padding-right: 100px;
   padding-top: 50px;
@@ -62,21 +63,23 @@ const TopPanel = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   text-align: center;
+  font-size: 1.3rem;
+
 `
 
-const BrowseImg = styled.img`
+const BrowseImg = styled.img `
   width: 100px;
 `
 
-const CreateImg = styled.img`
+const CreateImg = styled.img `
   width: 100px;
 `
 
-const ChoiceImg = styled.img`
+const ChoiceImg = styled.img `
   width: 100px;
 `
 
-const StyledButton = styled.a`
+const StyledButton = styled.a `
   border: 1px solid white;
   border-radius: 2px;
   padding: 4px;
@@ -86,7 +89,7 @@ const StyledButton = styled.a`
   }
 `
 
-const Divider = styled.div`
+const Divider = styled.div `
   margin-top: 25px;
   margin-bottom: 25px;
   margin-left: auto;
@@ -107,7 +110,7 @@ const Divider = styled.div`
   }
 `
 
-const FilterControlPanel = styled.div`
+const FilterControlPanel = styled.div `
   margin: 0 auto;
   padding: 4px;
   background-color: #8BC6EC;
@@ -128,9 +131,6 @@ const FilterControlPanel = styled.div`
   }
 `
 
-const Container = styled.div`
+const Container = styled.div `
   background: #fafafa;
 `;
-
-
-// #fafafa
