@@ -1,6 +1,6 @@
-import React from 'react';
-import App, { Container } from 'next/app';
-import UserProvider from '../components/UserProvider';
+import React from "react";
+import App, { Container } from "next/app";
+import UserProvider from "../components/UserProvider";
 
 class MyApp extends App {
   render() {
@@ -8,7 +8,7 @@ class MyApp extends App {
     return (
       <Container>
         <UserProvider>
-          <Component {...pageProps} />
+        <Component {...pageProps} />
         </UserProvider>
       </Container>
     );

@@ -4,20 +4,18 @@ import MainLayout from "../components/MainLayout";
 import UserProvider from "../components/UserProvider";
 
 export default () => (
-  <UserProvider>
-    <MainLayout>
-      <LandingPage>
-        <HeroSection>
-          <CallToAction>
-            <h4>Description of what this app does and how it works</h4>
-            <p>call to action text</p>
-            <a href="/events">Explore</a>
-          </CallToAction>
-          <HeroImg src=".././static/hero-big.jpg" alt="hero-img-river" />
-        </HeroSection>
-      </LandingPage>
-    </MainLayout>
-  </UserProvider>
+  <MainLayout>
+    <LandingPage>
+      <HeroSection>
+        <CallToAction>
+          <h4>Description of what this app does and how it works</h4>
+          <p>call to action text</p>
+          <a href="/events">Explore</a>
+        </CallToAction>
+        <HeroImg src=".././static/hero-big.jpg" alt="hero-img-river" />
+      </HeroSection>
+    </LandingPage>
+  </MainLayout>
 );
 
 const LandingPage = styled.section`
