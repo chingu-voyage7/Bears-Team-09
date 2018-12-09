@@ -13,7 +13,7 @@ class GoogleRegisterButton extends Component {
   }
 
   render = () => {
-    const { theme, onClick, title } = this.props;
+    const { theme, title, onCompletion } = this.props;
     const { GoogleLogin } = this.state;
 
     if (GoogleLogin)
@@ -23,7 +23,10 @@ class GoogleRegisterButton extends Component {
             <GoogleLogin
               clientId={config.GOOGLE_CLIENT_ID}
               buttonText="Login"
-              onSuccess={context.logIn}
+              onSuccess={args => {
+                context.logIn(args);
+                onCompletion();
+              }}
               onFailure={console.error}
               render={renderProps => (
                 <StyledAuthBtn onClick={renderProps.onClick} onKeyPress={renderProps.onClick} theme={theme}>
@@ -40,7 +43,7 @@ class GoogleRegisterButton extends Component {
 
 GoogleRegisterButton.propTypes = {
   title: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onCompletion: PropTypes.func.isRequired,
   theme: PropTypes.string.isRequired
 };
 

@@ -1,19 +1,20 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import Input from './Input';
-import AuthButton from './AuthButton';
-import LoginButton from './LoginButton';
+import React, { Component } from "react";
+import styled from "styled-components";
+import Router from "next/router";
+import Input from "./Input";
+import AuthButton from "./AuthButton";
+import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
 
 class FormContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: '',
-      lastName: '',
-      password: '',
-      confirmPassword: '',
-      email: '',
+      firstName: "",
+      lastName: "",
+      password: "",
+      confirmPassword: "",
+      email: "",
       passwordsDontMatch: false
     };
 
@@ -22,10 +23,9 @@ class FormContainer extends Component {
     this.handleAuth = this.handleAuth.bind(this);
   }
 
-  handleAuth = e => {
-    // Method to be used if we implement auth
-    // with Google, Twitter, Facebook, etc.
-    e.preventDefault();
+  handleAuth = (_, type) => {
+    console.log(`Register with ${type}`);
+    Router.push("/");
   };
 
   handleSubmit = e => {
@@ -72,14 +72,7 @@ class FormContainer extends Component {
             handleChange={this.handleInput}
             required
           />
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Email"
-            handleChange={this.handleInput}
-            required
-          />
+          <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
           <Input
             id="password"
             name="password"
@@ -97,27 +90,17 @@ class FormContainer extends Component {
             required
           />
           <LoginButton title="Register" />
-          {passwordsDontMatch && (
-            <StyledErrorMsg>Make sure that passwords match!</StyledErrorMsg>
-          )}
+          {passwordsDontMatch && <StyledErrorMsg>Make sure that passwords match!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>
           <h4>Or use alternatives:</h4>
-          <AuthButton
-            theme="#3b5998"
-            title="Register using Facebook"
-            onClick={e => this.handleAuth(e, 'fb')}
-          />
           <GoogleRegisterButton
             theme="#ea4335"
             title="Register using Google"
-            onClick={e => this.handleAuth(e, 'gl')}
+            onCompletion={e => this.handleAuth(e, "gl")}
           />
-          <AuthButton
-            theme="#1da1f2"
-            title="Register using Twitter"
-            onClick={e => this.handleAuth(e, 'tw')}
-          />
+          <AuthButton theme="#3b5998" title="Register using Facebook" onCompletion={e => this.handleAuth(e, "fb")} />
+          <AuthButton theme="#1da1f2" title="Register using Twitter" onCompletion={e => this.handleAuth(e, "tw")} />
         </AuthButtonWrapper>
       </>
     );

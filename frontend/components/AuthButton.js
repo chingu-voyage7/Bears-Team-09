@@ -3,9 +3,9 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 const AuthButton = props => {
-  const { theme, onClick, title } = props;
+  const { theme, onCompletion, title } = props;
   return (
-    <StyledAuthBtn theme={theme} onClick={onClick}>
+    <StyledAuthBtn theme={theme} onClick={onCompletion}>
       {title}
     </StyledAuthBtn>
   );
@@ -13,7 +13,7 @@ const AuthButton = props => {
 
 AuthButton.propTypes = {
   title: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onCompletion: PropTypes.func.isRequired,
   theme: PropTypes.string.isRequired
 };
 
