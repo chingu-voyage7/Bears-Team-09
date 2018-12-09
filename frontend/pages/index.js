@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import MainLayout from "../components/MainLayout";
-import UserProvider from "../components/UserProvider";
 
 export default () => (
   <MainLayout>

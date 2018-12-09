@@ -8,7 +8,7 @@ class MyApp extends App {
     return (
       <Container>
         <UserProvider>
-        <Component {...pageProps} />
+          <Component {...pageProps} />
         </UserProvider>
       </Container>
     );
