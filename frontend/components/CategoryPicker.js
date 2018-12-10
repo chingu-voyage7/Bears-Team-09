@@ -8,15 +8,11 @@ parent compositional component to re-render Event list
 */
 
 class CategoryPicker extends Component {
-  constructor() {
-    super();
-    this.state = {
-      popupOpen: false,
-      activeCategory: "category",
-      categories: []
-    };
-    this.handleCategorySelection = this.handleCategorySelection.bind(this);
-  }
+  state = {
+    popupOpen: false,
+    activeCategory: "category",
+    categories: []
+  };
 
   componentDidMount() {
     // mock API call for categories
@@ -32,9 +28,8 @@ class CategoryPicker extends Component {
     }, 1500);
   }
 
-  handleCategorySelection(e) {
+  handleCategorySelection = (e) => {
     const { updateFilter } = this.props;
-    // CB should be called here to indicate that we need to re-render event list based on new category
     this.setState({ popupOpen: false, activeCategory: e.target.innerHTML });
     updateFilter("category", e.target.innerHTML);
   }

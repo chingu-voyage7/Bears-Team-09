@@ -17,26 +17,23 @@ const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), 
 });
 
 class Dashboard extends Component {
-  constructor() {
-    super();
-    this.state = {
-      eventFilters: { date: null, location: null, category: null }
-    };
-    this.updateFilter = this.updateFilter.bind(this);
-  }
+  state = {
+    eventFilters: { date: null, location: null, category: null }
+  };
+  
 
   static async getInitialProps() {
     const events = axios("/events");
     return { events };
-  }
+  };
 
-  updateFilter(type, data) {
+  updateFilter = (type, data) => {
     const oldState = Object.assign({}, this.state);
     const newFilters = oldState.eventFilters;
     newFilters[type] = data;
     oldState.eventFilters = newFilters;
     this.setState({ eventFilters: newFilters });
-  }
+  };
 
   render() {
     const { eventFilters } = this.state;
@@ -78,8 +75,8 @@ class Dashboard extends Component {
         <EventList events={events} filters={eventFilters} />
       </MainLayout>
     );
-  }
-}
+  };
+};
 
 export default Dashboard;
 
