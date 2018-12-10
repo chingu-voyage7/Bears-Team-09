@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 class LocationSearch extends Component {
   constructor() {
     super();
     this.state = {
+      placeholder: "location",
       currentInput: "",
       suggestionPopup: false,
       suggestions: [],
@@ -12,41 +14,39 @@ class LocationSearch extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.clearInput = this.clearInput.bind(this);
-    this.select = this.select.bind(this);
+    this.selectLocation = this.selectLocation.bind(this);
   }
 
   componentDidMount() {
     // mock the API call
-
     setTimeout(() => {
       const locations = [
+        { country: "Canada", city: "Toronto", id: 123 },
+        { country: "Germany", city: "Berlin", id: 123 },
         {
-          country: "Canada",
-          city: "Toronto"
-        },
-        {
-          country: "Germany",
-          city: "Berlin"
+          country: "United States",
+          city: "New York",
+          id: 123
         },
         {
           country: "United States",
-          city: "New York"
-        },
-        {
-          country: "United States",
-          city: "Seattle"
+          city: "Seattle",
+          id: 123
         },
         {
           country: "United Kingdom",
-          city: "London"
+          city: "London",
+          id: 123
         },
         {
           country: "France",
-          city: "Paris"
+          city: "Paris",
+          id: 123
         },
         {
           country: "Canada",
-          city: "Victoria"
+          city: "Victoria",
+          id: 123
         }
       ];
       const locationArray = locations.map(locationObject => locationObject.city);
@@ -58,8 +58,8 @@ class LocationSearch extends Component {
 
   handleChange(e) {
     const { locations, suggestions } = this.state;
-    this.setState({ currentInput: e.target.value });
     const currentValue = e.target.value;
+    this.setState({ currentInput: currentValue });
 
     // Filter locations based on user current input
     const filterSuggestions =
@@ -82,21 +82,25 @@ class LocationSearch extends Component {
     this.setState({ suggestionPopup: false });
   }
 
-  select(e, location) {
+  selectLocation(e, location) {
+    const { updateFilter } = this.props;
     // handle suggestion selection
+    this.setState({ currentInput: location });
+    this.setState({ suggestionPopup: false });
+    updateFilter("location", location);
   }
 
   render() {
-    const { currentInput, suggestions, suggestionPopup } = this.state;
+    const { currentInput, suggestions, suggestionPopup, placeholder } = this.state;
     const suggestionList = suggestions.map(city => (
-      <SuggestionItem onClick={e => this.select(e, city)}>{city}</SuggestionItem>
+      <SuggestionListItem onClick={e => this.selectLocation(e, city)}>{city}</SuggestionListItem>
     ));
     return (
       <>
         <SearchBarWrapper>
-          <StyledSearchBar placeholder="location" type="text" onChange={this.handleChange} value={currentInput} />
-          {currentInput.length !== 0 && <ClearButton onClick={this.clearInput}>x</ClearButton>}
-          {suggestionPopup && <SuggestionList>{suggestionList}</SuggestionList>}
+          <StyledSearchBar placeholder={placeholder} type="text" onChange={this.handleChange} value={currentInput} />
+          {currentInput && currentInput.length !== 0 && <ClearButton onClick={this.clearInput}>x</ClearButton>}
+          {suggestionPopup && <Suggestions>{suggestionList}</Suggestions>}
         </SearchBarWrapper>
       </>
     );
@@ -104,6 +108,10 @@ class LocationSearch extends Component {
 }
 
 export default LocationSearch;
+
+LocationSearch.propTypes = {
+  updateFilter: PropTypes.func.isRequired
+};
 
 const SearchBarWrapper = styled.div`
   position: relative;
@@ -139,7 +147,7 @@ const StyledSearchBar = styled.input`
   }
 `;
 
-const SuggestionList = styled.ul`
+const Suggestions = styled.ul`
   list-style-type: none;
   width: 140px;
   margin: 2px 0px 0px 0px;
@@ -154,7 +162,7 @@ const SuggestionList = styled.ul`
   z-index: 1;
 `;
 
-const SuggestionItem = styled.li`
+const SuggestionListItem = styled.li`
   text-transform: capitalize;
   text-align: left;
   cursor: pointer;

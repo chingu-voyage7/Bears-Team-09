@@ -2,6 +2,7 @@ import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 class DateSelector extends React.Component {
   constructor(props) {
@@ -13,27 +14,28 @@ class DateSelector extends React.Component {
   }
 
   handleChange(date) {
-    //this would likely need to be a CB that gets bubbled up to filter control component
-    this.setState({
-      startDate: date
-    });
+    const { updateFilter } = this.props;
+    this.setState({ startDate: date });
+    updateFilter("date", date);
   }
 
   render() {
+    const { startDate } = this.state;
     return (
       <DatePickerStylingWrapper>
-      <DatePicker
-        popperPlacement="bottom"
-        popperModifiers={{
-          offset: {
-            enabled: true,
-            offset: '30px, 10px'
-        }}}
-        todayButton="today"
-        selected={this.state.startDate}
-        onChange={this.handleChange}
-        placeholderText="time"
-      />
+        <DatePicker
+          popperPlacement="bottom"
+          popperModifiers={{
+            offset: {
+              enabled: true,
+              offset: "30px, 10px"
+            }
+          }}
+          todayButton="today"
+          selected={startDate}
+          onChange={this.handleChange}
+          placeholderText="time"
+        />
       </DatePickerStylingWrapper>
     );
   }
@@ -41,29 +43,33 @@ class DateSelector extends React.Component {
 
 export default DateSelector;
 
-const DatePickerStylingWrapper = styled.div `
-    input {
-      cursor: pointer;
-      padding: 5px;
-      border-radius: 3px;
-      outline: 0;
-      width: 100px;
-      text-align: center;
-      font-size: 1rem;
-      border: 1px solid rgba(0,0,0,.12);
-      color: #757575;
-    }
+DateSelector.propTypes = {
+  updateFilter: PropTypes.func.isRequired
+};
 
-    input:hover {
-      background: purple;
-      color: white;
-    }
+const DatePickerStylingWrapper = styled.div`
+  input {
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    outline: 0;
+    width: 100px;
+    text-align: center;
+    font-size: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #757575;
+  }
 
-    input:hover {
-      background-color: purple;
-    }
+  input:hover {
+    background: purple;
+    color: white;
+  }
 
-    input:hover::placeholder {
-      color: white;
+  input:hover {
+    background-color: purple;
+  }
+
+  input:hover::placeholder {
+    color: white;
   }
 `;
