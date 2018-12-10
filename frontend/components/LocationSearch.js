@@ -3,20 +3,14 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 class LocationSearch extends Component {
-  constructor() {
-    super();
-    this.state = {
-      placeholder: "location",
-      currentInput: "",
-      suggestionPopup: false,
-      suggestions: [],
-      locations: []
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.clearInput = this.clearInput.bind(this);
-    this.selectLocation = this.selectLocation.bind(this);
-  }
-
+  state = {
+    placeholder: "location",
+    currentInput: "",
+    suggestionPopup: false,
+    suggestions: [],
+    locations: []
+  } 
+ 
   componentDidMount() {
     // mock the API call
     setTimeout(() => {
@@ -56,33 +50,33 @@ class LocationSearch extends Component {
     }, 1500);
   }
 
-  handleChange(e) {
+  handleChange = (e) => {
     const { locations, suggestions } = this.state;
     const currentValue = e.target.value;
     this.setState({ currentInput: currentValue });
 
     // Filter locations based on user current input
     const filterSuggestions =
-      currentValue.length !== 0
-        ? locations.filter(city => city.toLowerCase().match(currentValue.toLowerCase(), "gmi"))
-        : [];
+      currentValue.length !== 0 ?
+      locations.filter(city => city.toLowerCase().match(currentValue.toLowerCase(), "gmi")) : [];
     this.setState({ suggestions: filterSuggestions });
 
     // Check if suggestion popup needs to hide or show
     if (suggestions.length === 0 || currentValue === "") {
       this.setState({ suggestionPopup: false });
-    } else if (suggestions.length !== 0) {
+    }
+    else if (suggestions.length !== 0) {
       this.setState({ suggestionPopup: true });
     }
   }
 
-  clearInput() {
+  clearInput = () => {
     this.setState({ currentInput: "" });
     this.setState({ suggestions: [] });
     this.setState({ suggestionPopup: false });
   }
 
-  selectLocation(e, location) {
+  selectLocation = (e, location) => {
     const { updateFilter } = this.props;
     // handle suggestion selection
     this.setState({ currentInput: location });
@@ -113,13 +107,13 @@ LocationSearch.propTypes = {
   updateFilter: PropTypes.func.isRequired
 };
 
-const SearchBarWrapper = styled.div`
+const SearchBarWrapper = styled.div `
   position: relative;
   vertical-align: middle;
   line-height: 1.3;
 `;
 
-const StyledSearchBar = styled.input`
+const StyledSearchBar = styled.input `
   text-align: center;
   font-size: 1rem;
   border: 1px solid rgba(0, 0, 0, 0.12);
@@ -147,7 +141,7 @@ const StyledSearchBar = styled.input`
   }
 `;
 
-const Suggestions = styled.ul`
+const Suggestions = styled.ul `
   list-style-type: none;
   width: 140px;
   margin: 2px 0px 0px 0px;
@@ -162,7 +156,7 @@ const Suggestions = styled.ul`
   z-index: 1;
 `;
 
-const SuggestionListItem = styled.li`
+const SuggestionListItem = styled.li `
   text-transform: capitalize;
   text-align: left;
   cursor: pointer;
@@ -174,7 +168,7 @@ const SuggestionListItem = styled.li`
   }
 `;
 
-const ClearButton = styled.button`
+const ClearButton = styled.button `
   font-size: 1.1rem;
   position: absolute;
   right: -2px;

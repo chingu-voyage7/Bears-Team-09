@@ -5,15 +5,11 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 class DateSelector extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      startDate: null
-    };
-    this.handleChange = this.handleChange.bind(this);
-  }
+  state = {
+    startDate: null
+  };
 
-  handleChange(date) {
+  handleChange = (date) => {
     const { updateFilter } = this.props;
     this.setState({ startDate: date });
     updateFilter("date", date);
