@@ -18,28 +18,33 @@ class CategoryPicker extends Component {
     // mock API call for categories
     setTimeout(() => {
       const fetchedCatsObj = [
-        { cat: "sport", id: 123 },
-        { cat: "games", id: 234 },
-        { cat: "outdoors", id: 999 },
-        { cat: "social", id: 852 },
-        { cat: "arts & culture", id: 444 }
+        { name: "sport", id: 123 },
+        { name: "games", id: 234 },
+        { name: "outdoors", id: 999 },
+        { name: "social", id: 852 },
+        { name: "arts & culture", id: 444 }
       ];
       this.setState({ categories: fetchedCatsObj });
     }, 1500);
   }
 
-  handleCategorySelection = (e) => {
+  handleCategorySelection = (category) => {
     const { updateFilter } = this.props;
-    this.setState({ popupOpen: false, activeCategory: e.target.innerHTML });
-    updateFilter("category", e.target.innerHTML);
+    this.setState({ popupOpen: false, activeCategory: category.name });
+    // Callback gets called to parent events page with category ID
+    updateFilter("category", category.id);
   }
 
   render() {
-    const { popupOpen, activeCategory, categories } = this.state;
+    const {
+      popupOpen,
+      activeCategory,
+      categories
+    } = this.state;
     const categoryList = categories.map(categoryObj => (
-      <CategoryListItem key={categoryObj.id} onClick={this.handleCategorySelection}>
-        {categoryObj.cat}
-      </CategoryListItem>
+      <CategoryListItem key={categoryObj.id} onClick={(e) => this.handleCategorySelection(categoryObj, e)}>
+            {categoryObj.name}
+          </CategoryListItem>
     ));
 
     return (
@@ -57,7 +62,7 @@ CategoryPicker.propTypes = {
   updateFilter: PropTypes.func.isRequired
 };
 
-const CategoryWrapper = styled.div`
+const CategoryWrapper = styled.div `
   padding: 2px;
   line-height: 25px;
 
@@ -80,7 +85,7 @@ const CategoryWrapper = styled.div`
   }
 `;
 
-const CategoryBox = styled.div`
+const CategoryBox = styled.div `
   width: 140px;
   padding: 2px;
   cursor: pointer;
@@ -97,7 +102,7 @@ const CategoryBox = styled.div`
   }
 `;
 
-const CategoryListItem = styled.li`
+const CategoryListItem = styled.li `
   text-transform: capitalize;
   text-align: left;
   cursor: pointer;
