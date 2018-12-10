@@ -1,15 +1,17 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import Input from './Input';
-import AuthButton from './AuthButton';
-import LoginButton from './LoginButton';
+import React, { Component } from "react";
+import styled from "styled-components";
+import Router from "next/dist/lib/router";
+import Input from "./Input";
+import AuthButton from "./AuthButton";
+import LoginButton from "./LoginButton";
+import GoogleRegisterButton from "./GoogleRegisterButton";
 
 class FormContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: ''
+      email: "",
+      password: ""
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -17,17 +19,17 @@ class FormContainer extends Component {
     this.handleAuth = this.handleAuth.bind(this);
   }
 
-  handleAuth = (e, type) => {
+  handleAuth = (_, type) => {
     // Method to be used if we implement auth
     // with Google, Twitter, Facebook, etc.
-    e.preventDefault();
     console.log(`Auth with ${type}`);
+    Router.push("/");
   };
 
   handleSubmit = e => {
     // Login submission actions would be here
     e.preventDefault();
-    console.log('Submitting a form');
+    console.log("Submitting a form");
     // Handle failed login state
     // Handle Success login state -> redirect
   };
@@ -43,14 +45,7 @@ class FormContainer extends Component {
     return (
       <>
         <form onSubmit={this.handleSubmit}>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Email"
-            handleChange={this.handleInput}
-            required
-          />
+          <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
           <Input
             id="password"
             name="password"
@@ -63,21 +58,13 @@ class FormContainer extends Component {
         </form>
         <AuthButtonWrapper>
           <h4>Or use alternatives:</h4>
-          <AuthButton
-            theme="#3b5998"
-            title="Log in using Facebook"
-            action={e => this.handleAuth(e, 'fb')}
-          />
-          <AuthButton
+          <GoogleRegisterButton
             theme="#ea4335"
             title="Log in using Google"
-            action={e => this.handleAuth(e, 'gl')}
+            onCompletion={e => this.handleAuth(e, "gl")}
           />
-          <AuthButton
-            theme="#1da1f2"
-            title="Log in using Twitter"
-            action={e => this.handleAuth(e, 'tw')}
-          />
+          <AuthButton theme="#3b5998" title="Log in using Facebook" onCompletion={e => this.handleAuth(e, "fb")} />
+          <AuthButton theme="#1da1f2" title="Log in using Twitter" onCompletion={e => this.handleAuth(e, "tw")} />
         </AuthButtonWrapper>
       </>
     );

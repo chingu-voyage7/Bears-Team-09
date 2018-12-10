@@ -1,45 +1,32 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const UserContext = React.createContext();
 class UserProvider extends Component {
   state = {
-    user: 'guest',
-    userAuth: false
+    user: "guest",
+    loggedIn: false,
+    firstName: undefined,
+    lastName: undefined
   };
 
-  constructor() {
-    super();
-    this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);
-    this.updateUser = this.updateUser.bind(this);
-  }
+  logIn = data => {
+    console.log(`Logged in as ${data.profileObj.givenName} ${data.profileObj.familyName}`);
+    this.setState({ loggedIn: true, firstName: data.profileObj.givenName, lastName: data.profileObj.familyName });
+  };
 
-  login() {
-    this.setState({ userAuth: true });
-  }
+  logOut = () => {
+    this.setState({ loggedIn: false });
+  };
 
-  logout() {
-    this.setState({ userAuth: false });
-  }
-
-  updateUser(newName) {
+  updateUser = newName => {
     this.setState({ user: newName });
-  }
+  };
 
   render() {
-    const { user, userAuth } = this.state;
-    const { children } = this.props;
     return (
-      <UserContext.Provider
-        value={{
-          login: this.login,
-          logout: this.logout,
-          user,
-          userAuth
-        }}
-      >
-        {children}
+      <UserContext.Provider value={{ ...this.state, logIn: this.logIn, logOut: this.logOut }}>
+        {this.props.children}
       </UserContext.Provider>
     );
   }

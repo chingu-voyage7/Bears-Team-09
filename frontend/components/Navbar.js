@@ -1,7 +1,7 @@
-import React from 'react';
-import Link from 'next/link';
-import styled from 'styled-components';
-import { UserConsumer } from './UserProvider';
+import React from "react";
+import Link from "next/link";
+import styled from "styled-components";
+import { UserConsumer } from "./UserProvider";
 
 class Navbar extends React.Component {
   render() {
@@ -27,14 +27,15 @@ class Navbar extends React.Component {
             <p>[Logo]</p>
           </Logo>
           <UserConsumer>
-            {({ userAuth, logout }) =>
-              userAuth ? (
+            {({ loggedIn, logOut }) => {
+              console.log(loggedIn);
+              return loggedIn ? (
                 <li>
                   <AuthSection>
                     <span aria-label="person-emoji" role="img">
                       🙎
                     </span>
-                    <button onClick={logout} type="button">
+                    <button onClick={logOut} type="button">
                       Logout
                     </button>
                   </AuthSection>
@@ -51,8 +52,8 @@ class Navbar extends React.Component {
                     </Link>
                   </UnAuthSection>
                 </li>
-              )
-            }
+              );
+            }}
           </UserConsumer>
         </ul>
       </StyledNav>

@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import MainLayout from '../components/MainLayout';
+import React from "react";
+import styled from "styled-components";
+import MainLayout from "../components/MainLayout";
 
 export default () => (
   <MainLayout>
