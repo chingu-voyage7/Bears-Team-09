@@ -1,26 +1,48 @@
 const express = require('express');
+const Place = require('../models/Place');
+const APIError = require('../utils/APIError.js');
 
 const router = express.Router();
 
-// this one will be protected
 router.get('/', (req, res) => {
-  res.json({message: 'list places placeholder'});
+    const place = new Place();
+    place.read()
+    .then(data => {res.json({places: data});})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
 router.post('/', (req, res) => {
-    res.json({message: 'create place placeholder'});
+    const place = new Place(req.body);
+    place.create()
+    .then(() => {res.status(201).json();})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
 router.get('/:id', (req, res) => {
-    res.json({message: 'get place placeholder'});
+    const place = new Place({id: req.params.id});
+    place.read()
+    .then(([data]) => {
+        if (data === undefined) {
+            throw new APIError('Not found', 404);
+        }
+        res.json(data);
+    })
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
 router.delete('/:id', (req, res) => {
-    res.json({message: 'delete place placeholder'});
+    const place = new Place({id: req.params.id});
+    place.delete()
+    .then(() => {res.status(204).json();})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
 router.put('/:id', (req, res) => {
-    res.json({message: 'update place placeholder'});
+    const place = new Place({id: req.params.id});
+    place.data = req.body;
+    place.update()
+    .then(() => {res.json();})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
 module.exports = router;

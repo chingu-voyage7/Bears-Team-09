@@ -17,16 +17,8 @@ passport.use(
    (email, password, done) => {
       const user = new User({email});
       return user.read()
-        .then(([data]) => {
-          if (data) {
-            const isAuthenticated = bcrypt.compare(password, data.password);
-            delete data.password;
-            user.data = data;
-            return isAuthenticated;
-          }
-          return false;
-        })
-        .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, false, new Error('Incorrect username or password')))
+        .then(([data]) => bcrypt.compare(password, data.password))
+        .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, false, {message: 'Incorrect username or password', statusCode: 401}))
         .catch(err => done(null, false, err));
     }
 ));
@@ -36,15 +28,24 @@ passport.use(
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
       secretOrKey : secret
     },
-   (jwtPayload, done) => {
-      const user = new User({email: jwtPayload.pk});
+    (jwtPayload, done) => {
+      const user = new User({id: jwtPayload.id});
       return user.read()
-        .then(([data]) => {
-          delete data.password;
-          return done(null, data);
-        })
-        .catch(err => done(err));
+        .then(() => done(null, user))
+        .catch(err => done(null, false, err));
       }
 ));
 
-module.exports = passport;
+module.exports = (strategy) => (req, res, next) =>
+    passport.authenticate(strategy, {session: false}, (err, user, info) => {
+        if (err || !user) {
+            return res.status(401).json({message: info.message});
+        }
+        req.login(user, {session: false}, (error) => {
+            if (error) {
+                return res.status(400).json({message: error.message});
+            }
+            return res;
+        });
+        return next();
+    })(req, res, next);

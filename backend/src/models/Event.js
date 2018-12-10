@@ -1,40 +1,27 @@
-const Table = require("./Table");
+const Table = require('./Table');
 
 class Event extends Table {
-  constructor(id) {
-    super();
-    this.data = { id };
-    this.tableName = "events";
-    this.pk = "id";
-    this.saveDataToSelf = this.saveDataToSelf.bind(this);
+  constructor(data={}) {
+    const pk = 'id';
+    const tableName = 'events';
+    const ACCEPTED_FIELDS = ['id', 'name', 'description', 'activityid', 'placeid', 'datefrom', 'dateto', 'minpeople', 'maxpeople'];
+    Object.keys(data).forEach(key => {
+      if (!ACCEPTED_FIELDS.includes(key)) {
+            delete data[key];
+        }
+    });
+    super(tableName, pk, data);
+  }
+
+  read(compareOperator='=', logicalOperator='AND') {
+    const text = `SELECT events.id, events.name, events.description,
+    activities.name as activity, places.country, places.city,
+    events.datefrom, events.dateto, events.minpeople, events.maxpeople
+    FROM ${this.tableName}
+    LEFT JOIN activities ON activities.id = events.activityid
+    LEFT JOIN places ON places.id = events.placeid`;
+    return super.read(compareOperator, logicalOperator, text);
   }
 }
 
 module.exports = Event;
-
-// Usage example
-// Create an event object
-// const testEvent = new Event("123");
-
-// Create event in DB
-// testEvent.create();
-
-// Update event object
-// testEvent.data.description = "Get drunk";
-// testEvent.data.city = "Toronto";
-// Save changes to DB
-// testEvent
-//   .writeData()
-//   .then(console.log)
-//   .catch(console.log);
-
-// // Populate event object with data from DB
-// testEvent
-//   .readData()
-//   .then(console.log)
-//   .catch(console.log);
-
-// console.log(testEvent.city); // Toronto
-
-// // Delete event
-// testEvent.delete();
