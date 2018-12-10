@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 /*
 Component Fetches the category list from API and shows that as a dropdown
 Upon Category selection, component calls a callback function that triggers
@@ -32,8 +33,10 @@ class CategoryPicker extends Component {
   }
 
   handleCategorySelection(e) {
+    const { updateFilter } = this.props;
     // CB should be called here to indicate that we need to re-render event list based on new category
     this.setState({ popupOpen: false, activeCategory: e.target.innerHTML });
+    updateFilter("category", e.target.innerHTML);
   }
 
   render() {
@@ -54,6 +57,10 @@ class CategoryPicker extends Component {
 }
 
 export default CategoryPicker;
+
+CategoryPicker.propTypes = {
+  updateFilter: PropTypes.func.isRequired
+};
 
 const CategoryWrapper = styled.div`
   padding: 2px;
