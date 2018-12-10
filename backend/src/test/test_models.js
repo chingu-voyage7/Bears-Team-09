@@ -455,7 +455,6 @@ describe('Test Event Model', () => {
                     result = res;
                 })
                 .catch(err => {
-                    console.log(err);
                     error = err;
                 })
                 .finally(() => done());
