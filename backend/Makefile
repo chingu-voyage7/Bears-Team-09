@@ -4,7 +4,7 @@ DEV_COMPOSE_FILE := docker/dev/docker-compose.yml
 # Docker-compose Project Name
 DEV_PROJECT := chingu
 
-.PHONY: test run
+.PHONY: test run clean
 
 test:
 	@ echo "Pulling dependencies from Docker Hub..."
