@@ -30,6 +30,8 @@ services:
       - JWT_EXP_THRESHOLD=1 day
     depends_on:
       - db
+    ports:
+      - "8000:8000"
     command: run start
 
   test:
