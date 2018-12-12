@@ -9,11 +9,18 @@ class DateSelector extends React.Component {
     startDate: null
   };
 
-  handleChange = (date) => {
+  handleChange = date => {
     const { updateFilter } = this.props;
-    this.setState({ startDate: date });
-    updateFilter("date", date);
-  }
+    // handle clear date action
+    if (date === null) {
+      this.setState({ startDate: null });
+      updateFilter("datefrom", null);
+      return;
+    }
+    const formatDate = date.toISOString();
+    this.setState({ startDate: formatDate });
+    updateFilter("datefrom", formatDate);
+  };
 
   render() {
     const { startDate } = this.state;
@@ -31,6 +38,7 @@ class DateSelector extends React.Component {
           selected={startDate}
           onChange={this.handleChange}
           placeholderText="time"
+          isClearable
         />
       </DatePickerStylingWrapper>
     );
@@ -49,8 +57,8 @@ const DatePickerStylingWrapper = styled.div`
     padding: 5px;
     border-radius: 3px;
     outline: 0;
-    width: 100px;
-    text-align: center;
+    width: 120px;
+    text-align: left;
     font-size: 1rem;
     border: 1px solid rgba(0, 0, 0, 0.12);
     color: #757575;
