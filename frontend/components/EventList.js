@@ -3,34 +3,37 @@ import { format } from "date-fns";
 import EventListItem from "./EventListItem";
 
 // we would use this helper function to filter events, may need to push out //to utils folder for cleaner looking component
-function applyEventsFilter(events, filters = null) {
-  console.log(`we are in apply filter fns`);
-
-  if (!filters) return events;
-  const filterArr = Object.keys(filters);
-  const filteredEvents = events.filter(event => {
-    for (let i = 0; i < filterArr.length; i++) {
-      const currFilter = filterArr[i];
-      // handle unset state which is null and should be ignored
-      if (filters[currFilter] === null) break;
-      // special handling of the date filter as we need to format it
-      if (currFilter === "datefrom") {
-        if (format(new Date(filters[currFilter]), "yyy-MM-dd") !== format(new Date(event[currFilter]), "yyy-MM-dd")) {
-          return false;
+function applyEventsFilter(events, filters) {
+  let filterMatch = true;
+  function compareEventAndFilter(event, filtersObject) {
+    // we would always loop over every filter that is present
+    Object.keys(filtersObject).forEach(filter => {
+      // comparing filter value to the event value
+      // handle null value which should return true (skip)
+      if (filters[filter] === null) {
+        filterMatch = true;
+        return;
+      }
+      if (filter === "datefrom") {
+        // nomralization before comparison
+        const filterDate = format(filters[filter], "YYYY-MM-DD");
+        const eventDate = format(event[filter], "YYYY-MM-DD");
+        if (filterDate !== eventDate) {
+          filterMatch = false;
         }
-        return true;
       }
-      // handle everything else
-      console.log(`checking everything else`);
-
-      console.log(filters[currFilter].toLowerCase());
-      console.log(event[currFilter].toLowerCase());
-      if (filters[currFilter].toLowerCase() !== event[currFilter].toLowerCase()) {
-        return false;
+      if (filter === "activity" || filter === "city") {
+        // these two should be handled the same
+        const filterValue = filters[filter].toLowerCase();
+        const eventValue = event[filter].toLowerCase();
+        if (filterValue !== eventValue) {
+          filterMatch = false;
+        }
       }
-    }
-    return true;
-  });
+    });
+    return filterMatch;
+  }
+  const filteredEvents = events.filter(event => compareEventAndFilter(event, filters));
   return filteredEvents;
 }
 
