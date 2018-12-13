@@ -7,7 +7,6 @@ import Input from "./Input";
 import AuthButton from "./AuthButton";
 import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
-import { UserConsumer } from "./UserProvider";
 
 class RegisterForm extends Component {
   state = {

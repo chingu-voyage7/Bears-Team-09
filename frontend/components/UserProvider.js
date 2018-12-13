@@ -20,6 +20,7 @@ class UserProvider extends Component {
   }
 
   logIn = ({ data, method = "password" }) => {
+    console.log(data);
     if (method === "oauth") {
       console.log(`Logged in as ${data.profileObj.givenName} ${data.profileObj.familyName}`);
       this.setState({ loggedIn: true, firstName: data.profileObj.givenName, lastName: data.profileObj.familyName });
