@@ -24,7 +24,7 @@ class GoogleRegisterButton extends Component {
               clientId={config.GOOGLE_CLIENT_ID}
               buttonText="Login"
               onSuccess={args => {
-                context.logIn(args);
+                context.logIn({args, method: "oauth"});
                 onCompletion();
               }}
               onFailure={console.error}

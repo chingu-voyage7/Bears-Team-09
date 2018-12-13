@@ -1,34 +1,30 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import Router from "next/router";
+import axios from "axios";
+import PropTypes from "prop-types";
 import Input from "./Input";
 import AuthButton from "./AuthButton";
 import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
+import { UserConsumer } from "./UserProvider";
 
-class FormContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      firstName: "",
-      lastName: "",
-      password: "",
-      confirmPassword: "",
-      email: "",
-      passwordsDontMatch: false
-    };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleInput = this.handleInput.bind(this);
-    this.handleAuth = this.handleAuth.bind(this);
-  }
+class RegisterForm extends Component {
+  state = {
+    firstName: "",
+    lastName: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+    passwordsDontMatch: false
+  };
 
   handleAuth = (_, type) => {
     console.log(`Register with ${type}`);
     Router.push("/");
   };
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     // Register new user
     e.preventDefault();
 
@@ -40,16 +36,24 @@ class FormContainer extends Component {
       this.setState({ passwordsDontMatch: false });
     }
 
-    // Handle failed register state
     // Handle Success register state -> redirect
+    const res = await axios.post("http://localhost:8000/auth/register", {
+      email: this.state.email,
+      password: this.state.password,
+      first_name: this.state.firstName,
+      last_name: this.state.lastName
+    });
+    console.log(res);
+    this.props.context.logIn({ data: res.data, method: "password" });
+    // Handle failed register state
   };
 
-  handleInput(e) {
+  handleInput = e => {
     // Method that syncs current input with state
     const { name, value } = e.target;
     const inputValue = { ...this.state, [name]: value };
     this.setState(inputValue);
-  }
+  };
 
   render() {
     const { passwordsDontMatch } = this.state;
@@ -107,7 +111,11 @@ class FormContainer extends Component {
   }
 }
 
-export default FormContainer;
+export default RegisterForm;
+
+RegisterForm.propTypes = {
+  context: PropTypes.object
+};
 
 const AuthButtonWrapper = styled.div`
   display: grid;
