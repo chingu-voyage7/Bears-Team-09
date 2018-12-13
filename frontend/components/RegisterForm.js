@@ -15,13 +15,16 @@ class RegisterForm extends Component {
     password: "",
     confirmPassword: "",
     email: "",
-    passwordsDontMatch: false
+    passwordsDontMatch: false,
+    registrationFailed: false
   };
 
   handleAuth = (_, type) => {
     console.log(`Register with ${type}`);
     Router.push("/");
   };
+
+  handleFail = () => this.setState({ registrationFailed: true });
 
   handleSubmit = async e => {
     // Register new user
@@ -36,15 +39,21 @@ class RegisterForm extends Component {
     }
 
     // Handle Success register state -> redirect
-    const res = await axios.post("http://localhost:8000/auth/register", {
-      email: this.state.email,
-      password: this.state.password,
-      first_name: this.state.firstName,
-      last_name: this.state.lastName
-    });
-    console.log(res);
-    this.props.context.logIn({ data: res.data, method: "password" });
-    // Handle failed register state
+    axios
+      .post("http://localhost:8000/auth/register", {
+        email: this.state.email,
+        password: this.state.password,
+        first_name: this.state.firstName,
+        last_name: this.state.lastName
+      })
+      .then(res => {
+        this.props.context.logIn({ data: res.data, method: "password" });
+        this.handleAuth(null, "email/password");
+      })
+      .catch(err => {
+        console.error(err);
+        this.handleFail();
+      });
   };
 
   handleInput = e => {
@@ -55,7 +64,7 @@ class RegisterForm extends Component {
   };
 
   render() {
-    const { passwordsDontMatch } = this.state;
+    const { passwordsDontMatch, registrationFailed } = this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
@@ -94,6 +103,7 @@ class RegisterForm extends Component {
           />
           <LoginButton title="Register" />
           {passwordsDontMatch && <StyledErrorMsg>Make sure that passwords match!</StyledErrorMsg>}
+          {registrationFailed && <StyledErrorMsg>Registration failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>
           <h4>Or use alternatives:</h4>
@@ -101,6 +111,7 @@ class RegisterForm extends Component {
             theme="#ea4335"
             title="Register using Google"
             onCompletion={e => this.handleAuth(e, "gl")}
+            onFailure={this.handleFail}
           />
           <AuthButton theme="#3b5998" title="Register using Facebook" onCompletion={e => this.handleAuth(e, "fb")} />
           <AuthButton theme="#1da1f2" title="Register using Twitter" onCompletion={e => this.handleAuth(e, "tw")} />

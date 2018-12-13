@@ -21,19 +21,23 @@ class UserProvider extends Component {
 
   logIn = ({ data, method = "password" }) => {
     console.log(data);
+    if (!["oauth", "password"].includes(method)) throw new Error("Auth method not recognized");
+
     if (method === "oauth") {
-      console.log(`Logged in as ${data.profileObj.givenName} ${data.profileObj.familyName}`);
-      this.setState({ loggedIn: true, firstName: data.profileObj.givenName, lastName: data.profileObj.familyName });
+      this.setState({ loggedIn: true, firstName: data.givenName, lastName: data.familyName, email: data.email });
     } else if (method === "password") {
-      console.log(`Logged in as ${data.first_name} ${data.last_name}`);
       this.setState({ loggedIn: true, firstName: data.first_name, lastName: data.last_name, email: data.email });
-    } else {
-      throw new Error("Auth method not recognized");
     }
+    console.log(`Logged in as ${this.state.firstName} ${this.state.lastName}`);
+    Object.entries(this.state).forEach(([key, value]) => {
+      localStorage.setItem(key, value);
+    });
+    localStorage.setItem("loggedIn", "true");
   };
 
   logOut = () => {
     this.setState({ loggedIn: false, firstName: null, lastName: null, email: null });
+    localStorage.clear();
   };
 
   updateUser = newName => {
