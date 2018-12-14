@@ -6,7 +6,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
 import EventList from "../components/EventList";
-import CategoryPicker from "../components/CategoryPicker";
+import ActivityPicker from "../components/ActivityPicker";
 import LocationSearch from "../components/LocationSearch";
 
 // using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS
@@ -18,25 +18,54 @@ const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), 
 
 class Dashboard extends Component {
   state = {
-    eventFilters: { date: null, location: null, category: null }
+    eventFilters: { datefrom: null, city: null, activity: null }
   };
 
   static async getInitialProps() {
-    const events = axios("/events");
-    return { events };
+    // temporary utilization of tokens
+    const AuthStr = "";
+
+    const events = await axios({
+      method: "get",
+      url: `http://localhost:8000/events`,
+      headers: {
+        Authorization: AuthStr
+      }
+    });
+
+    const places = await axios({
+      method: "get",
+      url: `http://localhost:8000/places`,
+      headers: {
+        Authorization: AuthStr
+      }
+    });
+
+    const activities = await axios({
+      method: "get",
+      url: `http://localhost:8000/activities`,
+      headers: {
+        Authorization: AuthStr
+      }
+    });
+
+    return { events: events.data, places: places.data, activities: activities.data };
   }
 
   updateFilter = (type, data) => {
+    console.log(`receiving ${type}, ${data}`);
+
     const oldState = Object.assign({}, this.state);
     const newFilters = oldState.eventFilters;
     newFilters[type] = data;
     oldState.eventFilters = newFilters;
     this.setState({ eventFilters: newFilters });
+    // console.log(newFilters);
   };
 
   render() {
     const { eventFilters } = this.state;
-    const { events } = this.props;
+    const { events, places, activities } = this.props;
     return (
       <MainLayout>
         <TopPanel>
@@ -65,13 +94,13 @@ class Dashboard extends Component {
         </Divider>
         <FilterControlPanel>
           <span>Pick a</span>
-          <CategoryPicker updateFilter={this.updateFilter} />
+          <ActivityPicker activities={activities.activities} updateFilter={this.updateFilter} />
           <span>choose</span>
           <DateSelectorDynamic updateFilter={this.updateFilter} />
           <span>and</span>
-          <LocationSearch updateFilter={this.updateFilter} />
+          <LocationSearch locations={places.places} updateFilter={this.updateFilter} />
         </FilterControlPanel>
-        <EventList events={events} filters={eventFilters} />
+        {events && <EventList events={events.events} filters={eventFilters} />}
       </MainLayout>
     );
   }
@@ -87,6 +116,15 @@ Dashboard.propTypes = {
     name: PropTypes.string,
     datefrom: PropTypes.string,
     dateto: PropTypes.string
+  }).isRequired,
+  places: PropTypes.shape({
+    id: PropTypes.number,
+    country: PropTypes.string,
+    city: PropTypes.string
+  }).isRequired,
+  activities: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string
   }).isRequired
 };
 

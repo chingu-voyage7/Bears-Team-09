@@ -12,29 +12,9 @@ class ActivityPicker extends Component {
     activities: []
   };
 
-  /* Real API call, would need to pass token and handle error states
-  static async getInitialProps() {
-    const activities = await axios("/activities");
-    return { activities }
-  }
-  */
-
   componentDidMount() {
-    // Real API call would get data through props
-    // const { activities } = this.props;
-    // this.setState({ activities });
-
-    // mock API call for activities
-    setTimeout(() => {
-      const fetchedActivityObject = [
-        { id: 123, name: "sport" },
-        { id: 234, name: "games" },
-        { id: 999, name: "outdoors" },
-        { id: 852, name: "social" },
-        { id: 444, name: "arts & culture" }
-      ];
-      this.setState({ activities: fetchedActivityObject });
-    }, 1500);
+    const { activities } = this.props;
+    this.setState({ activities });
   }
 
   handleActivitySelection = activity => {
@@ -64,7 +44,8 @@ class ActivityPicker extends Component {
 export default ActivityPicker;
 
 ActivityPicker.propTypes = {
-  updateFilter: PropTypes.func.isRequired
+  updateFilter: PropTypes.func.isRequired,
+  activities: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 const ActivityWrapper = styled.div`

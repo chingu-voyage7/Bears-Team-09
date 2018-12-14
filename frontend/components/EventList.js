@@ -4,6 +4,8 @@ import EventListItem from "./EventListItem";
 
 // we would use this helper function to filter events, may need to push out //to utils folder for cleaner looking component
 function applyEventsFilter(events, filters = null) {
+  console.log(`we are in apply filter fns`);
+
   if (!filters) return events;
   const filterArr = Object.keys(filters);
   const filteredEvents = events.filter(event => {
@@ -19,7 +21,11 @@ function applyEventsFilter(events, filters = null) {
         return true;
       }
       // handle everything else
-      if (filters[currFilter] !== event[currFilter]) {
+      console.log(`checking everything else`);
+
+      console.log(filters[currFilter].toLowerCase());
+      console.log(event[currFilter].toLowerCase());
+      if (filters[currFilter].toLowerCase() !== event[currFilter].toLowerCase()) {
         return false;
       }
     }
