@@ -27,8 +27,8 @@ class Navbar extends React.Component {
             <p>[Logo]</p>
           </Logo>
           <UserConsumer>
-            {({ loggedIn, logOut }) => {
-              return loggedIn ? (
+            {({ loggedIn, logOut }) =>
+              loggedIn ? (
                 <li>
                   <AuthSection>
                     <Link href="/profile">
@@ -51,8 +51,8 @@ class Navbar extends React.Component {
                     </Link>
                   </UnAuthSection>
                 </li>
-              );
-            }}
+              )
+            }
           </UserConsumer>
         </ul>
       </StyledNav>
