@@ -7,6 +7,7 @@ import Input from "./Input";
 import AuthButton from "./AuthButton";
 import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
+import StyledErrorMsg from "../styles/StyledErrorMsg";
 
 class RegisterForm extends Component {
   state = {
@@ -24,10 +25,7 @@ class RegisterForm extends Component {
     Router.push("/");
   };
 
-  handleFail = () => this.setState({ registrationFailed: true });
-
   handleSubmit = async e => {
-    // Register new user
     e.preventDefault();
 
     // Perform password validation
@@ -55,6 +53,8 @@ class RegisterForm extends Component {
         this.handleFail();
       });
   };
+
+  handleFail = () => this.setState({ registrationFailed: true });
 
   handleInput = e => {
     // Method that syncs current input with state
@@ -135,9 +135,4 @@ const AuthButtonWrapper = styled.div`
   h4 {
     margin-bottom: 5px;
   }
-`;
-
-const StyledErrorMsg = styled.span`
-  margin-left: 10px;
-  color: red;
 `;

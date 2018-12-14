@@ -7,7 +7,9 @@ class UserProvider extends Component {
     loggedIn: false,
     firstName: null,
     lastName: null,
-    email: null
+    email: null,
+    token: null,
+    bio: null
   };
 
   componentDidMount() {
@@ -15,7 +17,9 @@ class UserProvider extends Component {
       loggedIn: localStorage.getItem("loggedIn") === "true",
       firstName: localStorage.getItem("firstName"),
       lastName: localStorage.getItem("lastName"),
-      email: localStorage.getItem("email")
+      email: localStorage.getItem("email"),
+      token: localStorage.getItem("token"),
+      bio: localStorage.getItem("bio")
     });
   }
 
@@ -26,17 +30,23 @@ class UserProvider extends Component {
     if (method === "oauth") {
       this.setState({ loggedIn: true, firstName: data.givenName, lastName: data.familyName, email: data.email });
     } else if (method === "password") {
-      this.setState({ loggedIn: true, firstName: data.first_name, lastName: data.last_name, email: data.email });
+      this.setState({
+        loggedIn: true,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        email: data.email,
+        token: data.token,
+        bio: data.bio
+      });
     }
     console.log(`Logged in as ${this.state.firstName} ${this.state.lastName}`);
     Object.entries(this.state).forEach(([key, value]) => {
       localStorage.setItem(key, value);
     });
-    localStorage.setItem("loggedIn", "true");
   };
 
   logOut = () => {
-    this.setState({ loggedIn: false, firstName: null, lastName: null, email: null });
+    this.setState({ loggedIn: false, firstName: null, lastName: null, email: null, token: null });
     localStorage.clear();
   };
 

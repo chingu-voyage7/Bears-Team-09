@@ -8,7 +8,7 @@ class Profile extends Component {
   }
 
   render() {
-    const { firstName, lastName, loggedIn } = this.props.context;
+    const { firstName, lastName, loggedIn, email } = this.props.context;
     return (
       <Container>
         {loggedIn ? (
@@ -16,7 +16,7 @@ class Profile extends Component {
             <h3>
               {firstName} {lastName}
             </h3>
-            Email: {this.email}
+            Email: {email}
           </>
         ) : (
           "Please log in to view this page"
@@ -27,8 +27,12 @@ class Profile extends Component {
 }
 
 Profile.propTypes = {
-  context: PropTypes.shape({ firstName: PropTypes.string, lastName: PropTypes.string, loggedIn: PropTypes.bool })
-    .isRequired
+  context: PropTypes.shape({
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    email: PropTypes.string,
+    loggedIn: PropTypes.bool
+  }).isRequired
 };
 
 export default Profile;
