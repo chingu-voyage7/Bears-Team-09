@@ -28,7 +28,6 @@ class Navbar extends React.Component {
           </Logo>
           <UserConsumer>
             {({ loggedIn, logOut }) => {
-              console.log(loggedIn);
               return loggedIn ? (
                 <li>
                   <AuthSection>

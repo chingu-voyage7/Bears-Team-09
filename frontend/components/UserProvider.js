@@ -24,7 +24,6 @@ class UserProvider extends Component {
   }
 
   logIn = ({ data, method = "password" }) => {
-    console.log(data);
     if (!["oauth", "password"].includes(method)) throw new Error("Auth method not recognized");
 
     if (method === "oauth") {
