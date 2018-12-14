@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import LoginForm from '../components/LoginForm';
-import MainLayout from '../components/MainLayout';
+import React, { Component } from "react";
+import styled from "styled-components";
+import LoginForm from "../components/LoginForm";
+import MainLayout from "../components/MainLayout";
+import { UserConsumer } from "../components/UserProvider";
 
 class LoginPage extends Component {
   render() {
@@ -11,7 +12,7 @@ class LoginPage extends Component {
           <InputSection>
             <Title>Log in</Title>
             <p>If you have no account: [register!]</p>
-            <LoginForm />
+            <UserConsumer>{context => <LoginForm context={context} />}</UserConsumer>
           </InputSection>
         </LoginWrapper>
       </MainLayout>

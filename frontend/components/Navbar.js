@@ -27,14 +27,13 @@ class Navbar extends React.Component {
             <p>[Logo]</p>
           </Logo>
           <UserConsumer>
-            {({ loggedIn, logOut }) => {
-              console.log(loggedIn);
-              return loggedIn ? (
+            {({ loggedIn, logOut }) =>
+              loggedIn ? (
                 <li>
                   <AuthSection>
-                    <span aria-label="person-emoji" role="img">
-                      🙎
-                    </span>
+                    <Link href="/profile">
+                      <button type="button">Profile</button>
+                    </Link>
                     <button onClick={logOut} type="button">
                       Logout
                     </button>
@@ -52,8 +51,8 @@ class Navbar extends React.Component {
                     </Link>
                   </UnAuthSection>
                 </li>
-              );
-            }}
+              )
+            }
           </UserConsumer>
         </ul>
       </StyledNav>
@@ -119,7 +118,6 @@ const AuthSection = styled.div`
   display: flex;
   align-items: center;
   padding: 1px;
-  background: #b74e3a45;
   margin-left: 10px;
   border-radius: 5px;
   font-size: 0.9rem;
@@ -134,7 +132,7 @@ const AuthSection = styled.div`
     color: white;
     border: 1px solid white;
     border-radius: 0;
-    background: #b74e3a45;
+    background: inherit;
     cursor: pointer;
   }
 `;

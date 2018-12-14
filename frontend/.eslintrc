@@ -20,6 +20,8 @@
     "react/jsx-one-expression-per-line": 0,
     "react/no-unused-state": 0,
     "react/destructuring-assignment": 0,
+    "react/require-default-props": 0,
+    "react/forbid-prop-types": [2, { "forbid": ["any", "array"] }],
     "import/no-unresolved": 0
   },
   "plugins": ["prettier", "json", "markdown", "html"],

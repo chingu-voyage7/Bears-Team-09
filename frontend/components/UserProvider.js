@@ -4,19 +4,49 @@ import PropTypes from "prop-types";
 const UserContext = React.createContext();
 class UserProvider extends Component {
   state = {
-    user: "guest",
     loggedIn: false,
-    firstName: undefined,
-    lastName: undefined
+    firstName: null,
+    lastName: null,
+    email: null,
+    token: null,
+    bio: null
   };
 
-  logIn = data => {
-    console.log(`Logged in as ${data.profileObj.givenName} ${data.profileObj.familyName}`);
-    this.setState({ loggedIn: true, firstName: data.profileObj.givenName, lastName: data.profileObj.familyName });
+  componentDidMount() {
+    this.setState({
+      loggedIn: localStorage.getItem("loggedIn") === "true",
+      firstName: localStorage.getItem("firstName"),
+      lastName: localStorage.getItem("lastName"),
+      email: localStorage.getItem("email"),
+      token: localStorage.getItem("token"),
+      bio: localStorage.getItem("bio")
+    });
+  }
+
+  logIn = ({ data, method = "password" }) => {
+    if (!["oauth", "password"].includes(method)) throw new Error("Auth method not recognized");
+
+    if (method === "oauth") {
+      this.setState({ loggedIn: true, firstName: data.givenName, lastName: data.familyName, email: data.email });
+    } else if (method === "password") {
+      this.setState({
+        loggedIn: true,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        email: data.email,
+        token: data.token,
+        bio: data.bio
+      });
+    }
+    console.log(`Logged in as ${this.state.firstName} ${this.state.lastName}`);
+    Object.entries(this.state).forEach(([key, value]) => {
+      localStorage.setItem(key, value);
+    });
   };
 
   logOut = () => {
-    this.setState({ loggedIn: false });
+    this.setState({ loggedIn: false, firstName: null, lastName: null, email: null, token: null });
+    localStorage.clear();
   };
 
   updateUser = newName => {
