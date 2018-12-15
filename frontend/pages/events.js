@@ -8,7 +8,6 @@ import MainLayout from "../components/MainLayout";
 import EventList from "../components/EventList";
 import ActivityPicker from "../components/ActivityPicker";
 import LocationSearch from "../components/LocationSearch";
-import { UserContext } from "../components/UserProvider";
 // using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS
 // there may be a cleaner solution that I am not aware of
 
@@ -108,8 +107,6 @@ class Dashboard extends Component {
     );
   }
 }
-
-Dashboard.contextType = UserContext;
 
 export default Dashboard;
 
