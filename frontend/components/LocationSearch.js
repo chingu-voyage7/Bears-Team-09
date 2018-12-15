@@ -13,7 +13,6 @@ class LocationSearch extends Component {
 
   componentDidMount() {
     const { locations } = this.props;
-    console.log(locations);
     this.setState({ locations });
   }
 
@@ -36,17 +35,13 @@ class LocationSearch extends Component {
   };
 
   clearInput = () => {
-    this.setState({ currentInput: "" });
-    this.setState({ suggestions: [] });
-    this.setState({ suggestionPopup: false });
+    const { updateFilter } = this.props;
+    this.setState({ currentInput: "", suggestions: [], suggestionPopup: false }, updateFilter("city", null));
   };
 
   selectLocation = (e, locationName) => {
-    console.log(`sending ${locationName}`);
     const { updateFilter } = this.props;
-    this.setState({ currentInput: locationName });
-    this.setState({ suggestionPopup: false });
-    updateFilter("city", locationName);
+    this.setState({ currentInput: locationName, suggestionPopup: false }, updateFilter("city", locationName));
   };
 
   render() {

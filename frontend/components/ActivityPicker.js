@@ -21,7 +21,7 @@ class ActivityPicker extends Component {
     const { updateFilter } = this.props;
     this.setState({ popupOpen: false, selectedActivity: activity.name });
     // Callback gets called to parent events page with activity ID
-    updateFilter("activity", activity.id);
+    updateFilter("activity", activity.name);
   };
 
   render() {

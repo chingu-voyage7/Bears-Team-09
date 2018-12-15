@@ -13,13 +13,10 @@ class DateSelector extends React.Component {
     const { updateFilter } = this.props;
     // handle clear date action
     if (date === null) {
-      this.setState({ startDate: null });
-      updateFilter("datefrom", null);
-      return;
+      this.setState({ startDate: null }, updateFilter("datefrom", null));
+    } else {
+      this.setState({ startDate: date }, updateFilter("datefrom", date));
     }
-    const formatDate = date.toISOString();
-    this.setState({ startDate: formatDate });
-    updateFilter("datefrom", formatDate);
   };
 
   render() {

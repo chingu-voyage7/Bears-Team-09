@@ -8,7 +8,7 @@ import MainLayout from "../components/MainLayout";
 import EventList from "../components/EventList";
 import ActivityPicker from "../components/ActivityPicker";
 import LocationSearch from "../components/LocationSearch";
-
+import { UserContext } from "../components/UserProvider";
 // using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS
 // there may be a cleaner solution that I am not aware of
 
@@ -22,8 +22,8 @@ class Dashboard extends Component {
   };
 
   static async getInitialProps() {
-    // temporary utilization of tokens
-    const AuthStr = "";
+    const token = localStorage.getItem("token");
+    const AuthStr = `Bearer ${token}`;
 
     const events = await axios({
       method: "get",
@@ -53,14 +53,14 @@ class Dashboard extends Component {
   }
 
   updateFilter = (type, data) => {
-    console.log(`receiving ${type}, ${data}`);
-
     const oldState = Object.assign({}, this.state);
-    const newFilters = oldState.eventFilters;
-    newFilters[type] = data;
-    oldState.eventFilters = newFilters;
-    this.setState({ eventFilters: newFilters });
-    // console.log(newFilters);
+    const oldFilters = oldState.eventFilters;
+    oldFilters[type] = data;
+    this.setState({ eventFilters: oldFilters });
+  };
+
+  clearFilters = () => {
+    this.setState({ eventFilters: { datefrom: null, city: null, activity: null } });
   };
 
   render() {
@@ -99,12 +99,17 @@ class Dashboard extends Component {
           <DateSelectorDynamic updateFilter={this.updateFilter} />
           <span>and</span>
           <LocationSearch locations={places.places} updateFilter={this.updateFilter} />
+          <button type="button" onClick={this.clearFilters}>
+            Clear
+          </button>
         </FilterControlPanel>
         {events && <EventList events={events.events} filters={eventFilters} />}
       </MainLayout>
     );
   }
 }
+
+Dashboard.contextType = UserContext;
 
 export default Dashboard;
 
