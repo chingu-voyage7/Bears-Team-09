@@ -7,16 +7,19 @@ const SECRET = process.env.JWT_SECRET || 'Default_JWT-Secret';
 const JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || '1 day';
 
 class User extends Table {
-  constructor(data={}) {
+  constructor(rawData={}) {
     const pk = 'id';
     const tableName = 'users';
     const ACCEPTED_FIELDS = ['id', 'email', 'firstName', 'lastName', 'password', 'bio'];
-    Object.keys(data).forEach(key => {
-      if (!ACCEPTED_FIELDS.includes(key)) {
-            delete data[key];
-        }
+    const cleanData = {};
+    Object.keys(rawData).forEach(key => {
+      if (ACCEPTED_FIELDS.includes(key)) {
+        cleanData[key] = rawData[key];
+      }
     });
-    super(tableName, pk, data);
+    super(tableName, pk, cleanData);
+    this.ACCEPTED_FIELDS = ACCEPTED_FIELDS;
+    this.parseOpts(rawData);
   }
 
   refreshToken() {
