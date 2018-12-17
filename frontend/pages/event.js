@@ -2,16 +2,14 @@ import React, { Component } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { withRouter } from 'next/router';
 import PropTypes from 'prop-types';
+import MainLayout from '../components/MainLayout';
 
 export class event extends Component {
   state = {
-    event: {
-      id: '',
-      name: '',
-      date: '',
-      title: '',
-      img: ''
-    }
+    name: '',
+    date: '',
+    title: '',
+    img: ''
   };
 
   componentDidMount() {
@@ -55,27 +53,28 @@ export class event extends Component {
 
     const { router } = this.props;
     const { name, date, title, img } = testData[router.query.id - 1];
-    //console.log(router);
-    //this.setState({ id: router.query.id });
+    // console.log(router);
+    // this.setState({ id: router.query.id });
     this.setState({ name, date, title, img });
   }
 
   render() {
-    const { id } = this.state;
     const { name, date, title, img } = this.state;
 
     const theme = { background: `center / cover no-repeat url(${img})` };
     return (
-      <Container>
-        <Header>
-          <Date>{date}</Date>
-          <Title>{title}</Title>
-          <Host>Hosted by: {name}</Host>
-          <ThemeProvider theme={theme}>
-            <Img />
-          </ThemeProvider>
-        </Header>
-      </Container>
+      <MainLayout>
+        <Container>
+          <Header>
+            <Date>{date}</Date>
+            <Title>{title}</Title>
+            <Host>Hosted by: {name}</Host>
+            <ThemeProvider theme={theme}>
+              <Img />
+            </ThemeProvider>
+          </Header>
+        </Container>
+      </MainLayout>
     );
   }
 }
