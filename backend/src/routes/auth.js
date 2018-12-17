@@ -22,7 +22,7 @@ router.post('/register', (req, res) => {
     };
     const user = new User(req.body);
     user.create()
-    .then(() => {res.status(201).json();})
+    .then(() => {res.status(201).json({...user.data, token: user.refreshToken()});})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
     return res;
 });
