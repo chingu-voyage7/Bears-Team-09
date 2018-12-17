@@ -18,8 +18,9 @@ router.delete('/', (req, res) => {
 });
 
 router.put('/', (req, res) => {
-  req.user.data = req.body;
-  req.user.update()
+  const {id, ...newData} = req.body;
+  const user = new User({id: req.user.id, ...newData});
+  user.update()
   .then(() => {res.json();})
   .catch(err => {res.status(err.statusCode || 400).json({message: err.message}); });
 });
