@@ -102,7 +102,10 @@ class Table {
 
   update() {
     // remove pk from this.data before update
-    const {pk, ...rest} = this.data;
+    const {id, ...rest} = this.data;
+    if (id === undefined || Object.keys(rest).length === 0) {
+      throw new Error('Need to have both id and data to update table');
+    }
     let index = 1;
     const prepared = Object.keys(rest).reduce((acc, key) => {
         acc.keys.push(`${key} = $${index++}`);
@@ -112,7 +115,7 @@ class Table {
       {keys: [], values: []}
     );
     const text = `UPDATE ${this.tableName} SET ${prepared.keys.join(', ')} WHERE ${this.pk} = $${index};`;
-    prepared.values.push(this.data[this.pk]);
+    prepared.values.push(id);
     return db.query(text, prepared.values);
   }
 
