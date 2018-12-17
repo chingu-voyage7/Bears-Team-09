@@ -65,8 +65,8 @@ describe('Test User Model', () => {
     const updatedUserData = {
         email: 'kenny@gmail.com',
         password: '123456',
-        firstname: 'Kenny',
-        lastname: 'McCormick',
+        first_name: 'Kenny',
+        last_name: 'McCormick',
         bio: 'lorem ipsum'
     };
 
@@ -74,11 +74,11 @@ describe('Test User Model', () => {
         let result;
         let error;
         before((done) => {
-            const user = new User({...userData});
+            const user = new User(userData);
             user.create()
-            .then(() => user.read())
-            .then((res) => {
-                result = res;
+            .then(() => {
+                userData.id = user.data.id;
+                result = user.data;
             })
             .catch(err => {
                 error = err;
@@ -88,7 +88,8 @@ describe('Test User Model', () => {
 
         it('Should pass without error', () => expect(error).to.be.undefined);
 
-        it('Should return 1 row', () => expect(result).to.have.length(1));
+        it('Should have id', () => expect(result).to.have.nested.property('id'));
+
     });
 
     describe('Read user info', () => {
@@ -117,9 +118,9 @@ describe('Test User Model', () => {
 
         it('Should return password', () => expect(result[0]).to.have.nested.property('password'));
 
-        it('Should return first name', () => expect(result[0]).to.have.nested.property('firstname'));
+        it('Should return first name', () => expect(result[0]).to.have.nested.property('first_name'));
 
-        it('Should return last name', () => expect(result[0]).to.have.nested.property('lastname'));
+        it('Should return last name', () => expect(result[0]).to.have.nested.property('last_name'));
 
         it('Should return bio', () => expect(result[0]).to.have.nested.property('bio'));
     });
@@ -129,12 +130,8 @@ describe('Test User Model', () => {
         let error;
 
         before((done) => {
-            const user = new User({email: userData.email});
-            user.read()
-            .then(() => {
-                user.data = updatedUserData;
-                return user.update();
-            })
+            const user = new User({id: userData.id, ...updatedUserData});
+            user.update()
             .then(() => user.read())
             .then(([res]) => {
                 result = res;
@@ -149,9 +146,9 @@ describe('Test User Model', () => {
 
         it('Return new password', () => expect(result.password).to.not.equal(firstPassword));
 
-        it('Should return new first name', () => expect(result.firstname).to.equal(updatedUserData.firstname));
+        it('Should return new first name', () => expect(result.first_name).to.equal(updatedUserData.first_name));
 
-        it('Should return new last name', () => expect(result.lastname).to.equal(updatedUserData.lastname));
+        it('Should return new last name', () => expect(result.last_name).to.equal(updatedUserData.last_name));
 
         it('Should return new bio', () => expect(result.bio).to.equal(updatedUserData.bio));
     });
@@ -190,7 +187,7 @@ describe('Test Place Model', () => {
             before((done) => {
                 const place = new Place({...data});
                 place.create()
-                .then(res => {
+                .then(([res]) => {
                     result = res;
                 })
                 .catch(err => {
@@ -201,7 +198,7 @@ describe('Test Place Model', () => {
 
             it('Should pass without errors', () => expect(error).to.be.undefined);
 
-            it('Return empty array', () => expect(result).to.length(0));
+            it('Should have an id', () => expect(result).to.have.nested.property('id'));
         });
     });
 
@@ -236,7 +233,7 @@ describe('Test Place Model', () => {
         let error;
         before((done) => {
             const place = new Place({country: placeData[0].country});
-            place.search()
+            place.read()
             .then(res => {
                 result = res;
             })
@@ -254,8 +251,8 @@ describe('Test Place Model', () => {
         let result;
         let error;
         before((done) => {
-            const place = new Place({country: 'Ca'});
-            place.search()
+            const place = new Place({country: 'Ca', compare: 'in'});
+            place.read()
             .then(res => {
                 result = res;
             })
@@ -308,7 +305,7 @@ describe('Test Activity Model', () => {
             before((done) => {
                 const activity = new Activity({...data});
                 activity.create()
-                .then(res => {
+                .then(([res]) => {
                     result = res;
                 })
                 .catch(err => {
@@ -319,7 +316,7 @@ describe('Test Activity Model', () => {
 
             it('Should pass without errors', () => expect(error).to.be.undefined);
 
-            it('Return empty array', () => expect(result).to.length(0));
+            it('Should have an id', () => expect(result).to.have.nested.property('id'));
         });
     });
 
@@ -352,7 +349,7 @@ describe('Test Activity Model', () => {
         let error;
         before((done) => {
             const activity = new Activity({name: activitiesData[0].name});
-            activity.search()
+            activity.read()
             .then(res => {
                 result = res;
             })
@@ -370,8 +367,8 @@ describe('Test Activity Model', () => {
         let result;
         let error;
         before((done) => {
-            const activity = new Activity({name: 'Sport'});
-            activity.search()
+            const activity = new Activity({name: 'Sport', compare: 'in'});
+            activity.read()
             .then(res => {
                 result = res;
             })
@@ -415,32 +412,32 @@ describe('Test Event Model', () => {
         {
             name: 'Fishing',
             description: 'Some description',
-            activityid: 2,
-            maxpeople: 4
+            activity_id: 2,
+            max_people: 4
         },
         {
             name: 'Dancing',
             description: 'Some description',
-            activityid: 2,
-            maxpeople: 4
+            activity_id: 2,
+            max_people: 4
         },
         {
             name: 'Singing',
             description: 'Some description',
-            activityid: 3,
-            placeid: 2,
-            datefrom: new Date(),
-            dateto: new Date(),
-            maxpeople: 10
+            activity_id: 3,
+            place_id: 2,
+            date_from: new Date(),
+            date_to: new Date(),
+            max_people: 10
         },
         {
             name: 'Doing nothing',
             description: 'Some description',
-            activityid: 2,
-            placeid: 2,
-            datefrom: new Date(),
-            dateto: new Date(),
-            maxpeople: 2
+            activity_id: 2,
+            place_id: 2,
+            date_from: new Date(),
+            date_to: new Date(),
+            max_people: 2
         },
     ];
 
@@ -451,7 +448,7 @@ describe('Test Event Model', () => {
             before((done) => {
                 const ev = new Events({...data});
                 ev.create()
-                .then(res => {
+                .then(([res]) => {
                     result = res;
                 })
                 .catch(err => {
@@ -462,7 +459,7 @@ describe('Test Event Model', () => {
 
             it('Should pass without errors', () => expect(error).to.be.undefined);
 
-            it('Should return an empty array', () => expect(result).to.length(0));
+            it('Should have an id', () => expect(result).to.have.nested.property('id'));
         });
     });
 
@@ -496,13 +493,13 @@ describe('Test Event Model', () => {
 
         it('Should return place of the event', () => expect(result[0]).to.have.nested.property('city'));
 
-        it('Should return datefrom of the event', () => expect(result[0]).to.have.nested.property('datefrom'));
+        it('Should return date_from of the event', () => expect(result[0]).to.have.nested.property('date_from'));
 
-        it('Should return dateto of the event', () => expect(result[0]).to.have.nested.property('dateto'));
+        it('Should return date_to of the event', () => expect(result[0]).to.have.nested.property('date_to'));
 
-        it('Should return minpeople of the event', () => expect(result[0]).to.have.nested.property('minpeople'));
+        it('Should return min_people of the event', () => expect(result[0]).to.have.nested.property('min_people'));
 
-        it('Should return maxpeople of the event', () => expect(result[0]).to.have.nested.property('maxpeople'));
+        it('Should return max_people of the event', () => expect(result[0]).to.have.nested.property('max_people'));
     });
 
     describe('Find event by name', () =>{
@@ -528,7 +525,7 @@ describe('Test Event Model', () => {
         let result;
         let error;
         before((done) => {
-            const ev = new Events({name: 'D'});
+            const ev = new Events({name: 'D', compare: 'in'});
             ev.read('~')
             .then(res => {
                 result = res;
@@ -589,8 +586,8 @@ describe('Test EventAttendee Model', () => {
                 event1 = new Events({
                     name: 'Event A',
                     description: 'Some description',
-                    activityid: 2,
-                    maxpeople: 4
+                    activity_id: 2,
+                    max_people: 4
                 });
                 return event1.create();
             })
@@ -598,8 +595,8 @@ describe('Test EventAttendee Model', () => {
                 event2 = new Events({
                     name: 'Event B',
                     description: 'Some description',
-                    activityid: 2,
-                    maxpeople: 4
+                    activity_id: 2,
+                    max_people: 4
                 });
                 return event2.create();
             })
@@ -607,18 +604,18 @@ describe('Test EventAttendee Model', () => {
                 event3 = new Events({
                     name: 'Event C',
                     description: 'Some description',
-                    activityid: 2,
-                    maxpeople: 4
+                    activity_id: 2,
+                    max_people: 4
                 });
                 return event3.create();
             })
             .then(() => (new Events()).read())
             .then((data) => {[event1, event2, event3] = data.slice(-3);})
-            .then(() => (new Attendee({userid: user1.data.id, eventid: event1.id})).create())
-            .then(() => (new Attendee({userid: user1.data.id, eventid: event2.id})).create())
-            .then(() => (new Attendee({userid: user1.data.id, eventid: event3.id})).create())
-            .then(() => (new Attendee({userid: user2.data.id, eventid: event1.id})).create())
-            .then(() => (new Attendee({userid: user2.data.id, eventid: event3.id})).create())
+            .then(() => (new Attendee({user_id: user1.data.id, event_id: event1.id})).create())
+            .then(() => (new Attendee({user_id: user1.data.id, event_id: event2.id})).create())
+            .then(() => (new Attendee({user_id: user1.data.id, event_id: event3.id})).create())
+            .then(() => (new Attendee({user_id: user2.data.id, event_id: event1.id})).create())
+            .then(() => (new Attendee({user_id: user2.data.id, event_id: event3.id})).create())
             .catch(err => {error = err;})
             .finally(() => {done();});
         });
@@ -629,7 +626,7 @@ describe('Test EventAttendee Model', () => {
     describe('Get all events attended by User1', () => {
         let result;
         before((done) => {
-            (new Attendee({userid: user1.data.id})).getAllEvents()
+            (new Attendee({user_id: user1.data.id})).getAllEvents()
             .then(res => {result = res;})
             .catch(err => {error = err;})
             .finally(() => {done();});
@@ -643,7 +640,7 @@ describe('Test EventAttendee Model', () => {
     describe('Get all events attended by User2', () => {
         let result;
         before((done) => {
-            (new Attendee({userid: user2.data.id})).getAllEvents()
+            (new Attendee({user_id: user2.data.id})).getAllEvents()
             .then(res => {result = res;})
             .catch(err => {error = err;})
             .finally(() => {done();});

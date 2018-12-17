@@ -10,7 +10,7 @@ class User extends Table {
   constructor(rawData={}) {
     const pk = 'id';
     const tableName = 'users';
-    const ACCEPTED_FIELDS = ['id', 'email', 'firstName', 'lastName', 'password', 'bio'];
+    const ACCEPTED_FIELDS = ['id', 'email', 'first_name', 'last_name', 'password', 'bio'];
     const cleanData = {};
     Object.keys(rawData).forEach(key => {
       if (ACCEPTED_FIELDS.includes(key)) {

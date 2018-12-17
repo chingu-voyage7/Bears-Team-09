@@ -20,8 +20,8 @@ eventRouter.post('/', (req, res) => {
     .then(([{id}]) => {
         newEvent.data.id = id;
         const attendee = new Attendee({
-            userid: req.user[req.user.pk],
-            eventid: id
+            user_id: req.user[req.user.pk],
+            event_id: id
         });
         return attendee.create();
     })
@@ -64,8 +64,8 @@ eventRouter.put('/:id', (req, res) => {
 // subscribe to attend an event
 eventRouter.post('/:id/attend', (req, res) => {
     const attendee = new Attendee({
-        userid: req.user[req.user.pk],
-        eventid: req.params.id
+        user_id: req.user[req.user.pk],
+        event_id: req.params.id
     });
     attendee.create()
     .then(() => {res.status(201).json();})
@@ -75,8 +75,8 @@ eventRouter.post('/:id/attend', (req, res) => {
 // unsubscribe from attending an event
 eventRouter.delete('/:id/attend', (req, res) => {
     const attendee = new Attendee({
-        userid: req.user[req.user.pk],
-        eventid: req.params.id
+        user_id: req.user[req.user.pk],
+        event_id: req.params.id
     });
     attendee.delete()
     .then(() => {res.status(204).json();})
