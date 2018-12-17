@@ -4,20 +4,23 @@ const APIError = require('../utils/APIError.js');
 
 const router = express.Router();
 
+// List
 router.get('/', (req, res) => {
-    const place = new Place();
+    const place = new Place(req.query);
     place.read()
     .then(data => {res.json({places: data});})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
+// Create
 router.post('/', (req, res) => {
     const place = new Place(req.body);
     place.create()
-    .then(() => {res.status(201).json();})
+    .then(([{id}]) => {res.status(201).json({id, ...place.data});})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
+// Get one
 router.get('/:id', (req, res) => {
     const place = new Place({id: req.params.id});
     place.read()
@@ -30,6 +33,7 @@ router.get('/:id', (req, res) => {
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
+// delete one
 router.delete('/:id', (req, res) => {
     const place = new Place({id: req.params.id});
     place.delete()
@@ -37,9 +41,10 @@ router.delete('/:id', (req, res) => {
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
+// update one
 router.put('/:id', (req, res) => {
-    const place = new Place({id: req.params.id});
-    place.data = req.body;
+    const {id, ...newData} = req.body;
+    const place = new Place({id: req.params.id, ...newData});
     place.update()
     .then(() => {res.json();})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
