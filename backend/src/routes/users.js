@@ -1,4 +1,5 @@
 const express = require('express');
+const upload  = require('../utils/upload');
 const User = require('../models/User');
 const Attendee = require('../models/EventAttendee');
 
@@ -37,6 +38,19 @@ router.get('/:id/events', (req, res) => {
   attendee.getAllEvents()
   .then(data => {res.json({events: data});})
   .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
+});
+
+router.post('/image', (req, res) => {
+  upload(req, res, (err) => {
+    if (err) {
+      res.status(400).json({message: err.message});
+    } else if (!req.file) {
+      res.status(400).json({message: 'File is not set'});
+    } else {
+      res.status(201).json({url: req.file.url});
+    }
+  });
+  return res;
 });
 
 module.exports = router;

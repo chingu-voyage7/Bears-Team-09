@@ -18,7 +18,7 @@ class EventAttendee extends Table {
 
   getAllAttendees() {
     const text = `
-      SELECT users.id, users.first_name, users.last_name, users.bio FROM users
+      SELECT users.id, users.first_name, users.last_name, users.image FROM users
       INNER JOIN ${this.tableName} ON users.id = ${this.tableName}.user_id`;
     return super.read(text);
   }
