@@ -4,3 +4,4 @@
 *.ico
 yarn.lock
 node_modules
+uploads

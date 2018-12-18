@@ -7,6 +7,7 @@ exports.up = (pgm) => {
         first_name: {type: 'varchar(128)'},
         last_name: {type: 'varchar(128)'},
         password: {type: 'varchar(256)', notNull: true},
+        image: {type: 'varchar(128)'},
         bio: {type: 'varchar(1024)'}
     });
 
