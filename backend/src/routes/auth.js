@@ -11,7 +11,7 @@ router.get('/', authenticate('jwt'), (req, res) => {
 
 router.post('/login', authenticate('local'), (req, res) => {
     const token = req.user.refreshToken();
-    return res.json({token});
+    return res.json({...req.user.data, token});
 });
 
 router.post('/register', (req, res) => {
@@ -22,7 +22,7 @@ router.post('/register', (req, res) => {
     };
     const user = new User(req.body);
     user.create()
-    .then(() => {res.status(201).json();})
+    .then(() => {res.status(201).json({...user.data, token: user.refreshToken()});})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
     return res;
 });

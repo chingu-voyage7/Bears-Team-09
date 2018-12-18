@@ -4,9 +4,8 @@ const APIError = require('../utils/APIError.js');
 
 const router = express.Router();
 
-// this one will be protected
 router.get('/', (req, res) => {
-    const activity = new Activity();
+    const activity = new Activity(req.query);
     activity.read()
     .then(data => {res.json({activities: data});})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
@@ -15,7 +14,7 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
     const activity = new Activity(req.body);
     activity.create()
-    .then(() => {res.status(201).json();})
+    .then(([data]) => {res.status(201).json(data);})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
@@ -39,8 +38,8 @@ router.delete('/:id', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-    const activity = new Activity({id: req.params.id});
-    activity.data = req.body;
+    const {id, ...newData} = req.body;
+    const activity = new Activity({id: req.params.id, ...newData});
     activity.update()
     .then(() => {res.json();})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});

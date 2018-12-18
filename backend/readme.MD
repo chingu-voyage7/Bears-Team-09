@@ -16,8 +16,8 @@
 {
     "id": 42,
     "email": "kenny@gmail.com",
-    "firstName": "Kenny",
-    "lastName": "McCormick",
+    "first_name": "Kenny",
+    "last_name": "McCormick",
     "bio": "Lorem ipsum"
 }
 ```
@@ -29,8 +29,8 @@
     "users" : [
         {
             "id": 42,
-            "firstName": "Kenny",
-            "lastName": "McCormick",
+            "first_name": "Kenny",
+            "last_name": "McCormick",
             "bio": "Lorem ipsum"
         }
     ]
@@ -102,10 +102,10 @@
     "activity" : "Activity name",
     "country" : "Canada",
     "city" : "Toronto",
-    "datefrom" : "2018-12-07 22:00:00.0",
-    "dateto" : "2018-12-07 23:00:00.0",
-    "minpeople" : 2,
-    "maxpeople" : 3
+    "date_from" : "2018-12-07 22:00:00.0",
+    "date_to" : "2018-12-07 23:00:00.0",
+    "min_people" : 2,
+    "max_people" : 3
 }
 ```
 
@@ -121,10 +121,10 @@
             "activity" : "Activity name",
             "country" : "Canada",
             "city" : "Toronto",
-            "datefrom" : "2018-12-07 22:00:00.0",
-            "dateto" : "2018-12-07 23:00:00.0",
-            "minpeople" : 2,
-            "maxpeople" : 3
+            "date_from" : "2018-12-07 22:00:00.0",
+            "date_to" : "2018-12-07 23:00:00.0",
+            "min_people" : 2,
+            "max_people" : 3
         }
     ]
 }
@@ -194,8 +194,8 @@ Example request body:
 ```JSON
 {
     "email": "kenny@mail.com",
-    "firstname": "Kenny",
-    "lastname": "McCormick",
+    "first_name": "Kenny",
+    "last_name": "McCormick",
     "bio": "Some bio",
     "password": "123456"
 }
@@ -335,20 +335,20 @@ Example request body:
 {
     "name" : "Event name",
     "description" : "Event description",
-    "activityid" : 2,
-    "placeid": 3,
-    "datefrom" : "2018-12-07 22:00:00.0",
-    "dateto" : "2018-12-07 23:00:00.0",
-    "minpeople" : 2,
-    "maxpeople" : 3
+    "activity_id" : 2,
+    "place_id": 3,
+    "date_from" : "2018-12-07 22:00:00.0",
+    "date_to" : "2018-12-07 23:00:00.0",
+    "min_people" : 2,
+    "max_people" : 3
 }
 ```
 
 JWT authentication required
 
-Required fields: `name`, `activityid`, `maxpeople`
+Required fields: `name`, `activity_id`, `max_people`
 
-Optional fields: `description`, `placeid`, `datefrom`, `dateto`, `minpeople`
+Optional fields: `description`, `place_id`, `date_from`, `date_to`, `min_people`
 
 ### Get the event
 
@@ -372,12 +372,12 @@ Example request body:
 {
     "name" : "Event name",
     "description" : "Event description",
-    "activityid" : 2,
-    "placeid": 3,
-    "datefrom" : "2018-12-07 22:00:00.0",
-    "dateto" : "2018-12-07 23:00:00.0",
-    "minpeople" : 2,
-    "maxpeople" : 3
+    "activity_id" : 2,
+    "place_id": 3,
+    "date_from" : "2018-12-07 22:00:00.0",
+    "date_to" : "2018-12-07 23:00:00.0",
+    "min_people" : 2,
+    "max_people" : 3
 }
 ```
 

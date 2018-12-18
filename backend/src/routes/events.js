@@ -7,7 +7,7 @@ const eventRouter = express.Router();
 
 // list all events, with parameters
 eventRouter.get('/', (req, res) => {
-    const newEvent = new Event();
+    const newEvent = new Event(req.query);
     newEvent.read()
     .then(data => {res.json({events: data});})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
@@ -17,16 +17,16 @@ eventRouter.get('/', (req, res) => {
 eventRouter.post('/', (req, res) => {
     const newEvent = new Event(req.body);
     newEvent.create()
-    .then(() => newEvent.read())
     .then(([data]) => {
+        newEvent.data = data;
         const attendee = new Attendee({
-            userid: req.user[req.user.pk],
-            eventid: data.id
+            user_id: req.user.data.id,
+            event_id: data.id
         });
         return attendee.create();
     })
     .then(() => {
-        res.status(201).json();
+        res.status(201).json(newEvent.data);
     })
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
@@ -54,8 +54,8 @@ eventRouter.delete('/:id', (req, res) => {
 
 // update an event
 eventRouter.put('/:id', (req, res) => {
-    const newEvent = new Event({id: req.params.id});
-    newEvent.data = req.body;
+    const {id, ...newData} = req.body;
+    const newEvent = new Event({id: req.params.id, ...newData});
     newEvent.update()
     .then(() => {res.json();})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
@@ -64,8 +64,8 @@ eventRouter.put('/:id', (req, res) => {
 // subscribe to attend an event
 eventRouter.post('/:id/attend', (req, res) => {
     const attendee = new Attendee({
-        userid: req.user[req.user.pk],
-        eventid: req.params.id
+        user_id: req.user[req.user.pk],
+        event_id: req.params.id
     });
     attendee.create()
     .then(() => {res.status(201).json();})
@@ -75,8 +75,8 @@ eventRouter.post('/:id/attend', (req, res) => {
 // unsubscribe from attending an event
 eventRouter.delete('/:id/attend', (req, res) => {
     const attendee = new Attendee({
-        userid: req.user[req.user.pk],
-        eventid: req.params.id
+        user_id: req.user[req.user.pk],
+        event_id: req.params.id
     });
     attendee.delete()
     .then(() => {res.status(204).json();})

@@ -18,21 +18,22 @@ router.delete('/', (req, res) => {
 });
 
 router.put('/', (req, res) => {
-  req.user.data = req.body;
-  req.user.update()
+  const {id, ...newData} = req.body;
+  const user = new User({id: req.user.id, ...newData});
+  user.update()
   .then(() => {res.json();})
   .catch(err => {res.status(err.statusCode || 400).json({message: err.message}); });
 });
 
 router.get('/events', (req, res) => {
-  const attendee = new Attendee({userid: req.user[req.user.pk]});
+  const attendee = new Attendee({user_id: req.user[req.user.pk]});
   attendee.getAllEvents()
   .then(data => {res.json({events: data});})
   .catch(err => {res.status(err.statusCode || 400).json({message: err.message}); });
 });
 
 router.get('/:id/events', (req, res) => {
-  const attendee = new Attendee({userid: req.params.id});
+  const attendee = new Attendee({user_id: req.params.id});
   attendee.getAllEvents()
   .then(data => {res.json({events: data});})
   .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});

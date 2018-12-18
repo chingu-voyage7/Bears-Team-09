@@ -4,8 +4,8 @@ exports.up = (pgm) => {
     pgm.createTable('users', {
         id: 'id',
         email: { type: 'varchar(256)', notNull: true, unique: true},
-        firstname: {type: 'varchar(128)'},
-        lastname: {type: 'varchar(128)'},
+        first_name: {type: 'varchar(128)'},
+        last_name: {type: 'varchar(128)'},
         password: {type: 'varchar(256)', notNull: true},
         bio: {type: 'varchar(1024)'}
     });
@@ -36,27 +36,27 @@ exports.up = (pgm) => {
         id: 'id',
         name: {type: 'varchar(256)', notNull: true},
         description: {type: 'text'},
-        activityid: {
+        activity_id: {
             type: 'integer',
             notNull: true,
             references: '"activities"',
             deferrable: true,
             deferred: true
         },
-        placeid: {
+        place_id: {
             type: 'integer',
             references: '"places"',
             deferrable: true,
             deferred: true
         },
-        datefrom: {type: 'datetime'},
-        dateto: {type: 'datetime'},
-        minpeople: {
+        date_from: {type: 'datetime'},
+        date_to: {type: 'datetime'},
+        min_people: {
             type: 'integer',
             notNull: true,
             default: 2
         },
-        maxpeople: {
+        max_people: {
             type: 'integer'
         }
     });
@@ -64,14 +64,14 @@ exports.up = (pgm) => {
     // Bridge table for many-to-many relationsheep between `events` and `users`
     pgm.createTable('event_attendees', {
         id: 'id',
-        eventid: {
+        event_id: {
             type: 'integer',
             notNull: true,
             references: '"events"',
             deferrable: true,
             deferred: true
         },
-        userid: {
+        user_id: {
             type: 'integer',
             notNull: true,
             references: '"users"',
@@ -80,13 +80,13 @@ exports.up = (pgm) => {
         }
     });
 
-    pgm.createIndex('event_attendees', 'eventid');
+    pgm.createIndex('event_attendees', 'event_id');
 
-    pgm.createIndex('event_attendees', 'userid');
+    pgm.createIndex('event_attendees', 'user_id');
 
     // `Unique together` constraint
     pgm.addConstraint('event_attendees', 'event_attendees_event_id_user_id_uniq', {
-        unique: ['userid', 'eventid']
+        unique: ['user_id', 'event_id']
     });
 };
 

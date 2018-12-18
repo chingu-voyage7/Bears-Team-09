@@ -1,26 +1,29 @@
 const Table = require('./Table');
 
 class Event extends Table {
-  constructor(data={}) {
+  constructor(rawData={}) {
     const pk = 'id';
     const tableName = 'events';
-    const ACCEPTED_FIELDS = ['id', 'name', 'description', 'activityid', 'placeid', 'datefrom', 'dateto', 'minpeople', 'maxpeople'];
-    Object.keys(data).forEach(key => {
-      if (!ACCEPTED_FIELDS.includes(key)) {
-            delete data[key];
-        }
+    const ACCEPTED_FIELDS = ['id', 'name', 'description', 'activity_id', 'place_id', 'date_from', 'date_to', 'min_people', 'max_people'];
+    const cleanData = {};
+    Object.keys(rawData).forEach(key => {
+      if (ACCEPTED_FIELDS.includes(key)) {
+        cleanData[key] = rawData[key];
+      }
     });
-    super(tableName, pk, data);
+    super(tableName, pk, cleanData);
+    this.ACCEPTED_FIELDS = ACCEPTED_FIELDS;
+    this.parseOpts(rawData);
   }
 
-  read(compareOperator='=', logicalOperator='AND') {
+  read() {
     const text = `SELECT events.id, events.name, events.description,
     activities.name as activity, places.country, places.city,
-    events.datefrom, events.dateto, events.minpeople, events.maxpeople
+    events.date_from, events.date_to, events.min_people, events.max_people
     FROM ${this.tableName}
-    LEFT JOIN activities ON activities.id = events.activityid
-    LEFT JOIN places ON places.id = events.placeid`;
-    return super.read(compareOperator, logicalOperator, text);
+    LEFT JOIN activities ON activities.id = events.activity_id
+    LEFT JOIN places ON places.id = events.place_id`;
+    return super.read(text);
   }
 }
 

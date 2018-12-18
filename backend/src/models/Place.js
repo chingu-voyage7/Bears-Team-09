@@ -1,20 +1,19 @@
 const Table = require('./Table');
 
 class Place extends Table {
-  constructor(data={}) {
+  constructor(rawData={}) {
     const pk = 'id';
     const tableName = 'places';
     const ACCEPTED_FIELDS = ['id', 'country', 'city'];
-    Object.keys(data).forEach(key => {
-      if (!ACCEPTED_FIELDS.includes(key)) {
-            delete data[key];
-        }
+    const cleanData = {};
+    Object.keys(rawData).forEach(key => {
+      if (ACCEPTED_FIELDS.includes(key)) {
+        cleanData[key] = rawData[key];
+    }
     });
-    super(tableName, pk, data);
-  }
-
-  search() {
-    return super.read('~', 'OR');
+    super(tableName, pk, cleanData);
+    this.ACCEPTED_FIELDS = ACCEPTED_FIELDS;
+    this.parseOpts(rawData);
   }
 }
 
