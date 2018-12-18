@@ -526,7 +526,7 @@ describe('Test Event Model', () => {
         let error;
         before((done) => {
             const ev = new Events({name: 'D', compare: 'in'});
-            ev.read('~')
+            ev.read()
             .then(res => {
                 result = res;
             })
@@ -573,42 +573,32 @@ describe('Test EventAttendee Model', () => {
     let event2;
     let event3;
     describe('Populate db', () =>{
-        beforeEach((done) => {
+        before((done) => {
             user1 = new User({email: 'AAA@mail.com', password: '123456'});
+            user2 = new User({email: 'BBB@mail.com', password: '123456'});
+            event1 = new Events({
+                name: 'Event A',
+                description: 'Some description',
+                activity_id: 2,
+                max_people: 4
+            });
+            event2 = new Events({
+                name: 'Event B',
+                description: 'Some description',
+                activity_id: 2,
+                max_people: 4
+            });
+            event3 = new Events({
+                name: 'Event C',
+                description: 'Some description',
+                activity_id: 2,
+                max_people: 4
+            });
             user1.create()
-            .then(() => user1.read())
-            .then(() => {
-                user2 = new User({email: 'BBB@mail.com', password: '123456'});
-                return user2.create();
-            })
-            .then(() => user2.read())
-            .then(() => {
-                event1 = new Events({
-                    name: 'Event A',
-                    description: 'Some description',
-                    activity_id: 2,
-                    max_people: 4
-                });
-                return event1.create();
-            })
-            .then(() => {
-                event2 = new Events({
-                    name: 'Event B',
-                    description: 'Some description',
-                    activity_id: 2,
-                    max_people: 4
-                });
-                return event2.create();
-            })
-            .then(() => {
-                event3 = new Events({
-                    name: 'Event C',
-                    description: 'Some description',
-                    activity_id: 2,
-                    max_people: 4
-                });
-                return event3.create();
-            })
+            .then(() => user2.create())
+            .then(() => event1.create())
+            .then(() => event2.create())
+            .then(() => event3.create())
             .then(() => (new Events()).read())
             .then((data) => {[event1, event2, event3] = data.slice(-3);})
             .then(() => (new Attendee({user_id: user1.data.id, event_id: event1.id})).create())

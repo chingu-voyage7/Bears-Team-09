@@ -17,11 +17,11 @@ eventRouter.get('/', (req, res) => {
 eventRouter.post('/', (req, res) => {
     const newEvent = new Event(req.body);
     newEvent.create()
-    .then(([{id}]) => {
-        newEvent.data.id = id;
+    .then(([data]) => {
+        newEvent.data = data;
         const attendee = new Attendee({
-            user_id: req.user[req.user.pk],
-            event_id: id
+            user_id: req.user.data.id,
+            event_id: data.id
         });
         return attendee.create();
     })

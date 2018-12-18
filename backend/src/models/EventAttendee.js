@@ -1,16 +1,19 @@
 const Table = require('./Table');
 
 class EventAttendee extends Table {
-  constructor(data={}) {
+  constructor(rawData={}) {
     const pk = 'id';
     const tableName = 'event_attendees';
     const ACCEPTED_FIELDS = ['id', 'event_id', 'user_id'];
-    Object.keys(data).forEach(key => {
-      if (!ACCEPTED_FIELDS.includes(key)) {
-            delete data[key];
-        }
+    const cleanData = {};
+    Object.keys(rawData).forEach(key => {
+      if (ACCEPTED_FIELDS.includes(key)) {
+        cleanData[key] = rawData[key];
+      }
     });
-    super(tableName, pk, data);
+    super(tableName, pk, cleanData);
+    this.ACCEPTED_FIELDS = ACCEPTED_FIELDS;
+    this.parseOpts(rawData);
   }
 
   getAllAttendees() {

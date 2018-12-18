@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
     const place = new Place(req.body);
     place.create()
-    .then(([{id}]) => {res.status(201).json({id, ...place.data});})
+    .then(([data]) => {res.status(201).json(data);})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 

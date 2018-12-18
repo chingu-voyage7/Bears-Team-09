@@ -11,7 +11,7 @@ router.get('/', authenticate('jwt'), (req, res) => {
 
 router.post('/login', authenticate('local'), (req, res) => {
     const token = req.user.refreshToken();
-    return res.json({token});
+    return res.json({...req.user.data, token});
 });
 
 router.post('/register', (req, res) => {

@@ -32,7 +32,7 @@ class User extends Table {
   }
 
   create() {
-    return this.hashPassword().then(() => super.create()).then(([{id}]) => {this.data.id = id; delete this.data.password;});
+    return this.hashPassword().then(() => super.create()).then(([data]) => {this.data = data; delete this.data.password;});
   }
 
   read() {

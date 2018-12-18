@@ -72,7 +72,7 @@ class Table {
       },
       {keys: [], indexes: [], values: []}
     );
-    const text = `INSERT INTO ${this.tableName} (${prepared.keys.join(', ')}) VALUES (${prepared.indexes.join(', ')}) RETURNING id`;
+    const text = `INSERT INTO ${this.tableName} (${prepared.keys.join(', ')}) VALUES (${prepared.indexes.join(', ')}) RETURNING ${this.ACCEPTED_FIELDS.join(', ')}`;
     return db.query(text, prepared.values);
   }
 
@@ -114,7 +114,7 @@ class Table {
       },
       {keys: [], values: []}
     );
-    const text = `UPDATE ${this.tableName} SET ${prepared.keys.join(', ')} WHERE ${this.pk} = $${index};`;
+    const text = `UPDATE ${this.tableName} SET ${prepared.keys.join(', ')} WHERE ${this.pk} = $${index} RETURNING ${this.ACCEPTED_FIELDS.join(', ')};`;
     prepared.values.push(id);
     return db.query(text, prepared.values);
   }
