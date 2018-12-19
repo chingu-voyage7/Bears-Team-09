@@ -23,8 +23,9 @@ class Dashboard extends Component {
   };
 
   async componentDidMount() {
-    // getting token from context
-    const { token } = this.context;
+    const { tokenCtx } = this.context;
+    // getting token from context, falling back to localStorage if no context exists (happens when page is refreshed)
+    const token = tokenCtx || localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
     const today = new Date().toISOString();
 
