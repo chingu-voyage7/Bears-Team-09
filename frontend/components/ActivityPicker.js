@@ -8,14 +8,8 @@ Endpoint GET /activities
 class ActivityPicker extends Component {
   state = {
     popupOpen: false,
-    selectedActivity: "activity",
-    activities: []
+    selectedActivity: "activity"
   };
-
-  componentDidMount() {
-    const { activities } = this.props;
-    this.setState({ activities });
-  }
 
   handleActivitySelection = activity => {
     const { updateFilter } = this.props;
@@ -25,7 +19,8 @@ class ActivityPicker extends Component {
   };
 
   render() {
-    const { popupOpen, selectedActivity, activities } = this.state;
+    const { popupOpen, selectedActivity } = this.state;
+    const { activities } = this.props;
     const categoryList = activities.map(activityObject => (
       <ActivityListItem key={activityObject.id} onClick={e => this.handleActivitySelection(activityObject, e)}>
         {activityObject.name}

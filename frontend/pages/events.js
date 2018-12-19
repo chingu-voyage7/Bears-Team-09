@@ -3,36 +3,41 @@ import styled from "styled-components";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import axios from "axios";
-import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
 import EventList from "../components/EventList";
 import ActivityPicker from "../components/ActivityPicker";
 import LocationSearch from "../components/LocationSearch";
+import { UserContext } from "../components/UserProvider";
 // using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS
 // there may be a cleaner solution that I am not aware of
-
 const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), {
   ssr: false
 });
 
 class Dashboard extends Component {
   state = {
-    eventFilters: { datefrom: null, city: null, activity: null }
+    eventFilters: { datefrom: null, city: null, activity: null },
+    events: [],
+    places: [],
+    activities: []
   };
 
-  static async getInitialProps() {
-    const token = localStorage.getItem("token");
+  async componentDidMount() {
+    // getting token from context
+    const { token } = this.context;
     const AuthStr = `Bearer ${token}`;
+    const today = new Date().toISOString();
 
-    const events = await axios({
+    // Default fetch is any event from today with a limit of 10
+    const eventsPromise = axios({
       method: "get",
-      url: `http://localhost:8000/events`,
+      url: `http://localhost:8000/events?compare=gt&date_from=${today}&limit=10`,
       headers: {
         Authorization: AuthStr
       }
     });
 
-    const places = await axios({
+    const placesPromise = axios({
       method: "get",
       url: `http://localhost:8000/places`,
       headers: {
@@ -40,15 +45,16 @@ class Dashboard extends Component {
       }
     });
 
-    const activities = await axios({
+    const activitiesPromise = axios({
       method: "get",
       url: `http://localhost:8000/activities`,
       headers: {
         Authorization: AuthStr
       }
     });
+    const [events, places, activities] = await Promise.all([eventsPromise, placesPromise, activitiesPromise]);
 
-    return { events: events.data, places: places.data, activities: activities.data };
+    this.setState({ events: events.data.events, places: places.data.places, activities: activities.data.activities });
   }
 
   updateFilter = (type, data) => {
@@ -63,8 +69,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { eventFilters } = this.state;
-    const { events, places, activities } = this.props;
+    const { events, places, activities, eventFilters } = this.state;
     return (
       <MainLayout>
         <TopPanel>
@@ -93,42 +98,24 @@ class Dashboard extends Component {
         </Divider>
         <FilterControlPanel>
           <span>Pick a</span>
-          <ActivityPicker activities={activities.activities} updateFilter={this.updateFilter} />
+          <ActivityPicker activities={activities} updateFilter={this.updateFilter} />
           <span>choose</span>
           <DateSelectorDynamic updateFilter={this.updateFilter} />
           <span>and</span>
-          <LocationSearch locations={places.places} updateFilter={this.updateFilter} />
+          <LocationSearch locations={places} updateFilter={this.updateFilter} />
           <button type="button" onClick={this.clearFilters}>
             Clear
           </button>
         </FilterControlPanel>
-        {events && <EventList events={events.events} filters={eventFilters} />}
+        {events && <EventList events={events} filters={eventFilters} />}
       </MainLayout>
     );
   }
 }
 
-export default Dashboard;
+Dashboard.contextType = UserContext;
 
-Dashboard.propTypes = {
-  events: PropTypes.shape({
-    id: PropTypes.number,
-    description: PropTypes.string,
-    placeid: PropTypes.string,
-    name: PropTypes.string,
-    datefrom: PropTypes.string,
-    dateto: PropTypes.string
-  }).isRequired,
-  places: PropTypes.shape({
-    id: PropTypes.number,
-    country: PropTypes.string,
-    city: PropTypes.string
-  }).isRequired,
-  activities: PropTypes.shape({
-    id: PropTypes.number,
-    name: PropTypes.string
-  }).isRequired
-};
+export default Dashboard;
 
 const TopPanel = styled.div`
   padding-left: 100px;

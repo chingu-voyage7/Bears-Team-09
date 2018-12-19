@@ -11,13 +11,9 @@ class LocationSearch extends Component {
     locations: []
   };
 
-  componentDidMount() {
-    const { locations } = this.props;
-    this.setState({ locations });
-  }
-
   handleChange = e => {
-    const { locations, suggestions } = this.state;
+    const { suggestions } = this.state;
+    const { locations } = this.props;
     const currentValue = e.target.value;
     this.setState({ currentInput: currentValue });
 
