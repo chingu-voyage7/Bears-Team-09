@@ -69,4 +69,4 @@ UserProvider.propTypes = {
 /* then make a consumer which will surface it */
 const UserConsumer = UserContext.Consumer;
 export default UserProvider;
-export { UserConsumer };
+export { UserConsumer, UserContext };

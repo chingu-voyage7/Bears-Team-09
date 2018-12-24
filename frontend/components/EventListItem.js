@@ -32,7 +32,7 @@ const Item = styled.div`
   border: 2px solid white;
   padding: 1em;
   text-align: center;
-  width: 80%;
-
+  width: 700px;
+  border-radius: 5px;
   cursor: pointer;
 `;
