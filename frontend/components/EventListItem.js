@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
+import React, { Component } from "react";
+import styled from "styled-components";
 
 class EventListItem extends Component {
   clickHandler = () => {
-    console.log('clicked');
+    console.log("clicked");
   };
 
-  render({  title, description } = this.props) {
+  render({ title, description } = this.props) {
     return (
       <ItemContainer>
         <Item onClick={this.clickHandler}>
@@ -32,7 +32,7 @@ const Item = styled.div`
   border: 2px solid white;
   padding: 1em;
   text-align: center;
-  width: 80%;
-
+  width: 700px;
+  border-radius: 5px;
   cursor: pointer;
 `;
