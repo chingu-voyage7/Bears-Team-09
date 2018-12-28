@@ -18,11 +18,6 @@ class Navbar extends React.Component {
               <NavLink>Events</NavLink>
             </Link>
           </li>
-          <li>
-            <Link href="/profile">
-              <NavLink>Profile</NavLink>
-            </Link>
-          </li>
           <Logo>
             <p>[Logo]</p>
           </Logo>
