@@ -1,17 +1,16 @@
 import React, { Component } from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import Profile from "../components/Profile";
 import { UserConsumer } from "../components/UserProvider";
+import MainLayout from "../components/MainLayout";
 
 class ProfilePage extends Component {
   render() {
     return (
-      <div>
-        <Navbar />
-        <UserConsumer>{context => <Profile context={context} />}</UserConsumer>
-        <Footer />
-      </div>
+      <MainLayout>
+        <div>
+          <UserConsumer>{context => <Profile context={context} />}</UserConsumer>
+        </div>
+      </MainLayout>
     );
   }
 }
