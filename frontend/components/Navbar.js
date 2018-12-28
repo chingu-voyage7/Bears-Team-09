@@ -21,11 +21,7 @@ class Navbar extends React.Component {
               <NavLink>Events</NavLink>
             </Link>
           </li>
-          <li>
-            <Link href="/profile">
-              <NavLink>Profile</NavLink>
-            </Link>
-          </li>
+          <Logo />
           <UserConsumer>
             {({ loggedIn, logOut }) =>
               loggedIn ? (
