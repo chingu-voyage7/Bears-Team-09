@@ -10,11 +10,17 @@ class Profile extends Component {
   render() {
     const { firstName, lastName, loggedIn, email } = this.props.context;
     console.log(this.props.context);
+
+    const imageSrc =
+      this.props.context.image !== "null" && this.props.context.image !== null
+        ? this.props.context.image
+        : "../static/no_photo.jpg";
+
     return (
       <Container>
         {loggedIn ? (
           <>
-            <ProfileImage src="../static/no_photo.jpg" />
+            <ProfileImage src={imageSrc} />
             <h3>
               {firstName} {lastName}
             </h3>
@@ -33,7 +39,8 @@ Profile.propTypes = {
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     email: PropTypes.string,
-    loggedIn: PropTypes.bool
+    loggedIn: PropTypes.bool,
+    image: PropTypes.string
   }).isRequired
 };
 
