@@ -9,10 +9,12 @@ class Profile extends Component {
 
   render() {
     const { firstName, lastName, loggedIn, email } = this.props.context;
+    console.log(this.props.context);
     return (
       <Container>
         {loggedIn ? (
           <>
+            <ProfileImage src="../static/no_photo.jpg" />
             <h3>
               {firstName} {lastName}
             </h3>
@@ -42,4 +44,11 @@ const Container = styled.div`
   width: 70%;
   padding: 3%;
   border: 1px solid grey;
+`;
+
+const ProfileImage = styled.img`
+  margin: 1%;
+  width: 10vw;
+  height: auto;
+  float: left;
 `;
