@@ -19,7 +19,8 @@ class Dashboard extends Component {
     eventFilters: { datefrom: null, city: null, activity: null },
     events: [],
     places: [],
-    activities: []
+    activities: [],
+    offset: 0
   };
 
   async componentDidMount() {
@@ -29,10 +30,10 @@ class Dashboard extends Component {
     const AuthStr = `Bearer ${token}`;
     const today = new Date().toISOString();
 
-    // Default fetch is any event from today with a limit of 10
+    // Default fetch is any event from today with a limit of 5
     const eventsPromise = axios({
       method: "get",
-      url: `http://localhost:8000/events?compare=gt&date_from=${today}&limit=10`,
+      url: `http://localhost:8000/events?compare=gt&date_from=${today}&limit=5`,
       headers: {
         Authorization: AuthStr
       }
@@ -67,6 +68,28 @@ class Dashboard extends Component {
 
   clearFilters = () => {
     this.setState({ eventFilters: { datefrom: null, city: null, activity: null } });
+  };
+
+  loadMoreEvents = async () => {
+    const { offset } = this.state;
+    const newOffset = offset + 5;
+    const { tokenCtx } = this.context;
+    const token = tokenCtx || localStorage.getItem("token");
+    const AuthStr = `Bearer ${token}`;
+    const today = new Date().toISOString();
+
+    const newEvents = await axios({
+      method: "get",
+      url: `http://localhost:8000/events?compare=gt&date_from=${today}&limit=5&offset=${newOffset}`,
+      headers: {
+        Authorization: AuthStr
+      }
+    });
+
+    this.setState(prevState => ({
+      events: [...prevState.events, ...newEvents.data.events],
+      offset: newOffset
+    }));
   };
 
   render() {
@@ -108,7 +131,12 @@ class Dashboard extends Component {
             Clear
           </button>
         </FilterControlPanel>
-        {events && <EventList events={events} filters={eventFilters} />}
+        {events && (
+          <EventContainer>
+            <EventList events={events} filters={eventFilters} />{" "}
+            <LoadMoreButton onClick={this.loadMoreEvents}>Load More</LoadMoreButton>
+          </EventContainer>
+        )}
       </MainLayout>
     );
   }
@@ -193,4 +221,17 @@ const FilterControlPanel = styled.div`
     margin-left: 5px;
     line-height: 36px;
   }
+`;
+
+const EventContainer = styled.div`
+  text-align: center;
+`;
+
+const LoadMoreButton = styled.button`
+  padding: 5px;
+  font-size: 1.1rem;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  background-color: black;
+  color: white;
 `;
