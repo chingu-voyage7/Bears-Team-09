@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const AuthButton = props => {
-  const { theme, action, title } = props;
+  const { theme, onCompletion, title } = props;
   return (
-    <StyledAuthBtn theme={theme} onClick={action}>
+    <StyledAuthBtn theme={theme} onClick={onCompletion}>
       {title}
     </StyledAuthBtn>
   );
@@ -13,7 +13,7 @@ const AuthButton = props => {
 
 AuthButton.propTypes = {
   title: PropTypes.string.isRequired,
-  action: PropTypes.func.isRequired,
+  onCompletion: PropTypes.func.isRequired,
   theme: PropTypes.string.isRequired
 };
 

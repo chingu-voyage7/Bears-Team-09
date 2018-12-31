@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import RegisterForm from '../components/RegisterForm';
-import MainLayout from '../components/MainLayout';
+import React, { Component } from "react";
+import styled from "styled-components";
+import RegisterForm from "../components/RegisterForm";
+import MainLayout from "../components/MainLayout";
+import { UserConsumer } from "../components/UserProvider";
 
 class Register extends Component {
   render() {
@@ -11,7 +12,7 @@ class Register extends Component {
           <InputSection>
             <Title>Register</Title>
             <p>If you already have account: [log in!]</p>
-            <RegisterForm />
+            <UserConsumer>{context => <RegisterForm context={context} />}</UserConsumer>
           </InputSection>
         </RegisterWrapper>
       </MainLayout>

@@ -1,26 +1,87 @@
 const express = require('express');
+const Event = require('../models/Event');
+const Attendee = require('../models/EventAttendee');
+const APIError = require('../utils/APIError.js');
 
-const router = express.Router();
+const eventRouter = express.Router();
 
-// this one will be protected
-router.get('/', (req, res) => {
-  res.json({message: 'list events placeholder'});
+// list all events, with parameters
+eventRouter.get('/', (req, res) => {
+    const newEvent = new Event(req.query);
+    newEvent.read()
+    .then(data => {res.json({events: data});})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
-router.post('/', (req, res) => {
-    res.json({message: 'create event placeholder'});
+// create an event
+eventRouter.post('/', (req, res) => {
+    const newEvent = new Event(req.body);
+    newEvent.create()
+    .then(([data]) => {
+        newEvent.data = data;
+        const attendee = new Attendee({
+            user_id: req.user.data.id,
+            event_id: data.id
+        });
+        return attendee.create();
+    })
+    .then(() => {
+        res.status(201).json(newEvent.data);
+    })
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
-router.get('/:id', (req, res) => {
-    res.json({message: 'get event placeholder'});
+// get event info
+eventRouter.get('/:id', (req, res) => {
+    const newEvent = new Event({id: req.params.id});
+    newEvent.read()
+    .then(([data]) => {
+        if (data === undefined) {
+            throw new APIError('Not found', 404);
+        }
+        res.json(data);
+    })
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
-router.delete('/:id', (req, res) => {
-    res.json({message: 'delete event placeholder'});
+// delete an event
+eventRouter.delete('/:id', (req, res) => {
+    const newEvent = new Event({id: req.params.id});
+    newEvent.delete()
+    .then(() => {res.status(204).json();})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
-router.put('/:id', (req, res) => {
-    res.json({message: 'update event placeholder'});
+// update an event
+eventRouter.put('/:id', (req, res) => {
+    const {id, ...newData} = req.body;
+    const newEvent = new Event({id: req.params.id, ...newData});
+    newEvent.update()
+    .then(() => {res.json();})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
-module.exports = router;
+// subscribe to attend an event
+eventRouter.post('/:id/attend', (req, res) => {
+    const attendee = new Attendee({
+        user_id: req.user[req.user.pk],
+        event_id: req.params.id
+    });
+    attendee.create()
+    .then(() => {res.status(201).json();})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
+});
+
+// unsubscribe from attending an event
+eventRouter.delete('/:id/attend', (req, res) => {
+    const attendee = new Attendee({
+        user_id: req.user[req.user.pk],
+        event_id: req.params.id
+    });
+    attendee.delete()
+    .then(() => {res.status(204).json();})
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
+});
+
+
+module.exports = eventRouter;

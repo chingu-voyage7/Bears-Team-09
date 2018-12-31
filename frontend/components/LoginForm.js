@@ -1,56 +1,61 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import Input from './Input';
-import AuthButton from './AuthButton';
-import LoginButton from './LoginButton';
+import React, { Component } from "react";
+import styled from "styled-components";
+import Router from "next/dist/lib/router";
+import axios from "axios";
+import PropTypes from "prop-types";
+import Input from "./Input";
+import AuthButton from "./AuthButton";
+import LoginButton from "./LoginButton";
+import GoogleRegisterButton from "./GoogleRegisterButton";
+import StyledErrorMsg from "../styles/StyledErrorMsg";
 
-class FormContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      password: ''
-    };
+class LoginForm extends Component {
+  state = {
+    email: "",
+    password: "",
+    loginFailed: false
+  };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleInput = this.handleInput.bind(this);
-    this.handleAuth = this.handleAuth.bind(this);
-  }
-
-  handleAuth = (e, type) => {
+  handleAuth = (_, type) => {
     // Method to be used if we implement auth
     // with Google, Twitter, Facebook, etc.
-    e.preventDefault();
     console.log(`Auth with ${type}`);
+    Router.push("/");
   };
 
   handleSubmit = e => {
-    // Login submission actions would be here
     e.preventDefault();
-    console.log('Submitting a form');
-    // Handle failed login state
-    // Handle Success login state -> redirect
+
+    // Handle Success register state -> redirect
+    axios
+      .post("http://localhost:8000/auth/login", {
+        email: this.state.email,
+        password: this.state.password
+      })
+      .then(res => {
+        this.props.context.logIn({ data: res.data, method: "password" });
+        this.handleAuth(null, "email/password");
+      })
+      .catch(err => {
+        console.error(err);
+        this.handleFail();
+      });
   };
 
-  handleInput(e) {
-    // Method that syncs current input with state
+  handleFail = () => this.setState({ loginFailed: true });
+
+  // Method that syncs current input with state
+  handleInput = e => {
     const { name, value } = e.target;
     const inputValue = { ...this.state, [name]: value };
     this.setState(inputValue);
-  }
+  };
 
   render() {
     return (
       <>
         <form onSubmit={this.handleSubmit}>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Email"
-            handleChange={this.handleInput}
-            required
-          />
+          <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
           <Input
             id="password"
             name="password"
@@ -60,31 +65,29 @@ class FormContainer extends Component {
             required
           />
           <LoginButton title="Log in" />
+          {this.state.loginFailed && <StyledErrorMsg>Log in failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>
           <h4>Or use alternatives:</h4>
-          <AuthButton
-            theme="#3b5998"
-            title="Log in using Facebook"
-            action={e => this.handleAuth(e, 'fb')}
-          />
-          <AuthButton
+          <GoogleRegisterButton
             theme="#ea4335"
             title="Log in using Google"
-            action={e => this.handleAuth(e, 'gl')}
+            onCompletion={e => this.handleAuth(e, "gl")}
+            onFailure={this.handleFail}
           />
-          <AuthButton
-            theme="#1da1f2"
-            title="Log in using Twitter"
-            action={e => this.handleAuth(e, 'tw')}
-          />
+          <AuthButton theme="#3b5998" title="Log in using Facebook" onCompletion={e => this.handleAuth(e, "fb")} />
+          <AuthButton theme="#1da1f2" title="Log in using Twitter" onCompletion={e => this.handleAuth(e, "tw")} />
         </AuthButtonWrapper>
       </>
     );
   }
 }
 
-export default FormContainer;
+export default LoginForm;
+
+LoginForm.propTypes = {
+  context: PropTypes.object
+};
 
 const AuthButtonWrapper = styled.div`
   display: grid;

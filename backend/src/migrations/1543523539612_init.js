@@ -2,12 +2,16 @@ exports.shorthands = undefined;
 
 exports.up = (pgm) => {
     pgm.createTable('users', {
-        email: { type: 'varchar(256)', primaryKey: true},
+        id: 'id',
+        email: { type: 'varchar(256)', notNull: true, unique: true},
         first_name: {type: 'varchar(128)'},
         last_name: {type: 'varchar(128)'},
-        password: {type: 'varchar(256)'},
+        password: {type: 'varchar(256)', notNull: true},
+        image: {type: 'varchar(128)'},
         bio: {type: 'varchar(1024)'}
     });
+
+    pgm.createIndex('users', 'email');
 
     pgm.createTable('activities', {
         id: 'id',
@@ -26,18 +30,21 @@ exports.up = (pgm) => {
         unique: ['country', 'city']
     });
 
+    pgm.createIndex('places', 'country');
+    pgm.createIndex('places', 'city');
+
     pgm.createTable('events', {
         id: 'id',
         name: {type: 'varchar(256)', notNull: true},
         description: {type: 'text'},
-        activity: {
+        activity_id: {
             type: 'integer',
             notNull: true,
             references: '"activities"',
             deferrable: true,
             deferred: true
         },
-        place: {
+        place_id: {
             type: 'integer',
             references: '"places"',
             deferrable: true,
@@ -45,12 +52,12 @@ exports.up = (pgm) => {
         },
         date_from: {type: 'datetime'},
         date_to: {type: 'datetime'},
-        minpeople: {
+        min_people: {
             type: 'integer',
             notNull: true,
             default: 2
         },
-        maxpeople: {
+        max_people: {
             type: 'integer'
         }
     });
@@ -66,7 +73,7 @@ exports.up = (pgm) => {
             deferred: true
         },
         user_id: {
-            type: 'varchar(256)',
+            type: 'integer',
             notNull: true,
             references: '"users"',
             deferrable: true,
@@ -79,7 +86,7 @@ exports.up = (pgm) => {
     pgm.createIndex('event_attendees', 'user_id');
 
     // `Unique together` constraint
-    pgm.addConstraint('event_attendees', 'app_event_attendees_event_id_user_id_uniq', {
+    pgm.addConstraint('event_attendees', 'event_attendees_event_id_user_id_uniq', {
         unique: ['user_id', 'event_id']
     });
 };

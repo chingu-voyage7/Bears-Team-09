@@ -1,34 +1,31 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import Input from './Input';
-import AuthButton from './AuthButton';
-import LoginButton from './LoginButton';
+import React, { Component } from "react";
+import styled from "styled-components";
+import Router from "next/router";
+import axios from "axios";
+import PropTypes from "prop-types";
+import Input from "./Input";
+import AuthButton from "./AuthButton";
+import LoginButton from "./LoginButton";
+import GoogleRegisterButton from "./GoogleRegisterButton";
+import StyledErrorMsg from "../styles/StyledErrorMsg";
 
-class FormContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      firstName: '',
-      lastName: '',
-      password: '',
-      confirmPassword: '',
-      email: '',
-      passwordsDontMatch: false
-    };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleInput = this.handleInput.bind(this);
-    this.handleAuth = this.handleAuth.bind(this);
-  }
-
-  handleAuth = e => {
-    // Method to be used if we implement auth
-    // with Google, Twitter, Facebook, etc.
-    e.preventDefault();
+class RegisterForm extends Component {
+  state = {
+    firstName: "",
+    lastName: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+    passwordsDontMatch: false,
+    registrationFailed: false
   };
 
-  handleSubmit = e => {
-    // Register new user
+  handleAuth = (_, type) => {
+    console.log(`Register with ${type}`);
+    Router.push("/");
+  };
+
+  handleSubmit = async e => {
     e.preventDefault();
 
     // Perform password validation
@@ -39,19 +36,35 @@ class FormContainer extends Component {
       this.setState({ passwordsDontMatch: false });
     }
 
-    // Handle failed register state
     // Handle Success register state -> redirect
+    axios
+      .post("http://localhost:8000/auth/register", {
+        email: this.state.email,
+        password: this.state.password,
+        first_name: this.state.firstName,
+        last_name: this.state.lastName
+      })
+      .then(res => {
+        this.props.context.logIn({ data: res.data, method: "password" });
+        this.handleAuth(null, "email/password");
+      })
+      .catch(err => {
+        console.error(err);
+        this.handleFail();
+      });
   };
 
-  handleInput(e) {
+  handleFail = () => this.setState({ registrationFailed: true });
+
+  handleInput = e => {
     // Method that syncs current input with state
     const { name, value } = e.target;
     const inputValue = { ...this.state, [name]: value };
     this.setState(inputValue);
-  }
+  };
 
   render() {
-    const { passwordsDontMatch } = this.state;
+    const { passwordsDontMatch, registrationFailed } = this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
@@ -71,14 +84,7 @@ class FormContainer extends Component {
             handleChange={this.handleInput}
             required
           />
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Email"
-            handleChange={this.handleInput}
-            required
-          />
+          <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
           <Input
             id="password"
             name="password"
@@ -96,34 +102,30 @@ class FormContainer extends Component {
             required
           />
           <LoginButton title="Register" />
-          {passwordsDontMatch && (
-            <StyledErrorMsg>Make sure that passwords match!</StyledErrorMsg>
-          )}
+          {passwordsDontMatch && <StyledErrorMsg>Make sure that passwords match!</StyledErrorMsg>}
+          {registrationFailed && <StyledErrorMsg>Registration failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>
           <h4>Or use alternatives:</h4>
-          <AuthButton
-            theme="#3b5998"
-            title="Register using Facebook"
-            action={e => this.handleAuth(e, 'fb')}
-          />
-          <AuthButton
+          <GoogleRegisterButton
             theme="#ea4335"
             title="Register using Google"
-            action={e => this.handleAuth(e, 'gl')}
+            onCompletion={e => this.handleAuth(e, "gl")}
+            onFailure={this.handleFail}
           />
-          <AuthButton
-            theme="#1da1f2"
-            title="Register using Twitter"
-            action={e => this.handleAuth(e, 'tw')}
-          />
+          <AuthButton theme="#3b5998" title="Register using Facebook" onCompletion={e => this.handleAuth(e, "fb")} />
+          <AuthButton theme="#1da1f2" title="Register using Twitter" onCompletion={e => this.handleAuth(e, "tw")} />
         </AuthButtonWrapper>
       </>
     );
   }
 }
 
-export default FormContainer;
+export default RegisterForm;
+
+RegisterForm.propTypes = {
+  context: PropTypes.object
+};
 
 const AuthButtonWrapper = styled.div`
   display: grid;
@@ -133,9 +135,4 @@ const AuthButtonWrapper = styled.div`
   h4 {
     margin-bottom: 5px;
   }
-`;
-
-const StyledErrorMsg = styled.span`
-  margin-left: 10px;
-  color: red;
 `;

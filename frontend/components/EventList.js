@@ -1,27 +1,60 @@
-import React, { Component } from 'react';
-import EventListItem from './EventListItem';
+import React from "react";
+import { format } from "date-fns";
+import PropTypes from "prop-types";
+import EventListItem from "./EventListItem";
 
-class EventList extends Component {
-  render() {
-    const events = [
-      { id: 1, title: 'biking', description: 'special trail' },
-      { id: 2, title: 'baking', description: 'special cake' },
-      {
-        id: 3,
-        title: 'hiking',
-        description: 'lots of bears on this hike need a friend'
-      },
-      { id: 4, title: 'concert', description: 'I do not wanna go alone' },
-      { id: 5, title: 'workout', description: 'Lifting heavy need a spotter' }
-    ];
-    return (
-      <div>
-        {events.map(event => (
-          <EventListItem key={event.id} {...event} />
-        ))}
-      </div>
-    );
+// we would use this helper function to filter events, may need to push out //to utils folder for cleaner looking component
+function applyEventsFilter(events, filters) {
+  function compareEventAndFilter(event, filtersObject) {
+    let everyFilterMatching = true;
+    Object.keys(filtersObject).forEach(filter => {
+      if (filter === "datefrom") {
+        // early exit for null dates
+        if (filters[filter] !== null) {
+          const filterDate = format(filters[filter], "YYYY-MM-DD");
+          const eventDate = format(event[filter], "YYYY-MM-DD");
+          if (filterDate !== eventDate) {
+            everyFilterMatching = false;
+          }
+        }
+      } else if (filter === "activity" || filter === "city") {
+        if (filters[filter] !== null) {
+          // nomralization before comparison
+          const filterValue = filters[filter].toLowerCase();
+          const eventValue = event[filter].toLowerCase();
+          if (filterValue !== eventValue) {
+            everyFilterMatching = false;
+          }
+        }
+      }
+    });
+    return everyFilterMatching;
   }
+
+  const filteredEvents = events.filter(event => compareEventAndFilter(event, filters));
+  return filteredEvents;
 }
 
+const EventList = props => {
+  const { filters, events } = props;
+  const eventsToShow = applyEventsFilter(events, filters);
+  return <div>{eventsToShow && eventsToShow.map(event => <EventListItem key={event.id} {...event} />)}</div>;
+};
+
 export default EventList;
+
+EventList.propTypes = {
+  events: PropTypes.shape({
+    id: PropTypes.number,
+    description: PropTypes.string,
+    placeid: PropTypes.string,
+    name: PropTypes.string,
+    datefrom: PropTypes.string,
+    dateto: PropTypes.string
+  }).isRequired,
+  filters: PropTypes.shape({
+    datefrom: PropTypes.string,
+    city: PropTypes.string,
+    activity: PropTypes.string
+  }).isRequired
+};
