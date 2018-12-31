@@ -14,6 +14,7 @@ const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), 
   ssr: false
 });
 
+
 class Dashboard extends Component {
   state = {
     eventFilters: { datefrom: null, city: null, activity: null },
