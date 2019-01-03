@@ -44,14 +44,7 @@ const EventList = props => {
 export default EventList;
 
 EventList.propTypes = {
-  events: PropTypes.shape({
-    id: PropTypes.number,
-    description: PropTypes.string,
-    placeid: PropTypes.string,
-    name: PropTypes.string,
-    datefrom: PropTypes.string,
-    dateto: PropTypes.string
-  }).isRequired,
+  events: PropTypes.arrayOf(PropTypes.object).isRequired,
   filters: PropTypes.shape({
     datefrom: PropTypes.string,
     city: PropTypes.string,
