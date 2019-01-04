@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import ImageUploader from "./ImageUploader";
+import axios from "axios";
 
 class Profile extends Component {
-  componentDidMount() {
-    // Request email and location from backend
+  async componentDidMount() {
+    const backendUrl = "http://localhost:8000/";
+    const events = await axios.get(`${backendUrl}`)
   }
 
   render() {
@@ -19,13 +22,20 @@ class Profile extends Component {
     return (
       <Container>
         {loggedIn ? (
-          <>
+          <GridWrapper>
             <ProfileImage src={imageSrc} />
-            <h3>
-              {firstName} {lastName}
-            </h3>
-            Email: {email}
-          </>
+            <ImageUploader style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }} />
+
+            <div style={{ gridColumn: "2 / span 1", gridRow: "1 / span 2" }}>
+              <h2>
+                {firstName} {lastName}
+              </h2>
+              Email: {email}
+              <h4>My events</h4>
+              {/* {events} */}
+
+            </div>
+          </GridWrapper>
         ) : (
           "Please log in to view this page"
         )}
@@ -57,5 +67,10 @@ const ProfileImage = styled.img`
   margin: 1%;
   width: 10vw;
   height: auto;
-  float: left;
+  grid-column: 1 / span 1;
+`;
+
+const GridWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 4fr;
 `;
