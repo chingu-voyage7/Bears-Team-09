@@ -44,6 +44,15 @@ eventRouter.get('/:id', (req, res) => {
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
+eventRouter.get('/:id/attendees', (req, res) => {
+    const attendees = new Attendee({event_id: req.params.id});
+    attendees.getAllAttendees()
+    .then((data) => {
+        res.json(data);
+    })
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
+});
+
 // delete an event
 eventRouter.delete('/:id', (req, res) => {
     const newEvent = new Event({id: req.params.id});
