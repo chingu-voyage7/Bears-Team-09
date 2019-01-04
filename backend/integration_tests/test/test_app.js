@@ -24,21 +24,6 @@ const updatedTestUser = {
 
 let testUserToken;
 
-describe('Check DB is available', () => {
-    let result;
-    before((done) => {
-        chai.request(url)
-            .options('auth/register')
-            .end((err, res) => {
-                expect(err).to.be.null;
-                result = res;
-                done();
-            });
-    });
-    it('should return status code 200', () => assert(result, 'status').to.equal(200));
-
-});
-
 describe('Register new user', () => {
     let result;
     before((done) => {
