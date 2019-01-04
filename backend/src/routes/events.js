@@ -72,11 +72,24 @@ eventRouter.put('/:id', (req, res) => {
 
 // subscribe to attend an event
 eventRouter.post('/:id/attend', (req, res) => {
+    const e = new Event({id: req.params.id});
+    const attendees = new Attendee({event_id: req.params.id});
     const attendee = new Attendee({
         user_id: req.user[req.user.pk],
         event_id: req.params.id
     });
-    attendee.create()
+    let maxPeople;
+    e.read()
+    .then(([{max_people}]) => {
+        maxPeople = Number(max_people);
+        return attendees.getAllAttendees();
+    })
+    .then(data => {
+        if (maxPeople && data.length >= maxPeople) {
+            throw new APIError('Event is completely booked', 403);
+        }
+        return attendee.create();
+    })
     .then(() => {res.status(201).json();})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
