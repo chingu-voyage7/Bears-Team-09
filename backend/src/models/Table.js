@@ -64,7 +64,7 @@ class Table {
   }
 
   getMissingFields() {
-    return this.REQUIRED_FIELDS.filter(f => this.data.indexOf(f) === -1);
+    return this.REQUIRED_FIELDS.filter(f => Object.keys(this.data).indexOf(f) === -1);
   }
 
   create() {
