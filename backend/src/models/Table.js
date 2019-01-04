@@ -11,6 +11,7 @@ class Table {
     };
     this.pk = pk;
     this.data = data;
+    this.REQUIRED_FIELDS = [];
     this.opts = {
       // default read options
       limit: null,
@@ -62,8 +63,20 @@ class Table {
     }, {text: [], values: []});
   }
 
+  getMissingFields() {
+    return this.REQUIRED_FIELDS.filter(f => Object.keys(this.data).indexOf(f) === -1);
+  }
+
   create() {
     let index = 1;
+    // return rejected promise in case of incomplete data, to catch it later
+    // and return meaningfull error to the user
+    const fieldsMissing = this.getMissingFields();
+    if (fieldsMissing.length > 0) {
+      return new Promise((resolve, reject) => {
+        reject(new Error(`Field(s) ${fieldsMissing.join(', ')} is(are) missing`));
+      });
+    }
     const prepared = Object.keys(this.data).reduce((acc, key) => {
         acc.keys.push(key);
         acc.indexes.push(`$${index++}`);

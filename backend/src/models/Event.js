@@ -4,7 +4,7 @@ class Event extends Table {
   constructor(rawData={}) {
     const pk = 'id';
     const tableName = 'events';
-    const ACCEPTED_FIELDS = ['id', 'name', 'description', 'activity_id', 'place_id', 'date_from', 'date_to', 'min_people', 'max_people'];
+    const ACCEPTED_FIELDS = ['id', 'name', 'image', 'description', 'activity_id', 'place_id', 'date_from', 'date_to', 'min_people', 'max_people'];
     const cleanData = {};
     Object.keys(rawData).forEach(key => {
       if (ACCEPTED_FIELDS.includes(key)) {
@@ -13,11 +13,13 @@ class Event extends Table {
     });
     super(tableName, pk, cleanData);
     this.ACCEPTED_FIELDS = ACCEPTED_FIELDS;
+    this.REQUIRED_FIELDS = ['name', 'activity_id'];
     this.parseOpts(rawData);
   }
 
   read() {
-    const text = `SELECT events.id, events.name, events.description,
+    const text = `SELECT
+    events.id, events.name, events.image,events.description,
     activities.name as activity, places.country, places.city,
     events.date_from, events.date_to, events.min_people, events.max_people
     FROM ${this.tableName}

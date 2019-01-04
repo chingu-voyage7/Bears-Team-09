@@ -36,6 +36,7 @@ exports.up = (pgm) => {
     pgm.createTable('events', {
         id: 'id',
         name: {type: 'varchar(256)', notNull: true},
+        image: {type: 'varchar(128)'},
         description: {type: 'text'},
         activity_id: {
             type: 'integer',
