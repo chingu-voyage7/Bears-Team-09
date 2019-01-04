@@ -80,8 +80,8 @@ eventRouter.post('/:id/attend', (req, res) => {
     });
     let maxPeople;
     e.read()
-    .then(([{max_people}]) => {
-        maxPeople = Number(max_people);
+    .then(([data]) => {
+        maxPeople = Number(data.max_people);
         return attendees.getAllAttendees();
     })
     .then(data => {
