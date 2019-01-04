@@ -11,6 +11,7 @@ class Table {
     };
     this.pk = pk;
     this.data = data;
+    this.REQUIRED_FIELDS = [];
     this.opts = {
       // default read options
       limit: null,
@@ -64,6 +65,15 @@ class Table {
 
   create() {
     let index = 1;
+    // return rejected promise in case of incomplete data, to catch it later
+    // and return meaningfull error to the user
+    for (let f of this.REQUIRED_FIELDS) {
+      if (!(f in this.data)) {
+        return new Promise((resolve, reject) => {
+          reject(new Error(`'${f}' is required`));
+        });
+      }
+    }
     const prepared = Object.keys(this.data).reduce((acc, key) => {
         acc.keys.push(key);
         acc.indexes.push(`$${index++}`);

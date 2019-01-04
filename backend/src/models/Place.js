@@ -13,6 +13,7 @@ class Place extends Table {
     });
     super(tableName, pk, cleanData);
     this.ACCEPTED_FIELDS = ACCEPTED_FIELDS;
+    this.REQUIRED_FIELDS = ['country', 'city'];
     this.parseOpts(rawData);
   }
 }

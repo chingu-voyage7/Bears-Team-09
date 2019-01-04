@@ -13,6 +13,7 @@ class EventAttendee extends Table {
     });
     super(tableName, pk, cleanData);
     this.ACCEPTED_FIELDS = ACCEPTED_FIELDS;
+    this.REQUIRED_FIELDS = ['event_id', 'user_id'];
     this.parseOpts(rawData);
   }
 
@@ -24,7 +25,7 @@ class EventAttendee extends Table {
   }
 
   getAllEvents() {
-    const text = `SELECT events.id, events.name, events.description,
+    const text = `SELECT events.id, events.name, events.image, events.description,
       activities.name as activity, places.country, places.city,
       events.date_from, events.date_to, events.min_people, events.max_people FROM events
       INNER JOIN ${this.tableName} ON events.id = ${this.tableName}.event_id

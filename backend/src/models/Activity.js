@@ -13,6 +13,7 @@ class Activity extends Table {
     });
     super(tableName, pk, cleanData);
     this.ACCEPTED_FIELDS = ACCEPTED_FIELDS;
+    this.REQUIRED_FIELDS = ['name'];
     this.parseOpts(rawData);
   }
 }
