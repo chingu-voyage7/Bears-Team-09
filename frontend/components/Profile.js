@@ -1,18 +1,34 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import ImageUploader from "./ImageUploader";
 import axios from "axios";
+import ImageUploader from "./ImageUploader";
+import { UserContext } from "./UserProvider";
 
 class Profile extends Component {
+  static backendUrl = "http://localhost:8000";
+
+  state = { events: [] };
+
   async componentDidMount() {
-    const backendUrl = "http://localhost:8000/";
-    const events = await axios.get(`${backendUrl}`)
+    // Have to get token from localStorage on page reload b/c context is empty
+    const token = this.context.token || localStorage.getItem("token");
+    const events = await this.getEventsFromBackend(token);
+    this.setState({ events });
   }
+
+  async getEventsFromBackend(token) {
+    if (token == null) return [];
+    return (await axios.get(`${Profile.backendUrl}/events`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })).data.events;
+  }
+
+  makeEventsDomElements = events => events.map(event => <div key={event.id}>{event.name}</div>);
 
   render() {
     const { firstName, lastName, loggedIn, email } = this.props.context;
-    console.log(this.props.context);
+    const events = this.makeEventsDomElements(this.state.events);
 
     const imageSrc =
       this.props.context.image !== "null" && this.props.context.image !== null
@@ -32,8 +48,7 @@ class Profile extends Component {
               </h2>
               Email: {email}
               <h4>My events</h4>
-              {/* {events} */}
-
+              {events}
             </div>
           </GridWrapper>
         ) : (
@@ -44,13 +59,16 @@ class Profile extends Component {
   }
 }
 
+Profile.contextType = UserContext;
+
 Profile.propTypes = {
   context: PropTypes.shape({
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     email: PropTypes.string,
     loggedIn: PropTypes.bool,
-    image: PropTypes.string
+    image: PropTypes.string,
+    token: PropTypes.string
   }).isRequired
 };
 
