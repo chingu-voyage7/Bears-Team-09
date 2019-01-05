@@ -10,12 +10,11 @@ class DateSelector extends React.Component {
   };
 
   handleChange = date => {
-    const { updateFilter } = this.props;
-    // handle clear date action
+    const { updateSelection } = this.props;
     if (date === null) {
-      this.setState({ startDate: null }, updateFilter("datefrom", null));
+      this.setState({ startDate: null }, updateSelection("datefrom", null));
     } else {
-      this.setState({ startDate: date }, updateFilter("datefrom", date));
+      this.setState({ startDate: date }, updateSelection("datefrom", date));
     }
   };
 
@@ -45,7 +44,7 @@ class DateSelector extends React.Component {
 export default DateSelector;
 
 DateSelector.propTypes = {
-  updateFilter: PropTypes.func.isRequired
+  updateSelection: PropTypes.func.isRequired
 };
 
 const DatePickerStylingWrapper = styled.div`

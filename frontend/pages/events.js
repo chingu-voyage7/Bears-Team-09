@@ -14,7 +14,6 @@ const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), 
   ssr: false
 });
 
-
 class Dashboard extends Component {
   state = {
     eventFilters: { datefrom: null, city: null, activity: null },
@@ -123,11 +122,11 @@ class Dashboard extends Component {
         </Divider>
         <FilterControlPanel>
           <span>Pick a</span>
-          <ActivityPicker activities={activities} updateFilter={this.updateFilter} />
+          <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} />
           <span>choose</span>
-          <DateSelectorDynamic updateFilter={this.updateFilter} />
+          <DateSelectorDynamic updateSelection={this.updateFilter} />
           <span>and</span>
-          <LocationSearch locations={places} updateFilter={this.updateFilter} />
+          <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} />
           <button type="button" onClick={this.clearFilters}>
             Clear
           </button>

@@ -31,28 +31,31 @@ class LocationSearch extends Component {
   };
 
   clearInput = () => {
-    const { updateFilter } = this.props;
-    this.setState({ currentInput: "", suggestions: [], suggestionPopup: false }, updateFilter("city", null));
+    const { updateSelection } = this.props;
+    this.setState({ currentInput: "", suggestions: [], suggestionPopup: false }, updateSelection("city", null));
   };
 
-  selectLocation = (e, locationName) => {
-    const { updateFilter } = this.props;
-    this.setState({ currentInput: locationName, suggestionPopup: false }, updateFilter("city", locationName));
+  selectLocation = (e, location) => {
+    const { updateSelection } = this.props;
+    this.setState(
+      { currentInput: location.city, suggestionPopup: false },
+      updateSelection("city", location.city, location.id)
+    );
   };
 
   render() {
     const { currentInput, suggestions, suggestionPopup, placeholder } = this.state;
     const suggestionList = suggestions.map(location => (
-      <SuggestionListItem key={location.id} onClick={e => this.selectLocation(e, location.city)}>
+      <SuggestionListItem key={location.id} onClick={e => this.selectLocation(e, location)}>
         {location.city}
       </SuggestionListItem>
     ));
     return (
       <>
         <SearchBarWrapper>
-          <StyledSearchBar placeholder={placeholder} type="text" onChange={this.handleChange} value={currentInput} />
+          <StyledSearchBar type="form" placeholder={placeholder} onChange={this.handleChange} value={currentInput} />
           {currentInput && currentInput.length !== 0 && <ClearButton onClick={this.clearInput}>x</ClearButton>}
-          {suggestionPopup && <Suggestions>{suggestionList}</Suggestions>}
+          {suggestionPopup && <Suggestions type="form">{suggestionList}</Suggestions>}
         </SearchBarWrapper>
       </>
     );
@@ -62,7 +65,7 @@ class LocationSearch extends Component {
 export default LocationSearch;
 
 LocationSearch.propTypes = {
-  updateFilter: PropTypes.func.isRequired,
+  updateSelection: PropTypes.func.isRequired,
   locations: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
@@ -73,13 +76,15 @@ const SearchBarWrapper = styled.div`
 `;
 
 const StyledSearchBar = styled.input`
-  text-align: center;
+  text-align: ${props => (props.type === "form" ? "left" : "center")};
+  text-transform: ${props => (props.type === "form" ? "capitalize" : "none")};
   font-size: 1rem;
   border: 1px solid rgba(0, 0, 0, 0.12);
   color: #757575;
   display: block;
-  width: 150px;
-  padding: 6px;
+  box-sizing: border-box;
+  width: ${props => (props.type === "form" ? "100%" : "150px")};
+  padding: 5px;
   border-radius: 3px;
   transition: all 0.1s 0.1s ease-in;
   outline: none;
@@ -102,9 +107,8 @@ const StyledSearchBar = styled.input`
 
 const Suggestions = styled.ul`
   list-style-type: none;
-  width: 140px;
+  width: ${props => (props.type === "form" ? "auto" : "150px")};
   margin: 2px 0px 0px 0px;
-  padding: 0;
   position: absolute;
   display: grid;
   grid-gap: 5px;
