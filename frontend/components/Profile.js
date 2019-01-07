@@ -29,7 +29,7 @@ class Profile extends Component {
   makeEventsDomElements = events => events.map(event => <Event {...event} key={event.id} />);
 
   render() {
-    const { firstName, lastName, loggedIn, email } = this.props.context;
+    const { firstName, lastName, loggedIn, email, bio } = this.props.context;
     const events = this.makeEventsDomElements(this.state.events);
 
     const imageSrc =
@@ -48,7 +48,8 @@ class Profile extends Component {
                 <h2>
                   {firstName} {lastName}
                 </h2>
-                Email: {email}
+                Email: {email}<br/><br/>
+                Bio: {bio !== null && bio !== "null" ? bio : "No bio provided"}
               </PersonalInfo>
             </SideBar>
 
