@@ -19,9 +19,11 @@ class DateSelector extends React.Component {
   };
 
   render() {
+    const { placeholder } = this.props;
     const { startDate } = this.state;
+    // const placeholder = type === "form" ? "Date" : "time";
     return (
-      <DatePickerStylingWrapper>
+      <DatePickerStylingWrapper type="form">
         <DatePicker
           popperPlacement="bottom"
           popperModifiers={{
@@ -33,7 +35,7 @@ class DateSelector extends React.Component {
           todayButton="today"
           selected={startDate}
           onChange={this.handleChange}
-          placeholderText="time"
+          placeholderText={placeholder}
           isClearable
         />
       </DatePickerStylingWrapper>
@@ -44,7 +46,8 @@ class DateSelector extends React.Component {
 export default DateSelector;
 
 DateSelector.propTypes = {
-  updateSelection: PropTypes.func.isRequired
+  updateSelection: PropTypes.func.isRequired,
+  placeholder: PropTypes.string.isRequired
 };
 
 const DatePickerStylingWrapper = styled.div`
@@ -53,11 +56,12 @@ const DatePickerStylingWrapper = styled.div`
     padding: 5px;
     border-radius: 3px;
     outline: 0;
-    width: 120px;
+    width: ${props => (props.type === "form" ? "100%" : "120px")};
     text-align: left;
     font-size: 1rem;
     border: 1px solid rgba(0, 0, 0, 0.12);
     color: #757575;
+    margin-top: ${props => (props.type === "form" ? "5px" : "0px")};
   }
 
   input:hover {

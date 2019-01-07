@@ -1,4 +1,5 @@
 import React from "react";
+import Router from "next/router";
 import styled from "styled-components";
 import axios from "axios";
 import MainLayout from "../components/MainLayout";
@@ -7,14 +8,15 @@ import NewEventForm from "../components/NewEventForm";
 class NewEvent extends React.Component {
   state = {
     places: [],
-    activities: []
+    activities: [],
+    AuthStr: ""
   };
 
   async componentDidMount() {
     const { tokenCtx } = this.context;
     const token = tokenCtx || localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-
+    this.setState({ AuthStr });
     const placesPromise = axios({
       method: "get",
       url: `http://localhost:8000/places`,
@@ -36,6 +38,20 @@ class NewEvent extends React.Component {
     this.setState({ places: places.data.places, activities: activities.data.activities });
   }
 
+  createEvent = event => {
+    console.log(event);
+    axios({
+      method: "post",
+      url: `http://localhost:8000/events`,
+      data: event,
+      headers: {
+        Authorization: this.state.AuthStr
+      }
+    })
+      .then(() => Router.push("/events"))
+      .catch(error => console.error(error));
+  };
+
   render() {
     const { places, activities } = this.state;
     return (
@@ -43,7 +59,7 @@ class NewEvent extends React.Component {
         <EventWrapper>
           <InputSection>
             <Title>Create New Event:</Title>
-            <NewEventForm places={places} activities={activities} />
+            <NewEventForm createEvent={this.createEvent} places={places} activities={activities} />
           </InputSection>
         </EventWrapper>
       </MainLayout>

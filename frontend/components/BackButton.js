@@ -2,17 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-const ClearButton = props => (
-  <StyledButton onClick={props.handleClearButton} type="submit">
-    Clear
+const BackButton = props => (
+  <StyledButton onClick={props.handleBackButton} type="submit">
+    Back
   </StyledButton>
 );
 
-ClearButton.propTypes = {
-  handleClearButton: PropTypes.func.isRequired
+BackButton.propTypes = {
+  handleBackButton: PropTypes.func.isRequired
 };
 
-export default ClearButton;
+export default BackButton;
 
 const StyledButton = styled.button`
   color: white;

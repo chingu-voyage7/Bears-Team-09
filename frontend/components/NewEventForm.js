@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import axios from "axios";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import Router from "next/router";
 import Input from "./Input";
 import LoginButton from "./LoginButton";
-import ClearButton from "./ClearButton";
+import BackButton from "./BackButton";
 import Select from "./Select";
 import ActivityPicker from "./ActivityPicker";
 import LocationSearch from "./LocationSearch";
@@ -14,53 +14,29 @@ class EventForm extends Component {
   state = {
     name: "",
     description: "",
-    activity: "",
     activity_id: "",
     place_id: "",
     date_to: "",
-    date_from: new Date().toISOString(),
-    owner: "",
-    max_people: "2",
-    creationFailed: false
+    date_from: "",
+    max_people: "2"
   };
 
-  // Required fields: name, activity_id, max_people
-  // Optional fields: description, place_id, date_from, date_to, min_people
-
-  handleSubmit = async e => {
+  handleSubmit = e => {
     e.preventDefault();
-    console.log(`submitting`);
     const newEvent = {
       name: this.state.name,
       max_people: this.state.max_people,
       activity_id: this.state.activity_id,
       place_id: this.state.place_id,
       description: this.state.description,
-      date_from: this.state.date_from
+      date_from: this.state.date_from,
+      date_to: this.state.date_to
     };
-    console.log(newEvent);
-
-    // Handle Success register state -> redirect
-    //   axios
-    //     .post("http://localhost:8000/auth/register", {
-    //       email: this.state.email,
-    //       password: this.state.password,
-    //       first_name: this.state.firstName,
-    //       last_name: this.state.lastName
-    //     })
-    //     .then(res => {
-    //       this.props.context.logIn({ data: res.data, method: "password" });
-    //       this.handleAuth(null, "email/password");
-    //     })
-    //     .catch(err => {
-    //       console.error(err);
-    //       this.handleFail();
-    //     });
+    this.props.createEvent(newEvent);
   };
 
-  clearInputs = e => {
-    e.preventDefault();
-    console.log(`clearing inputs`);
+  handleBackButton = () => {
+    Router.push(`/events`);
   };
 
   handleInput = e => {
@@ -70,14 +46,11 @@ class EventForm extends Component {
     this.setState(inputValue);
   };
 
-  // FIXME: These two methods need to be joined
   updateActivity = (type, name, id) => {
-    console.log(`activity updated to ${name} with id of ${id}`);
     this.setState({ activity: name, activity_id: id });
   };
 
   updateLocation = (type, name, id) => {
-    console.log(`location updated to ${name}, ${id}`);
     this.setState({ place_id: id });
   };
 
@@ -87,12 +60,16 @@ class EventForm extends Component {
     this.setState({ max_people: e.target.value });
   };
 
-  updateDate = (_, date) => {
-    console.log(date);
+  updateStartDate = (_, date) => {
+    this.setState({ date_from: date });
+  };
+
+  updateEndDate = (_, date) => {
     this.setState({ date_to: date });
   };
 
   render() {
+    // defaults going downstream from state (should work for clearing)
     const { places, activities } = this.props;
     return (
       <>
@@ -107,10 +84,11 @@ class EventForm extends Component {
           />
           <ActivityPicker type="form" updateSelection={this.updateActivity} activities={activities} />
           <LocationSearch locations={places} updateSelection={this.updateLocation} />
-          <DateSelector updateSelection={this.updateDate} />
+          <DateSelector type="form" placeholder="Date start" updateSelection={this.updateStartDate} />
+          <DateSelector type="form" placeholder="Date end" updateSelection={this.updateEndDate} />
           <Select
-            title="Select Participants"
-            name="Select Participants"
+            title="Participants"
+            name="Participants"
             handleSelection={this.handleSelection}
             optionsArr={[
               { id: 2, name: "2", value: "2" },
@@ -121,7 +99,7 @@ class EventForm extends Component {
             ]}
           />
           <ButtonWrapper>
-            <ClearButton handleClearButton={this.clearInputs} />
+            <BackButton handleBackButton={this.handleBackButton} />
             <LoginButton title="Create" />
           </ButtonWrapper>
         </form>
@@ -140,5 +118,6 @@ export default EventForm;
 
 EventForm.propTypes = {
   places: PropTypes.arrayOf(PropTypes.object).isRequired,
-  activities: PropTypes.arrayOf(PropTypes.object).isRequired
+  activities: PropTypes.arrayOf(PropTypes.object).isRequired,
+  createEvent: PropTypes.func.isRequired
 };
