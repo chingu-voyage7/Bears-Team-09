@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import ImageUploader from "./ImageUploader";
 import { UserContext } from "./UserProvider";
+import Event from "./Event";
 
 class Profile extends Component {
   static backendUrl = "http://localhost:8000";
@@ -24,7 +25,8 @@ class Profile extends Component {
     })).data.events;
   }
 
-  makeEventsDomElements = events => events.map(event => <div key={event.id}>{event.name}</div>);
+  // makeEventsDomElements = events => events.map(event => <div key={event.id}>{event.name}</div>);
+  makeEventsDomElements = events => events.map(event => <Event {...event} key={event.id} />);
 
   render() {
     const { firstName, lastName, loggedIn, email } = this.props.context;
@@ -39,17 +41,23 @@ class Profile extends Component {
       <Container>
         {loggedIn ? (
           <GridWrapper>
-            <ProfileImage src={imageSrc} />
-            <ImageUploader style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }} />
+            <SideBar>
+              <ProfileImage src={imageSrc} />
+              <ImageUploader style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }} />
+              <PersonalInfo>
+                <h2>
+                  {firstName} {lastName}
+                </h2>
+                Email: {email}
+              </PersonalInfo>
+            </SideBar>
 
-            <div style={{ gridColumn: "2 / span 1", gridRow: "1 / span 2" }}>
-              <h2>
-                {firstName} {lastName}
-              </h2>
-              Email: {email}
-              <h4>My events</h4>
-              {events}
-            </div>
+            <MainContent>
+              <div style={{ gridColumn: "2 / span 1", gridRow: "1 / span 2" }}>
+                <h2 style={{ marginTop: "0", marginBottom: "0" }}>My events</h2>
+                {events}
+              </div>
+            </MainContent>
           </GridWrapper>
         ) : (
           "Please log in to view this page"
@@ -74,6 +82,15 @@ Profile.propTypes = {
 
 export default Profile;
 
+const SideBar = styled.div`
+  grid-column: 1 / span 1;
+  margin: 2vw 0;
+`;
+const MainContent = styled.div`
+  grid-column: 2 / span 1;
+  margin: 2vw;
+`;
+
 const Container = styled.div`
   margin: auto;
   width: 70%;
@@ -83,12 +100,16 @@ const Container = styled.div`
 
 const ProfileImage = styled.img`
   margin: 1%;
-  width: 10vw;
+  width: 100%;
   height: auto;
-  grid-column: 1 / span 1;
+`;
+
+const PersonalInfo = styled.div`
+  display: block;
 `;
 
 const GridWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 4fr;
+  column-gap: 3%;
 `;
