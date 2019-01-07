@@ -26,7 +26,7 @@ class ImageUploader extends Component {
           style={{ display: "none" }}
         />
         <button type="button" onClick={this.handleClick}>
-          Upload new profile picture
+          Upload new picture
         </button>
       </div>
     );
