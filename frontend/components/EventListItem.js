@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import Link from 'next/link';
 
 class EventListItem extends Component {
-  render({ id, title, description } = this.props) {
+  render({ id, name, description } = this.props) {
     return (
-      <Link href={`/event?id=${id}`} as={`event/${title}`}>
+      <Link href={`/event?id=${id}`} as={`event/${name}`}>
         <ItemContainer>
           <Item>
-            <h3>{title}</h3>
+            <h3>{name}</h3>
             <p>{description}</p>
           </Item>
         </ItemContainer>
