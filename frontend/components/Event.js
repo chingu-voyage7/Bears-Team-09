@@ -44,6 +44,12 @@ const EventCard = styled.div`
 const EventTitle = styled.h4`
   font-size: 1.2em;
   margin: 0.5em 0;
+  cursor: pointer;
+  color: hsla(0, 0%, 30%, 1);
+  &:hover {
+    color: hsla(0, 0%, 0%, 1);
+    text-decoration: underline;
+  }
 `;
 const EventSubtitle = styled.h6`
   font-size: 0.8em;
