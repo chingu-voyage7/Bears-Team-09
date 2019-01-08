@@ -2,12 +2,11 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import moment from "moment";
+import Link from "next/link";
 
 class Event extends Component {
-  // dateFormat = "MMMM Do YYYY, h:mm a";
-
   render() {
-    const { name, activity, description, date_from: dateFromRaw, date_to: dateToRaw } = this.props;
+    const { id, name, activity, description, date_from: dateFromRaw, date_to: dateToRaw } = this.props;
     let dateFormatFrom = "lll";
 
     const dateFrom = moment(dateFromRaw, "YYYY-MM-DDTHH:mm:ss.sssZ");
@@ -25,8 +24,9 @@ class Event extends Component {
         <EventDate>
           {dateFromFormatted} - {dateToFormatted}
         </EventDate>
-
-        <EventTitle>{name}</EventTitle>
+        <Link href={`/event?id=${id}`} as={`event/${name}`}>
+          <EventTitle>{name}</EventTitle>
+        </Link>
         <EventSubtitle>{activity} </EventSubtitle>
         <p>{description}</p>
       </EventCard>
@@ -60,6 +60,7 @@ const EventDate = styled.div`
 `;
 
 Event.propTypes = {
+  id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   activity: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
