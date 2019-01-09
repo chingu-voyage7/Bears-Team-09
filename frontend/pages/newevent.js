@@ -1,9 +1,13 @@
 import React from "react";
 import Router from "next/router";
 import styled from "styled-components";
+// Testing importing stylesheet in this page to prevent date picker issue
+import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import MainLayout from "../components/MainLayout";
 import NewEventForm from "../components/NewEventForm";
+
+
 
 class NewEvent extends React.Component {
   state = {
