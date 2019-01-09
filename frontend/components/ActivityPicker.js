@@ -25,8 +25,8 @@ class ActivityPicker extends Component {
     ));
 
     return (
-      <ActivityWrapper type={type} tabIndex="-1" onBlur={() => this.setState({ popupOpen: false })}>
-        <ActivityBox type={type} onClick={() => this.setState({ popupOpen: true })}>
+      <ActivityWrapper type={type} onBlur={() => this.setState({ popupOpen: false })}>
+        <ActivityBox tabIndex="0" type={type} onFocus={() => this.setState({ popupOpen: true })} onClick={() => this.setState({ popupOpen: true })}>
           {" "}
           {selectedActivity}
         </ActivityBox>
