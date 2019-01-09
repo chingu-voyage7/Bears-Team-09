@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 class LocationSearch extends Component {
   state = {
-    placeholder: "location",
+    placeholder: "City",
     currentInput: "",
     suggestionPopup: false,
     suggestions: [],

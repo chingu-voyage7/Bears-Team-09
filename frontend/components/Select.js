@@ -3,17 +3,27 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 const Select = props => {
-  const { name, optionsArr, title, handleSelection } = props;
-  const options = optionsArr.map(option => (
-    <option key={option.id} value={option.value}>
-      {option.name}
-    </option>
-  ));
+  const { optionsArr, title, handleSelection, max, min } = props;
+  let disabledOption;
+  const options = optionsArr.map(option => {
+    if (title === "Min People") {
+      disabledOption = option.value > max;
+    }
+    if (title === "Max People") {
+      disabledOption = option.value < min;
+    }
+    return (
+      <option disabled={disabledOption} key={option.id} value={option.value}>
+        {option.selectionName}
+      </option>
+    );
+  });
+
   return (
     <div>
-      <Label htmlFor={name}>
+      <Label htmlFor={title}>
         <p>{title}</p>
-        <select onChange={e => handleSelection(e)} id={name}>
+        <select onChange={e => handleSelection(e)} id={title}>
           {options}
         </select>
       </Label>
@@ -45,11 +55,11 @@ const Label = styled.label`
     margin-right: 10px;
   }
 `;
-// name, optionsArr, title
 
 Select.propTypes = {
-  name: PropTypes.string.isRequired,
   optionsArr: PropTypes.arrayOf(PropTypes.object).isRequired,
   title: PropTypes.string.isRequired,
-  handleSelection: PropTypes.func.isRequired
+  handleSelection: PropTypes.func.isRequired,
+  max: PropTypes.string.isRequired,
+  min: PropTypes.string.isRequired
 };

@@ -1,19 +1,16 @@
 import React from "react";
 import Router from "next/router";
 import styled from "styled-components";
-// Testing importing stylesheet in this page to prevent date picker issue
-import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import MainLayout from "../components/MainLayout";
 import NewEventForm from "../components/NewEventForm";
-
-
 
 class NewEvent extends React.Component {
   state = {
     places: [],
     activities: [],
-    AuthStr: ""
+    AuthStr: "",
+    serverPostFail: false
   };
 
   async componentDidMount() {
@@ -52,18 +49,25 @@ class NewEvent extends React.Component {
         Authorization: this.state.AuthStr
       }
     })
-      .then(() => Router.push("/events"))
-      .catch(error => console.error(error));
+      .then(() => {
+        this.setState({ serverPostFail: false });
+        Router.push("/events");
+      })
+      .catch(error => {
+        console.error(error);
+        this.setState({ serverPostFail: true });
+      });
   };
 
   render() {
-    const { places, activities } = this.state;
+    const { places, activities, serverPostFail } = this.state;
     return (
       <MainLayout>
         <EventWrapper>
           <InputSection>
             <Title>Create New Event:</Title>
             <NewEventForm createEvent={this.createEvent} places={places} activities={activities} />
+            {serverPostFail && <p style={{ color: "red" }}>Event creation failed, try again</p>}
           </InputSection>
         </EventWrapper>
       </MainLayout>

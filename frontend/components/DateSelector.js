@@ -20,11 +20,12 @@ class DateSelector extends React.Component {
 
   render() {
     const { placeholder } = this.props;
+    // let { minDate, maxDate } = this.props
     const { startDate } = this.state;
-    // const placeholder = type === "form" ? "Date" : "time";
     return (
       <DatePickerStylingWrapper type="form">
         <DatePicker
+          minDate={new Date()}
           popperPlacement="bottom"
           popperModifiers={{
             offset: {
