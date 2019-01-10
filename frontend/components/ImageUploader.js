@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import styled from "styled-components";
 
 class ImageUploader extends Component {
   state = { selectedFile: null };
@@ -15,7 +16,7 @@ class ImageUploader extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ position: "relative" }}>
         <input
           type="file"
           onChange={this.handleFileSelect}
@@ -25,12 +26,17 @@ class ImageUploader extends Component {
           accept="image/png, image/jpeg"
           style={{ display: "none" }}
         />
-        <button type="button" onClick={this.handleClick}>
+        <CenteredButton type="button" onClick={this.handleClick}>
           Upload new picture
-        </button>
+        </CenteredButton>
       </div>
     );
   }
 }
 
 export default ImageUploader;
+
+const CenteredButton = styled.button`
+  margin: 0 auto;
+  display: block;
+`;
