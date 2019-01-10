@@ -45,11 +45,13 @@ class Profile extends Component {
               <ProfileImage src={imageSrc} />
               <ImageUploader style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }} />
               <PersonalInfo>
-                <h2>
+                <h1>
                   {firstName} {lastName}
-                </h2>
-                Email: {email}<br/><br/>
-                Bio: {bio !== null && bio !== "null" ? bio : "No bio provided"}
+                </h1>
+                <strong> Email:</strong> {email}
+                <br />
+                <br />
+                <strong>Bio:</strong> {bio !== null && bio !== "null" ? bio : "No bio provided"}
               </PersonalInfo>
             </SideBar>
 
