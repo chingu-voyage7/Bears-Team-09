@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Link from "next/link";
 import styled from "styled-components";
 import RegisterForm from "../components/RegisterForm";
 import MainLayout from "../components/MainLayout";
@@ -11,7 +12,12 @@ class Register extends Component {
         <RegisterWrapper>
           <InputSection>
             <Title>Register</Title>
-            <p>If you already have account: [log in!]</p>
+            <LinkWrapper>
+              <p>If you have an account:&nbsp; </p>
+              <Link href="/register">
+                <StyledLink>login!</StyledLink>
+              </Link>
+            </LinkWrapper>
             <UserConsumer>{context => <RegisterForm context={context} />}</UserConsumer>
           </InputSection>
         </RegisterWrapper>
@@ -43,4 +49,19 @@ const InputSection = styled.div`
 
 const Title = styled.h1`
   font-size: 2.5rem;
+`;
+
+const LinkWrapper = styled.div`
+  display: inline-flex;
+  margin-bottom: 10px;
+  p {
+    margin: 0;
+    padding: 0;
+  }
+`;
+
+const StyledLink = styled.a`
+  cursor: pointer;
+  text-decoration: none;
+  color: blue;
 `;
