@@ -74,7 +74,7 @@ class Table {
     const fieldsMissing = this.getMissingFields();
     if (fieldsMissing.length > 0) {
       return new Promise((resolve, reject) => {
-        reject(new Error(`Field(s) ${fieldsMissing.join(', ')} is(are) missing`));
+        reject(new Error(`Field(s) ${fieldsMissing.map(f => `'${f}'`).join(', ')} is(are) missing`));
       });
     }
     const prepared = Object.keys(this.data).reduce((acc, key) => {
