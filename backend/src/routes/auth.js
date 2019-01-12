@@ -10,6 +10,13 @@ router.get('/', authenticate('jwt'), (req, res) => {
 });
 
 router.post('/login', authenticate('local'), (req, res) => {
+    console.log('CP2', req.user);
+    const token = req.user.refreshToken();
+    return res.json({...req.user.data, token});
+});
+
+router.get('/google', authenticate('bearer'), (res, req) => {
+    console.log('CP2', req.user);
     const token = req.user.refreshToken();
     return res.json({...req.user.data, token});
 });
