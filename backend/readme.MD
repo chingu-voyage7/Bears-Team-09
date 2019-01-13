@@ -415,3 +415,24 @@ JWT authentication required
 `DELETE events/:id/attend`
 
 JWT authentication required
+
+### Upload image
+
+There are two endpoints to upload image:
+
+`POST users/images` and `POST events/images`
+
+to upload user avatars and event images correspondingly.
+
+Images must be uploaded as `multipart/form-data` with name attribute set to `'file'`. Make sure to set `Content-type` header to `multipart/form-data`
+
+Both endpoints use environmental variables to configure cloudinary:
+`CLOUDINARY_NAME` - cloud name
+`CLOUDINARY_KEY` - API key
+`CLOUDINARY_SECRET` - API secret
+
+Returns URL of an image:
+```JSON
+{
+    "url": "https://res.cloudinary.com/pairup/image/upload/v1547410002/events/lhdutg2dt6hyjwv81nej.jpg"
+}
