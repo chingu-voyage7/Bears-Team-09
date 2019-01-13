@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
@@ -24,7 +25,9 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "pg": "^7.7.1"
+    "passport-strategy": "^1.0.0",
+    "pg": "^7.7.1",
+    "util": "^0.11.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

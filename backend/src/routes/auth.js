@@ -14,6 +14,11 @@ router.post('/login', authenticate('local'), (req, res) => {
     return res.json({...req.user.data, token});
 });
 
+router.get('/google', authenticate('google'), (req, res) => {
+    const token = req.user.refreshToken();
+    return res.json({...req.user.data, token});
+});
+
 router.post('/register', (req, res) => {
     const {password} = req.body;
     // temporary, replace with propper validation
