@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Link from "next/link";
 import styled from "styled-components";
 import LoginForm from "../components/LoginForm";
 import MainLayout from "../components/MainLayout";
@@ -11,7 +12,12 @@ class LoginPage extends Component {
         <LoginWrapper>
           <InputSection>
             <Title>Log in</Title>
-            <p>If you have no account: [register!]</p>
+            <LinkWrapper>
+              <p>If you have no account:&nbsp; </p>
+              <Link href="/register">
+                <StyledLink>register!</StyledLink>
+              </Link>
+            </LinkWrapper>
             <UserConsumer>{context => <LoginForm context={context} />}</UserConsumer>
           </InputSection>
         </LoginWrapper>
@@ -39,6 +45,21 @@ const InputSection = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 100%;
+`;
+
+const LinkWrapper = styled.div`
+  display: inline-flex;
+  margin-bottom: 10px;
+  p {
+    margin: 0;
+    padding: 0;
+  }
+`;
+
+const StyledLink = styled.a`
+  cursor: pointer;
+  text-decoration: none;
+  color: blue;
 `;
 
 const Title = styled.h1`
