@@ -33,7 +33,7 @@ class Dashboard extends Component {
     // Default fetch is any event from today with a limit of 10
     const eventsPromise = axios({
       method: "get",
-      url: `http://localhost:8000/events?compare=gt&date_from=${today}&limit=10`,
+      url: `http://localhost:8000/events`,
       headers: {
         Authorization: AuthStr
       }
