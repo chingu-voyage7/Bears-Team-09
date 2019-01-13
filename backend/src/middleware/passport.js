@@ -5,6 +5,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const axios = require('axios');
 const GoogleStrategy = require('./googleStrategy');
 const User = require('../models/User');
+const ApiError = require('../utils/APIError');
 
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
@@ -19,7 +20,13 @@ passport.use(
    (email, password, done) => {
       const user = new User({email});
       return user.read()
-        .then(([data]) => bcrypt.compare(password, data.password))
+        .then(([data]) => {
+            // refuse to authenticate if user db record has no password
+            if (data.password === null) {
+                throw new ApiError('This account can be authenticated with google only', 403);
+            }
+            return bcrypt.compare(password, data.password);
+        })
         .then(isAuthenticated => isAuthenticated ? done(null, user) : done(null, null, 'Incorrect username or password'))
         .catch(err => done(null, null, err));
     }
