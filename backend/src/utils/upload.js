@@ -1,30 +1,18 @@
+const cloudinary = require('cloudinary');
 const multer  = require('multer');
+const cloudinaryStorage = require('multer-storage-cloudinary');
 
-const UPLOADS_FOLDER = process.env.UPLOADS_FOLDER || 'uploads/';
-const SITE_URL = process.env.SITE_URL || 'http://localhost/';
-const STATIC_PATH = process.env.STATIC_PATH || 'static/';
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, UPLOADS_FOLDER);
-  },
-  filename: (req, file, cb) => {
-    let extension = file.originalname.split('.');
-    extension = extension[extension.length - 1];
-    const filename = `user${req.user.data.id}.${extension}`;
-    file.url = `${SITE_URL}${STATIC_PATH}${filename}`;
-    cb(null, filename);
-  }
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME || '',
+    api_key: process.env.CLOUDINARY_KEY || '',
+    api_secret: process.env.CLOUDINARY_SECRET || ''
 });
 
-module.exports = multer({
-  storage,
-  limits: { fileSize: 500000 },
-  fileFilter: (req, file, cb) => {
-    if (/^image/.test(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(null, false, 'Not an image');
-    }
-  }
-}).single('file');
+const getStorage = (folder, transformation) => cloudinaryStorage({
+  cloudinary,
+  transformation,
+  folder,
+  allowedFormats: ['jpg', 'jpeg', 'png']
+});
+
+module.exports = (folder, transformation) => multer({storage: getStorage(folder, transformation)});
