@@ -138,7 +138,7 @@
 
 ## API endpoints
 
-All `GET` request returns 200 status code in case of success or 400/401/404 in case of failure.
+All `GET` request returns 200 status code in case of success or 400-404 in case of failure.
 
 ### Register
 
@@ -171,6 +171,12 @@ Example request body:
 ```
 
 Required fields: `email`, `password`
+
+No authentication required. Returns [User](#user)
+
+### Login with Google
+
+`GET /auth/google?access_token=<YOUR_GOOGLE_ACCESS_TOKEN>`
 
 No authentication required. Returns [User](#user)
 
