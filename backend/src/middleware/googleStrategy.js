@@ -23,11 +23,11 @@ class GoogleStrategy{
         const verified = (err, user, info) => {
             if (err) { return this.error(err); }
             if (!user) { return this.fail(info); }
-            this.success(user, info);
+            return this.success(user, info);
         };
 
         try {
-            this._verify(token, verified);
+            return this._verify(token, verified);
         } catch (ex) {
             return this.error(ex);
         }
