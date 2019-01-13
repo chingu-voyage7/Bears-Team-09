@@ -3,23 +3,18 @@ services:
 
 jobs:
   include:
-    - stage: lint
-      language: node_js
-      node_js:
-        - '8'
-      cache:
-        directories:
-          - node_modules
-      script: eslint .
+    # - stage: lint
+    #   language: node_js
+    #   node_js:
+    #     - '8'
+    #   cache:
+    #     directories:
+    #       - node_modules
+    #   script: eslint .
     - stage: test backend
       before_install:
         - sudo rm /usr/local/bin/docker-compose
         - sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         - sudo chmod +x /usr/local/bin/docker-compose
       script: make -C ./backend test
-    - stage: clean the environment
-      before_install:
-        - sudo rm /usr/local/bin/docker-compose
-        - sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        - sudo chmod +x /usr/local/bin/docker-compose
-      script: make -C ./backend clean
+      after_script: make -C ./backend clean
