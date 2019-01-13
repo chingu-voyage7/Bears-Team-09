@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import axios from "axios";
+import { format } from "date-fns";
 import MainLayout from "../components/MainLayout";
 import EventList from "../components/EventList";
 import ActivityPicker from "../components/ActivityPicker";
@@ -13,7 +14,6 @@ import { UserContext } from "../components/UserProvider";
 const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), {
   ssr: false
 });
-
 
 class Dashboard extends Component {
   state = {
@@ -29,12 +29,16 @@ class Dashboard extends Component {
     // getting token from context, falling back to localStorage if no context exists (happens when page is refreshed)
     const token = tokenCtx || localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-    const today = new Date().toISOString();
+    const today = format(new Date(), "YYYY-MM-DD");
+    const isoDate = `${today}T00:00:000Z`;
+    // console.log(isoDate);
+
+    // const realUlr = `http://localhost:8000/events?compare=gt&date_from=${isoDate}&limit=5`;
 
     // Default fetch is any event from today with a limit of 5
     const eventsPromise = axios({
       method: "get",
-      url: `http://localhost:8000/events?compare=gt&date_from=${today}&limit=5`,
+      url: `http://localhost:8000/events?compare=gt&date_from=${isoDate}&limit=5`,
       headers: {
         Authorization: AuthStr
       }
@@ -77,11 +81,12 @@ class Dashboard extends Component {
     const { tokenCtx } = this.context;
     const token = tokenCtx || localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-    const today = new Date().toISOString();
+    const today = format(new Date(), "YYYY-MM-DD");
+    const isoDate = `${today}T00:00:000Z`;
 
     const newEvents = await axios({
       method: "get",
-      url: `http://localhost:8000/events?compare=gt&date_from=${today}&limit=5&offset=${newOffset}`,
+      url: `http://localhost:8000/events?compare=gt&date_from=${isoDate}&limit=5&offset=${newOffset}`,
       headers: {
         Authorization: AuthStr
       }
@@ -123,11 +128,11 @@ class Dashboard extends Component {
         </Divider>
         <FilterControlPanel>
           <span>Pick a</span>
-          <ActivityPicker activities={activities} updateFilter={this.updateFilter} />
+          <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} />
           <span>choose</span>
-          <DateSelectorDynamic updateFilter={this.updateFilter} />
+          <DateSelectorDynamic placeholder="date" updateSelection={this.updateFilter} />
           <span>and</span>
-          <LocationSearch locations={places} updateFilter={this.updateFilter} />
+          <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} />
           <button type="button" onClick={this.clearFilters}>
             Clear
           </button>
