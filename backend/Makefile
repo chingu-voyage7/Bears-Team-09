@@ -27,7 +27,7 @@ test:
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm app test
 	@ docker container ls
 	@ echo "Running integration tests..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm test
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) up test
 	${CHECK} $(DEV_PROJECT) $(DEV_COMPOSE_FILE) test
 
 run:
