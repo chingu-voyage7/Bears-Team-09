@@ -1,6 +1,8 @@
 services:
   - docker
-
+before_install:
+- openssl aes-256-cbc -K $encrypted_12bbaed1edd9_key -iv $encrypted_12bbaed1edd9_iv
+  -in pairup.pem.enc -out pairup.pem -d
 jobs:
   include:
     - stage: lint
@@ -28,3 +30,9 @@ jobs:
       after_script:
         - make -C ./backend clean
         - make -C ./backend logout
+
+deploy:
+  provider: script
+  script: make -C ./backend deploy
+  on:
+    branch: deploy

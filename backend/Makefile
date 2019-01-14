@@ -80,7 +80,10 @@ ifeq (tag,$(firstword $(MAKECMDGOALS)))
   $(eval $(TAG_ARGS):;@:)
 endif
 
-.PHONY: test release tag buildtag login logout publish run clean
+# Deploy settings
+TERRAFORM_VERSION ?= 0.11.1
+
+.PHONY: test release tag buildtag login logout publish deploy run clean
 
 test:
 	${INFO} "Pulling dependencies from Docker Hub..."
@@ -152,6 +155,25 @@ publish:
 	@ $(foreach tag,$(shell echo $(FE_REPO_EXPR)), docker push $(tag);)
 	@ $(foreach tag,$(shell echo $(BE_REPO_EXPR)), docker push $(tag);)
 	${INFO} "Publish complete"
+
+deploy:
+	${INFO} "Deploying..."
+	@ wget https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip
+	@ unzip terraform_$(TERRAFORM_VERSION)_linux_amd64.zip
+	@ terraform init
+	@ terraform apply -auto-approve
+		-var aws_access_key='$$AWS_ACCESS_KEY' && \
+		-var aws_secret_key='$$AWS_SECRET_KEY' && \
+		-var key_name='$$AWS_KEY_NAME' && \
+		-var private_key_path='$$AWS_SSH_KEY_PATH' && \
+		-var project_name='$(PROJECT_NAME)' && \
+		-var pg_host='$$PG_HOST' && \
+		-var pg_user='$$PG_USER' && \
+		-var pg_db='$$PG_DB' && \
+		-var pg_password='$$PG_PASSWORD' && \
+		-var jwt_secret='$$JWT_SECRET' && \
+		-var backend_image='$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' && \
+		-var frontend_image='$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front'
 
 clean:
 	${INFO} "Cleaning environment..."
