@@ -13,6 +13,6 @@ FROM nginx:stable-alpine
 
 COPY ./docker/nginx/nginx.conf /etc/nginx/nginx.conf
 
-COPY ./docker/nginx/server.conf /etc/nginx/conf.d/default.conf
+COPY ./docker/nginx/appserver.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=build /app/out /app
