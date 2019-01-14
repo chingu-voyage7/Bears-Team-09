@@ -21,5 +21,5 @@ app.use("/users", authenticate("jwt"), usersRouter);
 app.use("/activities", authenticate("jwt"), activitiesRouter);
 app.use("/places", authenticate("jwt"), placesRouter);
 app.use("/events", authenticate("jwt"), eventsRouter);
-app.use((err, req, res) => res.status(400).json({message: err.message}));
+app.use((err, req, res, next) => res.headersSent ? next(err) : res.status(400).json({message: err.message}));
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
