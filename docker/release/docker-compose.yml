@@ -15,10 +15,10 @@ services:
       - PROBE_HOST=db
       - PROBE_PORT=5432
 
-  app:
+  backend:
     build:
-      context: ../../../
-      dockerfile: ./docker/backend/dev/Dockerfile
+      context: ../../
+      dockerfile: ./docker/release/Dockerfile
     environment:
       - PGUSER=postgres
       - PGHOST=db
@@ -32,3 +32,17 @@ services:
       - db
     ports:
       - "8000:8000"
+
+  test:
+    build:
+      context: ../../
+      dockerfile: ./docker/release/Dockerfile-integration
+    environment:
+      - API_URL=http://backend:8000/
+    depends_on:
+      - backend
+
+  frontend:
+    build:
+      context: ../../
+      dockerfile: ./docker/release/Dockerfile-frontend
