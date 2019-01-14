@@ -109,7 +109,7 @@ release:
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up test
 	${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) test
 	${INFO} "Building frontend container..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull builder
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull frontend
 	${INFO} "Build and release complete"
 
 run:
