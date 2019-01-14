@@ -6,6 +6,8 @@ COPY ./src /app
 
 WORKDIR /app
 
+EXPOSE 8000
+
 RUN apk update && \
     apk --no-cache add --virtual deps build-base python && \
     npm install && \
