@@ -1,8 +1,6 @@
 FROM node:10.14.1-alpine
 
-ENTRYPOINT [ "npm" ]
-
-CMD [ "test" ]
+CMD [ "npm", "test" ]
 
 COPY ./integration_tests /app
 
