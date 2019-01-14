@@ -85,9 +85,9 @@ test:
 	@ echo "Waiting while database is ready..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm db_probe
 	@ echo "Performing migrations..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm app run migrate up
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm app npm run migrate up
 	@ echo "Running unit tests..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) up app npm test
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run app npm test
 	${CHECK} $(DEV_PROJECT) $(DEV_COMPOSE_FILE) app
 	${INFO} "Test complete"
 
@@ -107,15 +107,15 @@ release:
 
 run:
 	@ echo "Pulling dependencies from Docker Hub..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) pull
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) pull
 	@ echo "Building immages..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build --pull app
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull app
 	@ echo "Waiting while database is ready..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm db_probe
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm db_probe
 	@ echo "Performing migrations..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm app run migrate up
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm app npm run migrate up
 	@ echo "Running the app..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) up app
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up app
 
 tag:
 	${INFO} "Tagging release image with tags $(TAG_ARGS)..."
