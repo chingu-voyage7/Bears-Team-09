@@ -2,7 +2,7 @@ FROM node:10.14.1-alpine
 
 CMD [ "npm", "test" ]
 
-COPY ./integration_tests /app
+COPY ./backend/integration_tests /app
 
 WORKDIR /app
 

@@ -4,8 +4,8 @@ ORG_NAME ?= trolleksii
 REPO_NAME ?= $(PROJECT_NAME)
 
 # Filenames
-DEV_COMPOSE_FILE := docker/dev/docker-compose.yml
-REL_COMPOSE_FILE := docker/release/docker-compose.yml
+DEV_COMPOSE_FILE := ../docker/backend/dev/docker-compose.yml
+REL_COMPOSE_FILE := ../docker/backend/release/docker-compose.yml
 
 # Docker Compose Project Names
 REL_PROJECT := $(PROJECT_NAME)$(BUILD_ID)

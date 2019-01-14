@@ -17,8 +17,8 @@ services:
 
   app:
     build:
-      context: ../../
-      dockerfile: ./docker/dev/Dockerfile
+      context: ../../../
+      dockerfile: ./docker/backend/dev/Dockerfile
     environment:
       - PGUSER=postgres
       - PGHOST=db
