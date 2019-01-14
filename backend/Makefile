@@ -4,15 +4,16 @@ ORG_NAME ?= trolleksii
 REPO_NAME ?= $(PROJECT_NAME)
 
 # Filenames
-DEV_COMPOSE_FILE := ../docker/backend/dev/docker-compose.yml
-REL_COMPOSE_FILE := ../docker/backend/release/docker-compose.yml
+DEV_COMPOSE_FILE := ../docker/dev/docker-compose.yml
+REL_COMPOSE_FILE := ../docker/release/docker-compose.yml
 
 # Docker Compose Project Names
 REL_PROJECT := $(PROJECT_NAME)$(BUILD_ID)
 DEV_PROJECT := $(REL_PROJECT)-dev
 
 # Application Service Name - must match Docker Compose release specification application service name
-APP_SERVICE_NAME := app
+FRONTEND_SERVICE_NAME := backend
+BACKEND_SERVICE_NAME := frontend
 
 # Build tag expression - can be used to evaulate a shell expression at runtime
 BUILD_TAG_EXPRESSION ?= date -u +%Y%m%d%H%M%S
@@ -42,10 +43,13 @@ CHECK := @bash -c '\
   then exit $(INSPECT); fi' VALUE
 
 # Get container id of application service container
-APP_CONTAINER_ID := $$(docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) ps -q $(APP_SERVICE_NAME))
+FE_CONTAINER_ID := $$(docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) ps -q $(FRONTEND_SERVICE_NAME))
+BE_CONTAINER_ID := $$(docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) ps -q $(BACKEND_SERVICE_NAME))
 
 # Get image id of application service
-IMAGE_ID := $$(docker inspect -f '{{ .Image }}' $(APP_CONTAINER_ID))
+FE_IMAGE_ID := $$(docker inspect -f '{{ .Image }}' $(FE_CONTAINER_ID))
+
+BE_IMAGE_ID := $$(docker inspect -f '{{ .Image }}' $(BE_CONTAINER_ID))
 
 # Repository Filter
 ifeq ($(DOCKER_REGISTRY), docker.io)
@@ -55,7 +59,8 @@ else
 endif
 
 # Introspect repository tags
-REPO_EXPR := $$(docker inspect -f '{{range .RepoTags}}{{.}} {{end}}' $(IMAGE_ID) | grep -oh "$(REPO_FILTER)" | xargs)
+FE_REPO_EXPR := $$(docker inspect -f '{{range .RepoTags}}{{.}} {{end}}' $(FE_IMAGE_ID) | grep -oh "$(REPO_FILTER)" | xargs)
+BE_REPO_EXPR := $$(docker inspect -f '{{range .RepoTags}}{{.}} {{end}}' $(BE_IMAGE_ID) | grep -oh "$(REPO_FILTER)" | xargs)
 
 # Extract build tag arguments
 ifeq (buildtag,$(firstword $(MAKECMDGOALS)))
@@ -78,53 +83,58 @@ endif
 .PHONY: test release tag buildtag login logout publish run clean
 
 test:
-	@ echo "Pulling dependencies from Docker Hub..."
+	${INFO} "Pulling dependencies from Docker Hub..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) pull
-	@ echo "Building immages..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build --pull app
-	@ echo "Waiting while database is ready..."
+	${INFO} "Building images..."
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build --pull backend
+	${INFO} "Waiting while database is ready..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm db_probe
-	@ echo "Performing migrations..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm app npm run migrate up
-	@ echo "Running unit tests..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run app npm test
-	${CHECK} $(DEV_PROJECT) $(DEV_COMPOSE_FILE) app
+	${INFO} "Performing migrations..."
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm backend npm run migrate up
+	${INFO} "Running unit tests..."
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run backend npm test
+	${CHECK} $(DEV_PROJECT) $(DEV_COMPOSE_FILE) backend
 	${INFO} "Test complete"
 
 release:
 	${INFO} "Building images..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) pull
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build app
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build backend
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull test
 	${INFO} "Waiting while database is ready..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm db_probe
-	@ echo "Performing migrations..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm app npm run migrate up
-	@ echo "Running integration tests..."
+	${INFO} "Performing migrations..."
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm backend npm run migrate up
+	${INFO} "Running integration tests..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up test
 	${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) test
-	${INFO} "Build complete"
+	${INFO} "Building frontend container..."
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull frontend
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up -d frontend
+	${INFO} "Build and release complete"
 
 run:
-	@ echo "Pulling dependencies from Docker Hub..."
+	${INFO} "Pulling dependencies from Docker Hub..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) pull
-	@ echo "Building immages..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull app
-	@ echo "Waiting while database is ready..."
+	${INFO} "Building immages..."
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull backend
+	${INFO} "Waiting while database is ready..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm db_probe
-	@ echo "Performing migrations..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm app npm run migrate up
-	@ echo "Running the app..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up app
+	${INFO} "Performing migrations..."
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm backend npm run migrate up
+	${INFO} "Running the app..."
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up backend
 
 tag:
 	${INFO} "Tagging release image with tags $(TAG_ARGS)..."
-	@ $(foreach tag,$(TAG_ARGS), docker tag $(IMAGE_ID) $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag);)
+	@ $(foreach tag,$(TAG_ARGS), docker tag $(FE_IMAGE_ID) $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front:$(tag);)
+	@ $(foreach tag,$(TAG_ARGS), docker tag $(BE_IMAGE_ID) $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back:$(tag);)
 	${INFO} "Tagging complete"
 
 buildtag:
 	${INFO} "Tagging release image with suffix $(BUILD_TAG) and build tags $(BUILDTAG_ARGS)..."
-	@ $(foreach tag,$(BUILDTAG_ARGS), docker tag $(IMAGE_ID) $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag).$(BUILD_TAG);)
+	@ $(foreach tag,$(BUILDTAG_ARGS), docker tag $(FE_IMAGE_ID) $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front:$(tag).$(BUILD_TAG);)
+	@ $(foreach tag,$(BUILDTAG_ARGS), docker tag $(BE_IMAGE_ID) $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back:$(tag).$(BUILD_TAG);)
 	${INFO} "Tagging complete"
 
 login:
@@ -139,11 +149,13 @@ logout:
 
 publish:
 	${INFO} "Publishing release image $(IMAGE_ID) to $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)..."
-	@ $(foreach tag,$(shell echo $(REPO_EXPR)), docker push $(tag);)
+	@ $(foreach tag,$(shell echo $(FE_REPO_EXPR)), docker push $(tag);)
+	@ $(foreach tag,$(shell echo $(BE_REPO_EXPR)), docker push $(tag);)
 	${INFO} "Publish complete"
 
 clean:
-	@ echo "Cleaning environment..."
+	${INFO} "Cleaning environment..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) down -v
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) down -v
 	@ docker images -q -f dangling=true -f label=application=$(REPO_NAME) | xargs -I ARGS docker rmi -f ARGS
-	@ echo "Clean complete"
+	${INFO} "Clean complete"
