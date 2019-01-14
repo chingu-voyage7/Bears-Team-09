@@ -16,3 +16,5 @@ COPY ./docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./docker/nginx/appserver.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=build /app/out /app
+
+RUN mv /app/static /static
