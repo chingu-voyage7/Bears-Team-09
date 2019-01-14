@@ -3,14 +3,14 @@ services:
 
 jobs:
   include:
-    # - stage: lint
-    #   language: node_js
-    #   node_js:
-    #     - '8'
-    #   cache:
-    #     directories:
-    #       - node_modules
-    #   script: eslint .
+    - stage: lint
+      language: node_js
+      node_js:
+        - '8'
+      cache:
+        directories:
+          - node_modules
+      script: eslint .
     - stage: Test backend
       before_install:
         - sudo rm /usr/local/bin/docker-compose
