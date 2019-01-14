@@ -87,7 +87,7 @@ test:
 	@ echo "Performing migrations..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm app run migrate up
 	@ echo "Running unit tests..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) up app test
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) up app npm test
 	${CHECK} $(DEV_PROJECT) $(DEV_COMPOSE_FILE) app
 	${INFO} "Test complete"
 
@@ -99,7 +99,7 @@ release:
 	${INFO} "Waiting while database is ready..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm db_probe
 	@ echo "Performing migrations..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm app run migrate up
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm app npm run migrate up
 	@ echo "Running integration tests..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up test
 	${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) test

@@ -32,4 +32,4 @@ services:
       - db
     ports:
       - "8000:8000"
-    command: run start
+    command: npm run start

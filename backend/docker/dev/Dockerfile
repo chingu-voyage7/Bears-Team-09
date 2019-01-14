@@ -1,8 +1,6 @@
 FROM node:10.14.1-alpine
 
-ENTRYPOINT [ "npm" ]
-
-CMD [ "run", "start" ]
+CMD [ "npm", "run", "start" ]
 
 COPY ./src /app
 
