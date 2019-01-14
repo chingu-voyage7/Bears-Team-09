@@ -38,7 +38,7 @@ services:
       context: ../../
       dockerfile: ./docker/release/Dockerfile-integration
     environment:
-      - API_URL=http://app:8000/
+      - API_URL=http://backend:8000/
     depends_on:
       - backend
 
