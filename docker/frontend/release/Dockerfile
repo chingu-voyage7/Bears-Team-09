@@ -11,8 +11,8 @@ RUN npm install && \
 
 FROM nginx:stable-alpine
 
-COPY ./backend/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/nginx/nginx.conf /etc/nginx/nginx.conf
 
-COPY ./backend/nginx/server.conf /etc/nginx/conf.d/default.conf
+COPY ./docker/nginx/server.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=build /app/out /app
