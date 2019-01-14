@@ -86,25 +86,25 @@ test:
 	${INFO} "Pulling dependencies from Docker Hub..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) pull
 	${INFO} "Building images..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build --pull app
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build --pull backend
 	${INFO} "Waiting while database is ready..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm db_probe
 	${INFO} "Performing migrations..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm app npm run migrate up
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run --rm backend npm run migrate up
 	${INFO} "Running unit tests..."
-	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run app npm test
-	${CHECK} $(DEV_PROJECT) $(DEV_COMPOSE_FILE) app
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) run backend npm test
+	${CHECK} $(DEV_PROJECT) $(DEV_COMPOSE_FILE) backend
 	${INFO} "Test complete"
 
 release:
 	${INFO} "Building images..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) pull
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build app
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build backend
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull test
 	${INFO} "Waiting while database is ready..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm db_probe
 	${INFO} "Performing migrations..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm app npm run migrate up
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm backend npm run migrate up
 	${INFO} "Running integration tests..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up test
 	${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) test
@@ -116,13 +116,13 @@ run:
 	${INFO} "Pulling dependencies from Docker Hub..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) pull
 	${INFO} "Building immages..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull app
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull backend
 	${INFO} "Waiting while database is ready..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm db_probe
 	${INFO} "Performing migrations..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm app npm run migrate up
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) run --rm backend npm run migrate up
 	${INFO} "Running the app..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up app
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up backend
 
 tag:
 	${INFO} "Tagging release image with tags $(TAG_ARGS)..."

@@ -15,7 +15,7 @@ services:
       - PROBE_HOST=db
       - PROBE_PORT=5432
 
-  app:
+  backend:
     build:
       context: ../../
       dockerfile: ./docker/dev/Dockerfile
