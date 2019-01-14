@@ -17,7 +17,7 @@ class GoogleStrategy{
     authenticate(req) {
         const token = this.extractToken(req);
         if (!token) {
-            return this.fail(new Error("No auth token"));
+            return this.fail(new Error("No access token"));
         }
 
         const verified = (err, user, info) => {
