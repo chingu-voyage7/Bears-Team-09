@@ -17,8 +17,8 @@ services:
 
   app:
     build:
-      context: ../../../
-      dockerfile: ./docker/backend/release/Dockerfile
+      context: ../../
+      dockerfile: ./docker/dev/Dockerfile
     environment:
       - PGUSER=postgres
       - PGHOST=db
@@ -32,12 +32,3 @@ services:
       - db
     ports:
       - "8000:8000"
-
-  test:
-    build:
-      context: ../../../
-      dockerfile: ./docker/backend/release/Dockerfile-integration
-    environment:
-      - API_URL=http://app:8000/
-    depends_on:
-      - app
