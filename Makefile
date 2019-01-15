@@ -167,11 +167,7 @@ deploy:
 		-backend-config="access_key=${AWS_ACCESS_KEY}" \
 		-backend-config="secret_key=${AWS_SECRET_KEY}" \
 		deploy
-	./terraform taint -allow-missing aws_instance.webapp
-	./terraform init \
-		-backend-config="access_key=${AWS_ACCESS_KEY}" \
-		-backend-config="secret_key=${AWS_SECRET_KEY}" \
-		deploy
+	cd ./deplou && ../terraform taint -allow-missing aws_instance.webapp
 	./terraform plan \
 		-var 'aws_access_key=${AWS_ACCESS_KEY}' \
 		-var 'aws_secret_key=${AWS_SECRET_KEY}' \
