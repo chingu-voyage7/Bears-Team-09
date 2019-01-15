@@ -14,7 +14,7 @@ resource "aws_default_vpc" "default" {
 
 resource "aws_subnet" "subnet" {
     vpc_id = "${aws_default_vpc.default.id}"
-    cidr_block              = "${var.public_subnet}"
+    cidr_block              = "${var.subnet}"
     map_public_ip_on_launch = "true"
     availability_zone       = "${data.aws_availability_zones.available.names[0]}"
 }
