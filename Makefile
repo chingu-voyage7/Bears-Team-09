@@ -162,8 +162,8 @@ deploy:
 	@ chmod 400 $$AWS_SSH_KEY_PATH
 	@ wget https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip
 	@ unzip terraform_$(TERRAFORM_VERSION)_linux_amd64.zip
-	@ terraform init
-	@ terraform apply -auto-approve && \
+	@ ./terraform init
+	@ ./terraform apply -auto-approve && \
 		-var aws_access_key='$$AWS_ACCESS_KEY' && \
 		-var aws_secret_key='$$AWS_SECRET_KEY' && \
 		-var key_name='$$AWS_KEY_NAME' && \
