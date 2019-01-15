@@ -23,13 +23,8 @@ jobs:
           make buildtag master `git tag --points-at HEAD` && \
           make login && \
           make publish
-
       after_script:
         - make clean
         - make logout
-
-deploy:
-  provider: script
-  script: make -C ./backend deploy
-  on:
-    branch: deploy
+after_success:
+  - test $TRAVIS_BRANCH = "deploy" && make -C ./backend deploy
