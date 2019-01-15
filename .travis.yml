@@ -26,7 +26,8 @@ jobs:
       after_script:
         - make clean
         - make logout
-    - deploy:
+    - stage: Deploy
+      deploy:
         provider: script
         script: make deploy
         on:
