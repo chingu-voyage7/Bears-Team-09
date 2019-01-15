@@ -163,7 +163,10 @@ deploy:
 	@ curl https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip -o terraform.zip
 	@ unzip terraform.zip
 	@ chmod +x ./terraform
-	@ ./terraform init deploy
+	@ ./terraform init \
+		-backend-config="access_key=${AWS_ACCESS_KEY}" \
+		-backend-config="secret_key=${AWS_SECRET_KEY}" \
+		deploy
 	@ ./terraform plan \
 		-var 'aws_access_key=${AWS_ACCESS_KEY}' \
 		-var 'aws_secret_key=${AWS_SECRET_KEY}' \

@@ -4,13 +4,6 @@ provider "aws" {
     region     = "${var.aws_region}"
 }
 
-backend "s3" {
-    bucket = "pairup-tfstate"
-    key    = "pairup.state"
-    region = "${var.aws_region}"
-    profile = "terraform"
-}
-
 data "aws_availability_zones" "available" {}
 
 resource "aws_default_vpc" "default" {
