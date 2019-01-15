@@ -12,8 +12,8 @@ REL_PROJECT := $(PROJECT_NAME)$(BUILD_ID)
 DEV_PROJECT := $(REL_PROJECT)-dev
 
 # Application Service Name - must match Docker Compose release specification application service name
-FRONTEND_SERVICE_NAME := backend
-BACKEND_SERVICE_NAME := frontend
+FRONTEND_SERVICE_NAME := frontend
+BACKEND_SERVICE_NAME := backend
 
 # Build tag expression - can be used to evaulate a shell expression at runtime
 BUILD_TAG_EXPRESSION ?= date -u +%Y%m%d%H%M%S
