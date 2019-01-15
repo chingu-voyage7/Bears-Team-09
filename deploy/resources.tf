@@ -40,7 +40,7 @@ resource "aws_instance" "webapp" {
         ]
     }
     tags {
-        Project = "${var.project_name}"
+        project = "${var.project_name}"
     }
 }
 
@@ -73,6 +73,6 @@ resource "aws_security_group" "webapp_sg" {
         cidr_blocks = ["0.0.0.0/0"]
     }
     tags {
-        Project = "${var.project_name}"
+        project = "${var.project_name}"
     }
 }
