@@ -46,3 +46,6 @@ services:
     build:
       context: ../../
       dockerfile: ./docker/release/Dockerfile-frontend
+    ports:
+      - "80:80"
+      - "443:443"

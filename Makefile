@@ -158,7 +158,7 @@ publish:
 
 deploy:
 	${INFO} "Deploying..."
-	@ openssl aes-256-cbc -K ${encrypted_12bbaed1edd9_key} -iv ${encrypted_12bbaed1edd9_iv} -in ${AWS_SSH_KEY_PATH}.enc -out ${AWS_SSH_KEY_PATH} -d
+	@ openssl aes-256-cbc -K ${encrypted_key} -iv ${encrypted_iv} -in ${AWS_SSH_KEY_PATH}.enc -out ${AWS_SSH_KEY_PATH} -d
 	@ chmod 400 ${AWS_SSH_KEY_PATH}
 	@ curl https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip -o terraform.zip
 	@ unzip terraform.zip
