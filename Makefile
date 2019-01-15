@@ -163,7 +163,7 @@ deploy:
 	@ curl https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip -o terraform.zip
 	@ unzip terraform.zip
 	@ chmod +x ./terraform
-	@ ./terraform init
+	@ ./terraform init deploy
 	@ ./terraform apply -auto-approve && \
 		-var aws_access_key='$$AWS_ACCESS_KEY' && \
 		-var aws_secret_key='$$AWS_SECRET_KEY' && \
@@ -176,7 +176,8 @@ deploy:
 		-var pg_password='$$PG_PASSWORD' && \
 		-var jwt_secret='$$JWT_SECRET' && \
 		-var backend_image='$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' && \
-		-var frontend_image='$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front'
+		-var frontend_image='$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front' && \
+		deploy
 
 clean:
 	${INFO} "Cleaning environment..."
