@@ -167,6 +167,7 @@ deploy:
 		-backend-config="access_key=${AWS_ACCESS_KEY}" \
 		-backend-config="secret_key=${AWS_SECRET_KEY}" \
 		deploy
+	@ ./terraform taint aws_instance.webapp
 	@ ./terraform plan \
 		-var 'aws_access_key=${AWS_ACCESS_KEY}' \
 		-var 'aws_secret_key=${AWS_SECRET_KEY}' \
@@ -183,7 +184,8 @@ deploy:
 		-out $(PROJECT_NAME).tfplan \
 		deploy
 	@ ./terraform apply $(PROJECT_NAME).tfplan
-	@ export deploy_url="$(shell ./terraform output aws_public_dns)"
+	${INFO} "Successfullt deployed!"
+	@ printf "$(shell ./terraform output aws_public_dns)"
 
 clean:
 	${INFO} "Cleaning environment..."
