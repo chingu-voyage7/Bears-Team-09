@@ -11,6 +11,7 @@ jobs:
           - node_modules
       script: eslint .
     - stage: Test and release app backend
+      language: minimal
       before_install:
         - sudo rm /usr/local/bin/docker-compose
         - sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -27,8 +28,10 @@ jobs:
         - make clean
         - make logout
     - stage: Deploy
+      language: minimal
       deploy:
         provider: script
+
         skip_cleanup: true
         script: bash -c "make deploy"
         on:
