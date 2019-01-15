@@ -164,7 +164,7 @@ deploy:
 	@ unzip terraform.zip
 	@ chmod +x ./terraform
 	@ ./terraform init deploy
-	@ ./terraform apply -auto-approve && \
+	./terraform apply -auto-approve && \
 		-var aws_access_key='$$AWS_ACCESS_KEY' && \
 		-var aws_secret_key='$$AWS_SECRET_KEY' && \
 		-var key_name='$$AWS_KEY_NAME' && \

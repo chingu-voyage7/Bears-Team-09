@@ -26,5 +26,10 @@ jobs:
       after_script:
         - make clean
         - make logout
-after_success:
-  - test $TRAVIS_BRANCH = "deploy" && make deploy
+    - deploy:
+        provider: script
+        script: make deploy
+        on:
+          branch: deploy
+# after_success:
+  # - test $TRAVIS_BRANCH = "deploy" && make deploy
