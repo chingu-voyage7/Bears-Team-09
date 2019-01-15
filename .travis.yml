@@ -27,4 +27,9 @@ jobs:
         - make clean
         - make logout
     - stage: Deploy
-      script: test $TRAVIS_BRANCH = "deploy" && make deploy
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script: test $TRAVIS_BRANCH = "deploy" && make deploy
+        on:
+          branch: deploy
