@@ -178,11 +178,12 @@ deploy:
 		-var 'pg_db=${PG_DB}' \
 		-var 'pg_password=${PG_PASSWORD}' \
 		-var 'jwt_secret=${JWT_SECRET}' \
-		-var 'backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' \
-		-var 'frontend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front' \
+		-var 'backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back:$(shell git rev-parse --short HEAD)' \
+		-var 'frontend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front:$(shell git rev-parse --short HEAD)' \
 		-out $(PROJECT_NAME).tfplan \
 		deploy
 	@ ./terraform apply $(PROJECT_NAME).tfplan
+	@ export deploy_url="$(shell ./terraform output aws_public_dns)"
 
 clean:
 	${INFO} "Cleaning environment..."
