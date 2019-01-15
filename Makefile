@@ -163,16 +163,16 @@ deploy:
 	@ curl https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip -o terraform.zip
 	@ unzip terraform.zip
 	@ chmod +x ./terraform
-	@ ./terraform init \
+	./terraform init \
 		-backend-config="access_key=${AWS_ACCESS_KEY}" \
 		-backend-config="secret_key=${AWS_SECRET_KEY}" \
 		deploy
-	@ ./terraform taint -allow-missing aws_instance.webapp
-	@ ./terraform init \
+	./terraform taint -allow-missing aws_instance.webapp
+	./terraform init \
 		-backend-config="access_key=${AWS_ACCESS_KEY}" \
 		-backend-config="secret_key=${AWS_SECRET_KEY}" \
 		deploy
-	@ ./terraform plan \
+	./terraform plan \
 		-var 'aws_access_key=${AWS_ACCESS_KEY}' \
 		-var 'aws_secret_key=${AWS_SECRET_KEY}' \
 		-var 'key_name=${AWS_KEY_NAME}' \
@@ -187,9 +187,9 @@ deploy:
 		-var 'frontend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front:$(shell git rev-parse --short HEAD)' \
 		-out $(PROJECT_NAME).tfplan \
 		deploy
-	@ ./terraform apply $(PROJECT_NAME).tfplan
+	./terraform apply $(PROJECT_NAME).tfplan
 	${INFO} "Successfullt deployed!"
-	@ printf "$(shell ./terraform output aws_public_dns)"
+	printf "$(shell ./terraform output aws_public_dns)"
 
 clean:
 	${INFO} "Cleaning environment..."
