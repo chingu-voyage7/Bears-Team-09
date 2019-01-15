@@ -164,19 +164,19 @@ deploy:
 	@ unzip terraform.zip
 	@ chmod +x ./terraform
 	@ ./terraform init deploy
-	./terraform apply -auto-approve && \
-		-var aws_access_key='$$AWS_ACCESS_KEY' && \
-		-var aws_secret_key='$$AWS_SECRET_KEY' && \
-		-var key_name='$$AWS_KEY_NAME' && \
-		-var private_key_path='$$AWS_SSH_KEY_PATH' && \
-		-var project_name='$(PROJECT_NAME)' && \
-		-var pg_host='$$PG_HOST' && \
-		-var pg_user='$$PG_USER' && \
-		-var pg_db='$$PG_DB' && \
-		-var pg_password='$$PG_PASSWORD' && \
-		-var jwt_secret='$$JWT_SECRET' && \
-		-var backend_image='$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' && \
-		-var frontend_image='$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front' && \
+	./terraform apply -auto-approve \
+		-var aws_access_key=$$AWS_ACCESS_KEY \
+		-var aws_secret_key=$$AWS_SECRET_KEY \
+		-var key_name=$$AWS_KEY_NAME \
+		-var private_key_path=$$AWS_SSH_KEY_PATH \
+		-var project_name=$(PROJECT_NAME) \
+		-var pg_host=$$PG_HOST \
+		-var pg_user=$$PG_USER \
+		-var pg_db=$$PG_DB \
+		-var pg_password=$$PG_PASSWORD \
+		-var jwt_secret=$$JWT_SECRET \
+		-var backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back \
+		-var frontend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front \
 		deploy
 
 clean:
