@@ -27,4 +27,4 @@ jobs:
         - make clean
         - make logout
 after_success:
-  - test $TRAVIS_BRANCH = "deploy" && make -C ./backend deploy
+  - test $TRAVIS_BRANCH = "deploy" && make deploy
