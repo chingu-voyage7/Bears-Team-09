@@ -164,7 +164,7 @@ deploy:
 	@ unzip terraform.zip
 	@ chmod +x ./terraform
 	@ ./terraform init deploy
-	@ ./terraform apply -auto-approve \
+	@ ./terraform plan \
 		-var 'aws_access_key=${AWS_ACCESS_KEY}' \
 		-var 'aws_secret_key=${AWS_SECRET_KEY}' \
 		-var 'key_name=${AWS_KEY_NAME}' \
@@ -177,7 +177,9 @@ deploy:
 		-var 'jwt_secret=${JWT_SECRET}' \
 		-var 'backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' \
 		-var 'frontend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front' \
+		-out $(PROJECT_NAME).tfplan \
 		deploy
+	@ ./terraform apply $(PROJECT_NAME).tfplan
 
 clean:
 	${INFO} "Cleaning environment..."
