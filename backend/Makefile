@@ -158,6 +158,7 @@ publish:
 
 deploy:
 	${INFO} "Deploying..."
+	@ printf $$AWS_KEY_STRING > $$AWS_SSH_KEY_PATH
 	@ wget https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip
 	@ unzip terraform_$(TERRAFORM_VERSION)_linux_amd64.zip
 	@ terraform init
@@ -181,3 +182,27 @@ clean:
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) down -v
 	@ docker images -q -f dangling=true -f label=application=$(REPO_NAME) | xargs -I ARGS docker rmi -f ARGS
 	${INFO} "Clean complete"
+
+-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEArFTqW/N7xUy2PxuaWVkcY+C8WrqyTJhvMTfjCfd4EbX5TuEVsjTnn+K9kUUv
+TR/nftQarfsLucJLVon9vPaVb6oE3rYCkJsjtqeKqoBEcRvQbxqFO627WfxL4N7zJqsUdL7ViOYX
+cXaRZZWf8+aWwro1mEeOMBh6KCukkNQvQpUNilyOUmKmWZtsX7EIchWJa62LH6FQoXptmFqyh+q9
+qErUpuKjWuKLjKt8lavm9G3Xgi3XbhxRnpOMFrFVeUk3T352bATIylhwUXqrErxwRQKja9FWsIYT
+o95Ro2s1L65yjGlaQxXDDiCEeOhtVc/M+lE7kOWb7QU0bG9OULuZ1QIDAQABAoIBAHjOVjP7bcqT
+yjZXLU5xL3u8sY2QzyjuuxPvr5LvDhasUIbBNypj9/OXSXiq3Uvdj7TTD5jjIgcocxPJTDzJR1yt
+/Rf607V3bAPBU23O2SvJacZY+wko8utT+AU9hYqX55Enrh133vtFOQvTZfveq9T6IFQN5VlF72x1
+m7mDZVXwaRRJwecyiw9GtunNAU4ui5LaexV+6nXtzKxgM3LIiooJl81/JCjf4PEZuPkTq87/pUwD
+xdDToXAizO5h3RL8yp39c8Muxx7jXtXNAp/hg5+DPevF93TSn2h9NHDARY9ZlkFiFGPR0rVYTrwQ
+h31kd9YQTVUDjn1zNSN6IEFQVUECgYEA9epnQXA0ivBY5lAhImhEjejDvguGggUdAeWIZTT+ki+X
+erRk2bwlm1PtWiBmwCSRrWj0a7PEoVfecBIA/j/GNl1qJAhPa9QYQ8ggt8TY38uqWMjdfEyThgS0
+Vb71B3fq2Xo98BjvfCqJo/xjM+q6raS5KOHISFS5WH5r7RCBNE0CgYEAs2YJIBPN1BOJqGqXOboR
+NaIbPQZofADPCQ7FEDlvZmDFy98J+dpzMkIn9lUl63mX9WMSpmwtnd3nQ8wrs7r0qElwzNdw4Ooc
+kaH+IOzAt+LmkLI+UE5LFW7zFL6wYm7wiOI/FgNgbQez9qxKLuut0TsXeA7fyhmKZg/UZW7l36kC
+gYA1+SyQgEAH/piEdDHRi3EAdIYBwCXVg6nKMMau7+Kv0yI8HDvGTjUy0kjV7yaeJWiT1uVOfjY5
+8z8u+cSeCQFIDViub+R+lh59Qf9sVhgDhn/s3KlADs6SK5Yo+7Br4zX4ZYwSlmZ5qhxrkYl0a6Bt
+XCoHfwamWXIUqiql7WluQQKBgE4XbIF6HW7j0lhtjcajKDqghhraX0EbWQQoWb/mQIfgODm2rTEF
+1n9aLOsdxZPrKiq3Jbcr/+9oWPM6PQvPphBbZ67DWW+OeUErsuPCK2Hgc10pOdbbPfPmiAnPuBgh
+ErODSNLcRW0wnTYTaXdjQBaEEoNAdkoTNBuZaGt/CrGBAoGBANbkl3if8GUEXGxnySmPCzw8TF3K
+tJMTSGNXuJQYdJ4HWrnWBi+zkXiapkJptOp6jRPJXbsv9ETDqvWHiFfhgGtJt8bPlFSQ/3idde+D
+krsrOLSX0Kr0fUMsLpAiu53fvODa5rpgF8eafcCKGm4zMTfrXPV3x9wdd/yYMhUfhG6f
+-----END RSA PRIVATE KEY-----

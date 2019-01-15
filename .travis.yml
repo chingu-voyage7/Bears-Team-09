@@ -1,11 +1,8 @@
 services:
   - docker
-before_install:
-- openssl aes-256-cbc -K $encrypted_12bbaed1edd9_key -iv $encrypted_12bbaed1edd9_iv
-  -in pairup.pem.enc -out pairup.pem -d
 jobs:
   include:
-    - stage: lint
+    - stage: Lint
       language: node_js
       node_js:
         - '8'
@@ -13,23 +10,23 @@ jobs:
         directories:
           - node_modules
       script: eslint .
-    - stage: Test backend
+    - stage: Test and release app backend
       before_install:
         - sudo rm /usr/local/bin/docker-compose
         - sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         - sudo chmod +x /usr/local/bin/docker-compose
       script:
         - |
-          make -C ./backend test && \
-          make -C ./backend release && \
-          make -C ./backend tag latest `git rev-parse --short HEAD` `git tag --points-at HEAD` && \
-          make -C ./backend buildtag master `git tag --points-at HEAD` && \
-          make -C ./backend login && \
-          make -C ./backend publish
+          make test && \
+          make release && \
+          make tag latest `git rev-parse --short HEAD` `git tag --points-at HEAD` && \
+          make buildtag master `git tag --points-at HEAD` && \
+          make login && \
+          make publish
 
       after_script:
-        - make -C ./backend clean
-        - make -C ./backend logout
+        - make clean
+        - make logout
 
 deploy:
   provider: script
