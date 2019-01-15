@@ -27,10 +27,4 @@ jobs:
         - make clean
         - make logout
     - stage: Deploy
-      deploy:
-        provider: script
-        script: make deploy
-        on:
-          branch: deploy
-# after_success:
-  # - test $TRAVIS_BRANCH = "deploy" && make deploy
+      script: test $TRAVIS_BRANCH = "deploy" && make deploy
