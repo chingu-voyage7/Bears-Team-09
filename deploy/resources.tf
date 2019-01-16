@@ -29,6 +29,9 @@ resource "aws_instance" "webapp" {
         user  = "ec2-user"
         private_key = "${file(var.private_key_path)}"
     }
+    volume_tags {
+        version = "${var.deploy_tag}"
+    }
     provisioner "remote-exec" {
         inline = [
             "sudo yum update -y",
@@ -40,7 +43,6 @@ resource "aws_instance" "webapp" {
         ]
     }
     tags {
-        name = "${var.project_name}-${var.deploy_tag}"
         project = "${var.project_name}"
     }
 }
