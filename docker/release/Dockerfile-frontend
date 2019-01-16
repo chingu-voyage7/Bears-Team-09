@@ -1,9 +1,10 @@
-FROM node:10.14.1-alpine as build
+FROM node:10.14.1-alpine
+
+CMD ["npm", "run", "start", "-p 80"]
 
 COPY ./frontend /app
 
 WORKDIR /app
 
 RUN npm install && \
-    npm run build && \
-    npm run start -p 80
+    npm run build
