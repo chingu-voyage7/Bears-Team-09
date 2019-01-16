@@ -182,7 +182,7 @@ deploy:
 		-var 'deploy_tag=$(shell git rev-parse --short HEAD)' \
 		-var 'cdn_key=${CLOUDINARY_KEY}' \
 		-var 'cdn_secret=${CLOUDINARY_SECRET}' \
-		-var 'node_env=production' \
+		-var 'node_env=${ENV_NODE}' \
 		-out $(PROJECT_NAME).tfplan \
 		deploy
 	./terraform apply $(PROJECT_NAME).tfplan
