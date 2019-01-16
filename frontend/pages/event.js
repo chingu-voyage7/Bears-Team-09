@@ -69,7 +69,7 @@ export class event extends Component {
     }
   });
   const { name, date_from : startDate, description, image } = currentEvent.data;
-  console.log(currentEvent)
+    // console.log(currentEvent)
     // console.log(router);
     // this.setState({ id: router.query.id });
     
@@ -79,7 +79,7 @@ export class event extends Component {
 
   render() {
     const { name, startDate , description, image } = this.state;
-    const startDateFormatted =  moment(startDate)
+    const startDateFormatted =  moment(startDate);
     
     const theme = { background: `center / cover no-repeat url(${image})` };
     return (
