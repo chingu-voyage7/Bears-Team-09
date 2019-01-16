@@ -181,7 +181,7 @@ deploy:
 		-var 'backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' \
 		-var 'frontend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front' \
 		-var 'deploy_tag=$(shell git rev-parse --short HEAD)' \
-		-var 'db_url=postgres://${PG_USER}:${PG_PASSWORD}@${PG_HOST}/${PG_DB}'
+		-var 'db_url=postgres://${PG_USER}:${PG_PASSWORD}@${PG_HOST}/${PG_DB}' \
 		-out $(PROJECT_NAME).tfplan \
 		deploy
 	./terraform apply $(PROJECT_NAME).tfplan
