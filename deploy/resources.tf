@@ -18,7 +18,7 @@ resource "aws_subnet" "public_subnet" {
 resource "aws_subnet" "private_subnet" {
     vpc_id = "${aws_default_vpc.default.id}"
     cidr_block              = "${var.private_subnet}"
-    availability_zone       = "${data.aws_availability_zones.available.names[0]}"
+    availability_zone       = "${data.aws_availability_zones.available.names[1]}"
 }
 resource "aws_db_subnet_group" "db_subnet_group" {
     description = "Postgres DB subnet group"
