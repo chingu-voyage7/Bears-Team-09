@@ -163,12 +163,11 @@ deploy:
 	@ curl https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip -o terraform.zip
 	@ unzip terraform.zip
 	@ chmod +x ./terraform
-	./terraform init \
+	./terraform init -backend=true \
 		-backend-config="access_key=${AWS_ACCESS_KEY}" \
 		-backend-config="secret_key=${AWS_SECRET_KEY}" \
 		deploy
-	ls
-	ls ./deploy
+	ls -la && ls -la ./deploy
 	./terraform plan \
 		-var 'aws_access_key=${AWS_ACCESS_KEY}' \
 		-var 'aws_secret_key=${AWS_SECRET_KEY}' \
@@ -186,7 +185,7 @@ deploy:
 		deploy
 	./terraform apply $(PROJECT_NAME).tfplan
 	${INFO} "Successfullt deployed!"
-	printf "$(shell ./terraform output aws_public_dns)"
+	cd ./deplou && ../terraform output aws_public_dns
 
 clean:
 	${INFO} "Cleaning environment..."
