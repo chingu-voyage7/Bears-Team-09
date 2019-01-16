@@ -1,20 +1,10 @@
-FROM node:10.14.1-alpine as build
+FROM node:10.14.1-alpine
+
+CMD ["npm", "run", "start", "-p 80"]
 
 COPY ./frontend /app
 
 WORKDIR /app
 
 RUN npm install && \
-    npm run build && \
-    npm run export
-
-
-FROM nginx:stable-alpine
-
-COPY ./docker/release/nginx/nginx.conf /etc/nginx/nginx.conf
-
-COPY ./docker/release/nginx/appserver.conf /etc/nginx/conf.d/default.conf
-
-COPY --from=build /app/out /app
-
-RUN mv /app/static /static
+    npm run build

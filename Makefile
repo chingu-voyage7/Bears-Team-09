@@ -180,6 +180,9 @@ deploy:
 		-var 'backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' \
 		-var 'frontend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front' \
 		-var 'deploy_tag=$(shell git rev-parse --short HEAD)' \
+		-var 'cdn_key=${CLOUDINARY_KEY}' \
+		-var 'cdn_secret=${CLOUDINARY_SECRET}' \
+		-var 'node_env=${NODE_ENV}' \
 		-out $(PROJECT_NAME).tfplan \
 		deploy
 	./terraform apply $(PROJECT_NAME).tfplan
