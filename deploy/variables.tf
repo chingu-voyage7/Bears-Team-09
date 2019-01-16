@@ -22,7 +22,6 @@ variable "private_subnet" {
   default = "172.31.202.0/24"
 }
 # DB CONFIG
-variable "pg_host" {}
 variable "pg_user" {
     default = "postgres"
 }
