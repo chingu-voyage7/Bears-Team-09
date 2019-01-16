@@ -15,8 +15,11 @@ variable "aws_ami" {
 variable "aws_instance_type" {
   default = "t2.micro"
 }
-variable "subnet" {
+variable "public_subnet" {
   default = "172.31.201.0/24"
+}
+variable "private_subnet" {
+  default = "172.31.202.0/24"
 }
 # DB CONFIG
 variable "pg_host" {}
@@ -41,4 +44,3 @@ variable "project_name" {
 variable "frontend_image" {}
 variable "backend_image" {}
 variable "deploy_tag" {}
-variable "db_url" {}

@@ -173,7 +173,6 @@ deploy:
 		-var 'key_name=${AWS_KEY_NAME}' \
 		-var 'private_key_path=${AWS_SSH_KEY_PATH}' \
 		-var 'project_name=$(PROJECT_NAME)' \
-		-var 'pg_host=${PG_HOST}' \
 		-var 'pg_user=${PG_USER}' \
 		-var 'pg_db=${PG_DB}' \
 		-var 'pg_password=${PG_PASSWORD}' \
@@ -181,7 +180,6 @@ deploy:
 		-var 'backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' \
 		-var 'frontend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front' \
 		-var 'deploy_tag=$(shell git rev-parse --short HEAD)' \
-		-var 'db_url=postgres://${PG_USER}:${PG_PASSWORD}@${PG_HOST}/${PG_DB}' \
 		-out $(PROJECT_NAME).tfplan \
 		deploy
 	./terraform apply $(PROJECT_NAME).tfplan
