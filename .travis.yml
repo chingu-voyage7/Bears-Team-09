@@ -10,7 +10,7 @@ jobs:
         directories:
           - node_modules
       script: eslint .
-    - stage: Test and release app backend
+    - stage: Test and release the app
       language: minimal
       before_install:
         - sudo rm /usr/local/bin/docker-compose
