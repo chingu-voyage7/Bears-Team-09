@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-/*
-Endpoint GET /activities
-*/
 
 class ActivityPicker extends Component {
   state = {
@@ -12,15 +9,15 @@ class ActivityPicker extends Component {
   };
 
   handleActivitySelection = activity => {
-    const { updateFilter } = this.props;
+    // Callback fn that sends selected activity to parent component
+    const { updateSelection } = this.props;
     this.setState({ popupOpen: false, selectedActivity: activity.name });
-    // Callback gets called to parent events page with activity ID
-    updateFilter("activity", activity.name);
+    updateSelection("activity", activity.name, activity.id);
   };
 
   render() {
     const { popupOpen, selectedActivity } = this.state;
-    const { activities } = this.props;
+    const { activities, type } = this.props;
     const categoryList = activities.map(activityObject => (
       <ActivityListItem key={activityObject.id} onClick={e => this.handleActivitySelection(activityObject, e)}>
         {activityObject.name}
@@ -28,8 +25,16 @@ class ActivityPicker extends Component {
     ));
 
     return (
-      <ActivityWrapper tabIndex="-1" onBlur={() => this.setState({ popupOpen: false })}>
-        <ActivityBox onClick={() => this.setState({ popupOpen: true })}> {selectedActivity}</ActivityBox>
+      <ActivityWrapper type={type}>
+        <ActivityBox
+          tabIndex="0"
+          type={type}
+          onFocus={() => this.setState({ popupOpen: true })}
+          onClick={() => this.setState({ popupOpen: true })}
+        >
+          {" "}
+          {selectedActivity}
+        </ActivityBox>
         {popupOpen && <ul>{categoryList}</ul>}
       </ActivityWrapper>
     );
@@ -39,14 +44,13 @@ class ActivityPicker extends Component {
 export default ActivityPicker;
 
 ActivityPicker.propTypes = {
-  updateFilter: PropTypes.func.isRequired,
-  activities: PropTypes.arrayOf(PropTypes.object).isRequired
+  updateSelection: PropTypes.func.isRequired,
+  activities: PropTypes.arrayOf(PropTypes.object).isRequired,
+  type: PropTypes.string.isRequired
 };
 
 const ActivityWrapper = styled.div`
-  padding: 2px;
-  line-height: 25px;
-
+  margin-bottom: ${props => (props.type === "form" ? "5px" : "")};
   &:focus {
     outline: none;
   }
@@ -56,26 +60,28 @@ const ActivityWrapper = styled.div`
     padding: 0;
     position: absolute;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr;
+    width: ${props => (props.type === "form" ? "130px" : "140px")};
     grid-gap: 5px;
     background: white;
-    padding: 5px;
-    border-radius: 2px;
+    padding: 2px;
+    border-radius: 3px;
     box-shadow: rgba(0, 0, 0, 0.5) 0 3px 10px 0;
     z-index: 1;
   }
 `;
 
 const ActivityBox = styled.div`
-  width: 140px;
-  padding: 2px;
+  width: ${props => (props.type === "form" ? "" : "140px")};
+  padding: 5px;
   cursor: pointer;
-  text-align: center;
+  text-align: ${props => (props.type === "form" ? "left" : "center")};
+  text-transform: ${props => (props.type === "form" ? "capitalize" : "none")};
   font-size: 1rem;
   border: 1px solid rgba(0, 0, 0, 0.12);
   color: #757575;
   background-color: #fff;
-  border-radius: 2px;
+  border-radius: 3px;
   transition: all 100ms ease-out;
   &:hover {
     background: purple;
@@ -87,7 +93,8 @@ const ActivityListItem = styled.li`
   text-transform: capitalize;
   text-align: left;
   cursor: pointer;
-  padding: 2px;
+  padding: 3px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 2px;
   &:hover {
     color: white;

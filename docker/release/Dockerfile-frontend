@@ -1,0 +1,12 @@
+FROM node:10.14.1-alpine
+
+CMD ["npm", "run", "start"]
+
+EXPOSE 3000
+
+COPY ./frontend /app
+
+WORKDIR /app
+
+RUN npm install && \
+    npm run build

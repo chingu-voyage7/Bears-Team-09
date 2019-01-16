@@ -18,7 +18,9 @@
     "email": "kenny@gmail.com",
     "first_name": "Kenny",
     "last_name": "McCormick",
-    "bio": "Lorem ipsum"
+    "image": "https://example.com/image.jpg",
+    "bio": "Lorem ipsum",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwayI6ImwyZmxhbWVAZ21haWwuY29tIiwiaWF0IjoxNTQ0MTYzMDg0LCJleHAiOjE1NDQyNDk0ODR9.nhHnAN-80PMRquMH0SqvwXKiJ884F3p-UtOSV4G0XDo"
 }
 ```
 
@@ -31,6 +33,7 @@
             "id": 42,
             "first_name": "Kenny",
             "last_name": "McCormick",
+            "image": "https://example.com/image.jpg",
             "bio": "Lorem ipsum"
         }
     ]
@@ -98,6 +101,7 @@
 {
     "id" : 42,
     "name" : "Event name",
+    "image": "https://example.com/image.jpg",
     "description" : "Event description",
     "activity" : "Activity name",
     "country" : "Canada",
@@ -117,6 +121,7 @@
         {
             "id" : 42,
             "name" : "Event name",
+            "image": "https://example.com/image.jpg",
             "description" : "Event description",
             "activity" : "Activity name",
             "country" : "Canada",
@@ -133,7 +138,7 @@
 
 ## API endpoints
 
-All `GET` request returns 200 status code in case of success or 400/401/404 in case of failure.
+All `GET` request returns 200 status code in case of success or 400-404 in case of failure.
 
 ### Register
 
@@ -148,7 +153,9 @@ Example request body:
 }
 ```
 
-No authentication required.
+Required fields: `email`, `password`
+
+No authentication required. Returns [User](#user)
 
 ### Login
 
@@ -165,7 +172,13 @@ Example request body:
 
 Required fields: `email`, `password`
 
-No authentication required, returns a [Token](#token)
+No authentication required. Returns [User](#user)
+
+### Login with Google
+
+`GET /auth/google?access_token=<YOUR_GOOGLE_ACCESS_TOKEN>`
+
+No authentication required. Returns [User](#user)
 
 ### Refresh auth token
 
@@ -177,7 +190,7 @@ JWT authentication required, returns [Token](#token)
 
 `GET users`
 
-JWT authentication required, returns [User](#User)
+JWT authentication required, returns [User](#User) without token in the body.
 
 ### Delete active user
 
@@ -356,6 +369,12 @@ Optional fields: `description`, `place_id`, `date_from`, `date_to`, `min_people`
 
 JWT authentication required, returns [Event](#event)
 
+### Get all attendees of the event
+
+`GET events/:id/attendees`
+
+JWT authentication required, returns [Multiple Users](#multiple-users)
+
 ### Delete the event
 
 `DELETE events/:id`
@@ -396,3 +415,24 @@ JWT authentication required
 `DELETE events/:id/attend`
 
 JWT authentication required
+
+### Upload image
+
+There are two endpoints to upload image:
+
+`POST users/images` and `POST events/images`
+
+to upload user avatars and event images correspondingly.
+
+Images must be uploaded as `multipart/form-data` with name attribute set to `'file'`. Make sure to set `Content-type` header to `multipart/form-data`
+
+Both endpoints use environmental variables to configure cloudinary:
+`CLOUDINARY_NAME` - cloud name
+`CLOUDINARY_KEY` - API key
+`CLOUDINARY_SECRET` - API secret
+
+Returns URL of an image:
+```JSON
+{
+    "url": "https://res.cloudinary.com/pairup/image/upload/v1547410002/events/lhdutg2dt6hyjwv81nej.jpg"
+}

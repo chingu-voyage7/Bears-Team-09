@@ -1,15 +1,15 @@
 FROM node:10.14.1-alpine
 
-ENTRYPOINT [ "npm" ]
+CMD [ "npm", "run", "start" ]
 
-CMD [ "run", "start" ]
-
-COPY ./src /app
+COPY ./backend/src /app
 
 WORKDIR /app
 
+EXPOSE 8000
+
 RUN apk update && \
     apk --no-cache add --virtual deps build-base python && \
-    npm install && \
+    npm install --only=prod && \
     npm rebuild bcrypt --build-from-source && \
     apk del deps

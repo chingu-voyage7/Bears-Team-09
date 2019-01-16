@@ -10,20 +10,22 @@ class DateSelector extends React.Component {
   };
 
   handleChange = date => {
-    const { updateFilter } = this.props;
-    // handle clear date action
+    const { updateSelection } = this.props;
     if (date === null) {
-      this.setState({ startDate: null }, updateFilter("datefrom", null));
+      this.setState({ startDate: null }, updateSelection("datefrom", null));
     } else {
-      this.setState({ startDate: date }, updateFilter("datefrom", date));
+      this.setState({ startDate: date }, updateSelection("datefrom", date));
     }
   };
 
   render() {
+    const { placeholder } = this.props;
+    // let { minDate, maxDate } = this.props
     const { startDate } = this.state;
     return (
-      <DatePickerStylingWrapper>
+      <DatePickerStylingWrapper type="form">
         <DatePicker
+          minDate={new Date()}
           popperPlacement="bottom"
           popperModifiers={{
             offset: {
@@ -34,7 +36,7 @@ class DateSelector extends React.Component {
           todayButton="today"
           selected={startDate}
           onChange={this.handleChange}
-          placeholderText="time"
+          placeholderText={placeholder}
           isClearable
         />
       </DatePickerStylingWrapper>
@@ -45,7 +47,8 @@ class DateSelector extends React.Component {
 export default DateSelector;
 
 DateSelector.propTypes = {
-  updateFilter: PropTypes.func.isRequired
+  updateSelection: PropTypes.func.isRequired,
+  placeholder: PropTypes.string.isRequired
 };
 
 const DatePickerStylingWrapper = styled.div`
@@ -54,11 +57,12 @@ const DatePickerStylingWrapper = styled.div`
     padding: 5px;
     border-radius: 3px;
     outline: 0;
-    width: 120px;
+    width: ${props => (props.type === "form" ? "100%" : "120px")};
     text-align: left;
     font-size: 1rem;
     border: 1px solid rgba(0, 0, 0, 0.12);
     color: #757575;
+    margin-top: ${props => (props.type === "form" ? "5px" : "0px")};
   }
 
   input:hover {

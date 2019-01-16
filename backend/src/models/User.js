@@ -19,6 +19,7 @@ class User extends Table {
     });
     super(tableName, pk, cleanData);
     this.ACCEPTED_FIELDS = ACCEPTED_FIELDS;
+    this.REQUIRED_FIELDS = ['email'];
     this.parseOpts(rawData);
   }
 
@@ -27,8 +28,11 @@ class User extends Table {
   }
 
   hashPassword() {
-    return bcrypt.hash(this.data.password, 10)
-                 .then(hash => { this.data.password = hash; });
+    // if user was creater without password(from auth/google endpoint) there is no need to hash it
+    return 'password' in this.data ?
+            bcrypt.hash(this.data.password, 10)
+                  .then(hash => { this.data.password = hash; }) :
+            new Promise((resolve) => resolve());
   }
 
   create() {
