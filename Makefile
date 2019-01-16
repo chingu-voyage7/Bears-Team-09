@@ -4,16 +4,16 @@ ORG_NAME ?= trolleksii
 REPO_NAME ?= $(PROJECT_NAME)
 
 # Filenames
-DEV_COMPOSE_FILE := ../docker/dev/docker-compose.yml
-REL_COMPOSE_FILE := ../docker/release/docker-compose.yml
+DEV_COMPOSE_FILE := ./docker/dev/docker-compose.yml
+REL_COMPOSE_FILE := ./docker/release/docker-compose.yml
 
 # Docker Compose Project Names
 REL_PROJECT := $(PROJECT_NAME)$(BUILD_ID)
 DEV_PROJECT := $(REL_PROJECT)-dev
 
 # Application Service Name - must match Docker Compose release specification application service name
-FRONTEND_SERVICE_NAME := backend
-BACKEND_SERVICE_NAME := frontend
+FRONTEND_SERVICE_NAME := frontend
+BACKEND_SERVICE_NAME := backend
 
 # Build tag expression - can be used to evaulate a shell expression at runtime
 BUILD_TAG_EXPRESSION ?= date -u +%Y%m%d%H%M%S
@@ -80,7 +80,10 @@ ifeq (tag,$(firstword $(MAKECMDGOALS)))
   $(eval $(TAG_ARGS):;@:)
 endif
 
-.PHONY: test release tag buildtag login logout publish run clean
+# Deploy settings
+TERRAFORM_VERSION ?= 0.11.1
+
+.PHONY: test release tag buildtag login logout publish deploy run clean
 
 test:
 	${INFO} "Pulling dependencies from Docker Hub..."
@@ -152,6 +155,35 @@ publish:
 	@ $(foreach tag,$(shell echo $(FE_REPO_EXPR)), docker push $(tag);)
 	@ $(foreach tag,$(shell echo $(BE_REPO_EXPR)), docker push $(tag);)
 	${INFO} "Publish complete"
+
+deploy:
+	${INFO} "Deploying..."
+	@ openssl aes-256-cbc -K ${encrypted_key} -iv ${encrypted_iv} -in ${AWS_SSH_KEY_PATH}.enc -out ${AWS_SSH_KEY_PATH} -d
+	@ chmod 400 ${AWS_SSH_KEY_PATH}
+	@ curl https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip -o terraform.zip
+	@ unzip terraform.zip
+	@ chmod +x ./terraform
+	./terraform init -backend=true \
+		-backend-config="access_key=${AWS_ACCESS_KEY}" \
+		-backend-config="secret_key=${AWS_SECRET_KEY}" \
+		deploy
+	./terraform plan \
+		-var 'aws_access_key=${AWS_ACCESS_KEY}' \
+		-var 'aws_secret_key=${AWS_SECRET_KEY}' \
+		-var 'key_name=${AWS_KEY_NAME}' \
+		-var 'private_key_path=${AWS_SSH_KEY_PATH}' \
+		-var 'project_name=$(PROJECT_NAME)' \
+		-var 'pg_user=${PG_USER}' \
+		-var 'pg_db=${PG_DB}' \
+		-var 'pg_password=${PG_PASSWORD}' \
+		-var 'jwt_secret=${JWT_SECRET}' \
+		-var 'backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' \
+		-var 'frontend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front' \
+		-var 'deploy_tag=$(shell git rev-parse --short HEAD)' \
+		-out $(PROJECT_NAME).tfplan \
+		deploy
+	./terraform apply $(PROJECT_NAME).tfplan
+	${INFO} "Successfully deployed!"
 
 clean:
 	${INFO} "Cleaning environment..."
