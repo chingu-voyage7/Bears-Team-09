@@ -28,7 +28,7 @@ class Dashboard extends Component {
     // getting token from context, falling back to localStorage if no context exists (happens when page is refreshed)
     const token = tokenCtx || localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-    const today = new Date().toISOString();
+    // const today = new Date().toISOString();
 
     // Default fetch is any event from today with a limit of 10
     const eventsPromise = axios({
