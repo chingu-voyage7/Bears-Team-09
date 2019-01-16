@@ -29,24 +29,39 @@ resource "aws_instance" "webapp" {
         user  = "ec2-user"
         private_key = "${file(var.private_key_path)}"
     }
-    volume_tags {
-        version = "${var.deploy_tag}"
-    }
     provisioner "remote-exec" {
         inline = [
             "sudo yum update -y",
             "sudo amazon-linux-extras install docker -y",
-            "sudo service docker start",
-            "sudo docker run --rm -e DATABASE_URL=postgres://${var.pg_user}:${var.pg_password}@${var.pg_host}/${var.pg_db} ${var.backend_image} npm run migrate up",
-            "sudo docker run -d -e PGHOST=${var.pg_host} -e PGUSER='${var.pg_user}' -e PGPASSWORD='${var.pg_password}' -e PGDB='${var.pg_db}' -e PGPORT='${var.pg_port}' -e JWT_SECRET='${var.jwt_secret}' -e JWT_EXP_THRESHOLD='${var.jwt_exp_threshold}' -p 8000:8000 --restart always --name backend '${var.backend_image}:${var.deploy_tag}'",
-            "sudo docker run -d -p 80:80 --restart always --name frontend '${var.frontend_image}:${var.deploy_tag}'"
+            "sudo service docker start"
         ]
     }
+
     tags {
         project = "${var.project_name}"
     }
 }
 
+resource "null_resource" "vm" {
+    triggers {
+        deploy_tag = "${var.deploy_tag}"
+    }
+
+    connection {
+        host = "${aws_instance.webapp.public_ip}"
+        user  = "ec2-user"
+        private_key = "${file(var.private_key_path)}"
+    }
+
+    provisioner "remote-exec" {
+        inline = [
+            "docker container ls -q | xargs docker stop",
+            "sudo docker run --rm -e DATABASE_URL=postgres://${var.pg_user}:${var.pg_password}@${var.pg_host}/${var.pg_db} ${var.backend_image} npm run migrate up",
+            "sudo docker run -d -e PGHOST=${var.pg_host} -e PGUSER='${var.pg_user}' -e PGPASSWORD='${var.pg_password}' -e PGDB='${var.pg_db}' -e PGPORT='${var.pg_port}' -e JWT_SECRET='${var.jwt_secret}' -e JWT_EXP_THRESHOLD='${var.jwt_exp_threshold}' -p 8000:8000 --restart always --name backend '${var.backend_image}:${var.deploy_tag}'",
+            "sudo docker run -d -p 80:80 --restart always --name frontend '${var.frontend_image}:${var.deploy_tag}'"
+        ]
+    }
+}
 resource "aws_security_group" "webapp_sg" {
     vpc_id = "${aws_default_vpc.default.id}"
     name = "webapp_sg"
