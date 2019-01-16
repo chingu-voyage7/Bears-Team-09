@@ -1,6 +1,8 @@
 FROM node:10.14.1-alpine
 
-CMD ["npm", "run", "start", "-p 80"]
+CMD ["npm", "run", "start"]
+
+EXPOSE 3000
 
 COPY ./frontend /app
 

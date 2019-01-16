@@ -83,7 +83,7 @@ resource "null_resource" "vm" {
             "sudo docker container prune -f",
             "sudo docker run --rm -e DATABASE_URL=postgres://${var.pg_user}:${var.pg_password}@${aws_db_instance.db.address}/${var.pg_db} ${var.backend_image}:${var.deploy_tag} npm run migrate up",
             "sudo docker run -d -e PGHOST='${aws_db_instance.db.address}' -e PGUSER='${var.pg_user}' -e PGPASSWORD='${var.pg_password}' -e PGDB='${var.pg_db}' -e PGPORT='${var.pg_port}' -e JWT_SECRET='${var.jwt_secret}' -e JWT_EXP_THRESHOLD='${var.jwt_exp_threshold}' -e CLOUDINARY_KEY='${var.cdn_key}' -e CLOUDINARY_SECRET='${var.cdn_secret}' -e NODE_ENV='${var.node_env}' -p 8000:8000 --restart always --name backend '${var.backend_image}:${var.deploy_tag}'",
-            "sudo docker run -d -e NODE_ENV='${var.node_env}' -p 80:80 --restart always --name frontend '${var.frontend_image}:${var.deploy_tag}'"
+            "sudo docker run -d -e NODE_ENV='${var.node_env}' -p 80:3000 --restart always --name frontend '${var.frontend_image}:${var.deploy_tag}'"
         ]
     }
 }
