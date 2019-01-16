@@ -45,3 +45,4 @@ variable "backend_image" {}
 variable "deploy_tag" {}
 variable "cdn_key" {}
 variable "cdn_secret" {}
+variable "node_env" {}
