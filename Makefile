@@ -184,7 +184,7 @@ deploy:
 		-out $(PROJECT_NAME).tfplan \
 		deploy
 	./terraform apply $(PROJECT_NAME).tfplan
-	${INFO} "Successfullt deployed!"
+	${INFO} "Successfully deployed!"
 
 clean:
 	${INFO} "Cleaning environment..."
