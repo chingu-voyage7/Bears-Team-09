@@ -44,6 +44,7 @@ resource "aws_db_instance" "db" {
 }
 
 resource "aws_instance" "webapp" {
+    depends_on = ["${aws_db_instance.db}"]
     ami = "${var.aws_ami}"
     instance_type = "${var.aws_instance_type}"
     subnet_id = "${aws_subnet.public_subnet.id}"
