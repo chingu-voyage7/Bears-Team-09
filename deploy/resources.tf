@@ -36,10 +36,11 @@ resource "aws_instance" "webapp" {
             "sudo service docker start",
             "sudo docker run --rm -e DATABASE_URL=postgres://${var.pg_user}:${var.pg_password}@${var.pg_host}/${var.pg_db} ${var.backend_image} npm run migrate up",
             "sudo docker run -d -e PGHOST=${var.pg_host} -e PGUSER='${var.pg_user}' -e PGPASSWORD='${var.pg_password}' -e PGDB='${var.pg_db}' -e PGPORT='${var.pg_port}' -e JWT_SECRET='${var.jwt_secret}' -e JWT_EXP_THRESHOLD='${var.jwt_exp_threshold}' -p 8000:8000 --restart always --name backend '${var.backend_image}'",
-            "sudo docker run -d -p 80:80 --restart always --name frontend '${var.frontend_image}'"
+            "sudo docker run -d -p 80:80 --restart always --name frontend '${var.frontend_image}:${var.deploy_tag}'"
         ]
     }
     tags {
+        name = "${var.project_name}-${var.deploy_tag}"
         project = "${var.project_name}"
     }
 }

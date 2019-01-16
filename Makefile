@@ -167,7 +167,6 @@ deploy:
 		-backend-config="access_key=${AWS_ACCESS_KEY}" \
 		-backend-config="secret_key=${AWS_SECRET_KEY}" \
 		deploy
-	ls -la && ls -la ./deploy
 	./terraform plan \
 		-var 'aws_access_key=${AWS_ACCESS_KEY}' \
 		-var 'aws_secret_key=${AWS_SECRET_KEY}' \
@@ -185,7 +184,6 @@ deploy:
 		deploy
 	./terraform apply $(PROJECT_NAME).tfplan
 	${INFO} "Successfullt deployed!"
-	cd ./deplou && ../terraform output aws_public_dns
 
 clean:
 	${INFO} "Cleaning environment..."
