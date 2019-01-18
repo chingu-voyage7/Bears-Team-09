@@ -10,7 +10,9 @@ class Navbar extends React.Component {
         <ul>
           <li>
             <Link href="/">
-              <NavLink>Home</NavLink>
+              <LogoWrapper>
+                <Logo src=".././static/logo.svg" alt="logo" />
+              </LogoWrapper>
             </Link>
           </li>
           <li>
@@ -23,34 +25,27 @@ class Navbar extends React.Component {
               <NavLink>Profile</NavLink>
             </Link>
           </li>
-          <Logo>
-            <p>[Logo]</p>
-          </Logo>
           <UserConsumer>
             {({ loggedIn, logOut }) =>
               loggedIn ? (
-                <li>
+                <NavAuthBtns>
                   <AuthSection>
-                    <Link href="/profile">
-                      <button type="button">Profile</button>
-                    </Link>
-                    <button onClick={logOut} type="button">
+                    <LogoutBtn onClick={logOut} type="button">
                       Logout
-                    </button>
+                    </LogoutBtn>
                   </AuthSection>
-                </li>
+                </NavAuthBtns>
               ) : (
-                <li>
+                <NavAuthBtnsLoggedIn>
                   <UnAuthSection>
                     <Link href="/login">
                       <LoginBtn>Login</LoginBtn>
                     </Link>
-
                     <Link href="/register">
                       <RegisterBtn>Register</RegisterBtn>
                     </Link>
                   </UnAuthSection>
-                </li>
+                </NavAuthBtnsLoggedIn>
               )
             }
           </UserConsumer>
@@ -62,6 +57,10 @@ class Navbar extends React.Component {
 
 export default Navbar;
 
+const Logo = styled.img`
+  width: 100px;
+`;
+
 const RegisterBtn = styled.a`
   border: 2px solid white;
   padding: 2px;
@@ -71,10 +70,25 @@ const RegisterBtn = styled.a`
   margin-left: 10px;
 `;
 
+const NavAuthBtns = styled.li`
+  margin-left: auto;
+`;
+
+const NavAuthBtnsLoggedIn = styled.li`
+  margin-left: auto;
+`;
+
 const LoginBtn = styled.a`
   border: 2px solid white;
   padding: 2px;
   border-radius: 3px;
+`;
+
+const LogoutBtn = styled.a`
+  border: 1px solid white;
+  padding: 3px;
+  border-radius: 1px;
+  font-size: 1rem;
 `;
 
 const NavLink = styled.a`
@@ -86,8 +100,10 @@ const NavLink = styled.a`
 `;
 
 const StyledNav = styled.nav`
-  background: #6071ec;
+  background: rgb(22, 67, 75);
+  background: linear-gradient(90deg, rgba(22, 67, 75, 1) 0%, rgba(28, 12, 91, 1) 100%);
   color: white;
+  padding: 8px;
 
   ul {
     list-style-type: none;
@@ -105,9 +121,10 @@ const StyledNav = styled.nav`
   }
 `;
 
-const Logo = styled.li`
-  margin-left: auto;
-  margin-right: auto;
+const LogoWrapper = styled.li`
+  margin-left: 15px;
+  margin-right: 10px;
+  cursor: pointer;
 `;
 
 const UnAuthSection = styled.div`
