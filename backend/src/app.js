@@ -1,17 +1,19 @@
 const bodyParser = require("body-parser");
-const express = require("express");
-const logger = require("morgan");
 const cors = require("cors");
-const authRouter = require("./routes/auth");
-const usersRouter = require("./routes/users");
+const express = require("express");
+const helmet = require('helmet');
+const logger = require("morgan");
 const activitiesRouter = require("./routes/activities");
-const placesRouter = require("./routes/places");
-const eventsRouter = require("./routes/events");
 const authenticate = require("./middleware/passport");
+const authRouter = require("./routes/auth");
+const eventsRouter = require("./routes/events");
+const placesRouter = require("./routes/places");
+const usersRouter = require("./routes/users");
 
 const port = process.env.PORT || 8000;
-
 const app = express();
+
+app.use(helmet());
 app.use(cors());
 app.use(logger("dev"));
 app.use(bodyParser.json());
