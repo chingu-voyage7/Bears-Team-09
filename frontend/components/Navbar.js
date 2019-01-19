@@ -121,7 +121,7 @@ const StyledNav = styled.nav`
   }
 `;
 
-const LogoWrapper = styled.li`
+const LogoWrapper = styled.div`
   margin-left: 15px;
   margin-right: 10px;
   cursor: pointer;
