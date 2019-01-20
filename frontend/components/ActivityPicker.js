@@ -72,11 +72,10 @@ const ActivityWrapper = styled.div`
 `;
 
 const ActivityBox = styled.div`
-  width: ${props => (props.type === "form" ? "" : "140px")};
   padding: 5px;
   cursor: pointer;
-  text-align: ${props => (props.type === "form" ? "left" : "center")};
-  text-transform: ${props => (props.type === "form" ? "capitalize" : "none")};
+  text-align: left;
+  text-transform: capitalize;
   font-size: 1rem;
   border: 1px solid rgba(0, 0, 0, 0.12);
   color: #757575;

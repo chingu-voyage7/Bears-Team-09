@@ -54,6 +54,7 @@ DateSelector.propTypes = {
 const DatePickerStylingWrapper = styled.div`
   input {
     cursor: pointer;
+    text-transform: capitalize;
     padding: 5px;
     border-radius: 3px;
     outline: 0;

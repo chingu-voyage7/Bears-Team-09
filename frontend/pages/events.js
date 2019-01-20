@@ -9,6 +9,7 @@ import EventList from "../components/EventList";
 import ActivityPicker from "../components/ActivityPicker";
 import LocationSearch from "../components/LocationSearch";
 import { UserContext } from "../components/UserProvider";
+import device from "../styles/device";
 // using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS
 // there may be a cleaner solution that I am not aware of
 const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), {
@@ -133,9 +134,9 @@ class Dashboard extends Component {
           <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} />
           <DateSelectorDynamic placeholder="date" updateSelection={this.updateFilter} />
           <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} />
-          <button type="button" onClick={this.clearFilters}>
+          <ClearnButton type="button" onClick={this.clearFilters}>
             Clear
-          </button>
+          </ClearnButton>
         </FilterControlPanel>
         {events && (
           <EventContainer>
@@ -211,21 +212,21 @@ const Divider = styled.div`
 
 const FilterControlPanel = styled.div`
   margin: 0 auto;
-  padding: 4px;
+  justify-content: center;
+  padding: 10px;
   background-color: #8bc6ec;
   background-image: linear-gradient(135deg, #8bc6ec 0%, #9599e2 100%);
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 100px 100px 150px 50px;
+  width: auto;
+  grid-gap: 10px;
   border-radius: 4px;
   margin-bottom: 50px;
-  span {
-    font-size: 1.2rem;
-    margin-right: 5px;
-    margin-left: 5px;
-    line-height: 36px;
-  }
+
+  ${device.mobileL`
+    grid-gap: 3px;
+    grid-template-columns: 1fr 1fr 2fr 40px;
+  `}
 `;
 
 const EventContainer = styled.div`
@@ -233,10 +234,32 @@ const EventContainer = styled.div`
 `;
 
 const LoadMoreButton = styled.button`
+  cursor: pointer;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  border: 0;
+  outline: 0;
   padding: 5px;
   font-size: 1.1rem;
   margin-top: 50px;
   margin-bottom: 50px;
   background-color: black;
   color: white;
+
+  &:hover {
+    color: gold;
+  }
+`;
+
+const ClearnButton = styled.button`
+  cursor: pointer;
+  padding: 5px;
+  outline: 0;
+  border: 0;
+  border-radius: 3px;
+
+  &:hover {
+    color: white;
+    background: red;
+  }
 `;
