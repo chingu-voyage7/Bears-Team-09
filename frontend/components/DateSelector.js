@@ -62,7 +62,7 @@ const DatePickerStylingWrapper = styled.div`
     font-size: 1rem;
     border: 1px solid rgba(0, 0, 0, 0.12);
     color: #757575;
-    margin-top: ${props => (props.type === "form" ? "5px" : "0px")};
+    margin-top: 0px;
   }
 
   input:hover {

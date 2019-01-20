@@ -36,7 +36,6 @@ class Dashboard extends Component {
 
     // const realUlr = `http://localhost:8000/events?compare=gt&date_from=${isoDate}&limit=5`;
 
-
     // Default fetch is any event from today with a limit of 5
     const eventsPromise = axios({
       method: "get",
@@ -131,11 +130,8 @@ class Dashboard extends Component {
           </h4>
         </Divider>
         <FilterControlPanel>
-          <span>Pick a</span>
           <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} />
-          <span>choose</span>
           <DateSelectorDynamic placeholder="date" updateSelection={this.updateFilter} />
-          <span>and</span>
           <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} />
           <button type="button" onClick={this.clearFilters}>
             Clear
@@ -218,7 +214,6 @@ const FilterControlPanel = styled.div`
   padding: 4px;
   background-color: #8bc6ec;
   background-image: linear-gradient(135deg, #8bc6ec 0%, #9599e2 100%);
-  width: 60vw;
   display: flex;
   flex-direction: row;
   justify-content: center;
