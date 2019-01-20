@@ -101,14 +101,6 @@ const LogoWrapper = styled.div`
 
 const Logo = styled.img`
   width: 100px;
-
-  ${device.mobileL`
-    width: 120px;
-  `}
-
-  ${device.tablet`
-    width: 120px;
-  `}
 `;
 
 const RegisterBtn = styled.a`

@@ -11,7 +11,11 @@ export default () => (
           <p>Find people to do things together</p>
           <EventsBtn href="/events">Events</EventsBtn>
         </CallToAction>
-        <HeroImg src=".././static/hero-big.jpg" alt="hero-img-river" />
+        <HeroPicture>
+          <source media="(max-width: 450px)" srcSet=".././static/hero-mobile.jpg" />
+          <source media="(max-width: 1600px)" srcSet=".././static/hero-base.jpg" />
+          <img src=".././static/hero-base.jpg" alt="person-kayaking-in-river" width="inherit" />
+        </HeroPicture>
       </HeroSection>
     </LandingPage>
   </MainLayout>
@@ -31,10 +35,11 @@ const HeroSection = styled.div`
   background: black;
 `;
 
-const HeroImg = styled.img`
+const HeroPicture = styled.picture`
   width: 100%;
   background-size: 100% 100%;
 `;
+
 const CallToAction = styled.div`
   border-radius: 5px;
   margin-top: 160px;
