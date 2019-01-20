@@ -10,6 +10,8 @@ import ActivityPicker from "../components/ActivityPicker";
 import LocationSearch from "../components/LocationSearch";
 import { UserContext } from "../components/UserProvider";
 import device from "../styles/device";
+import StyledErrorMsg from "../styles/StyledErrorMsg";
+
 // using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS
 // there may be a cleaner solution that I am not aware of
 const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), {
@@ -108,21 +110,15 @@ class Dashboard extends Component {
       <MainLayout>
         <TopPanel>
           <div>
-            <h4>Browse existing events</h4>
-            <BrowseImg src=".././static/browsing.png" alt="globe-search" />
-          </div>
-          <div>
-            <h4>or</h4>
-            <ChoiceImg src=".././static/choice1.png" alt="person-choice" />
-          </div>
-          <div>
             <h4>
               <Link href="/newevent">
                 <StyledButton>Create</StyledButton>
               </Link>{" "}
-              your own and PairUp!
+              new event and PairUp
+              <br />
+              or check out existing events below
             </h4>
-            <CreateImg src=".././static/people.png" alt="people" />
+            <DownArrow src=".././static/down-arrow.svg" alt="arrow-pointing-down" />
           </div>
         </TopPanel>
         <Divider>
@@ -138,12 +134,13 @@ class Dashboard extends Component {
             Clear
           </ClearnButton>
         </FilterControlPanel>
-        {events && (
+        {events && events.length !== 0 && (
           <EventContainer>
             <EventList events={events} filters={eventFilters} />{" "}
             <LoadMoreButton onClick={this.loadMoreEvents}>Load More</LoadMoreButton>
           </EventContainer>
         )}
+        {events.length === 0 && <StyledErrorMsg>No events found</StyledErrorMsg>}
       </MainLayout>
     );
   }
@@ -158,25 +155,38 @@ const TopPanel = styled.div`
   padding-right: 100px;
   padding-top: 50px;
   padding-bottom: 50px;
-  border: 1px solid black;
-  background: black;
+  background: rgb(22, 67, 75);
+  background: linear-gradient(90deg, rgba(22, 67, 75, 1) 0%, rgba(28, 12, 91, 1) 100%);
   color: white;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   text-align: center;
   font-size: 1.3rem;
+  height: 20vh;
+
+  ${device.mobileL`
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  `}
+
+  h4 {
+    line-height: 2.3rem;
+
+    ${device.mobileL`
+      line-height: 2.0rem;
+      font-size: 1.0rem;
+  `}
+  }
 `;
 
-const BrowseImg = styled.img`
-  width: 100px;
-`;
+const DownArrow = styled.img`
+  width: 70px;
 
-const CreateImg = styled.img`
-  width: 100px;
-`;
-
-const ChoiceImg = styled.img`
-  width: 100px;
+  ${device.mobileL`
+      width: 40px;
+  `}
 `;
 
 const StyledButton = styled.a`

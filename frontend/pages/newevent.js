@@ -4,6 +4,7 @@ import styled from "styled-components";
 import axios from "axios";
 import MainLayout from "../components/MainLayout";
 import NewEventForm from "../components/NewEventForm";
+import device from "../styles/device";
 
 class NewEvent extends React.Component {
   state = {
@@ -84,6 +85,11 @@ const EventWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  ${device.mobileL`
+    padding-top: 10px;
+    padding-bottom: 10px;
+  `}
 `;
 
 const InputSection = styled.div`
@@ -94,6 +100,12 @@ const InputSection = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 100%;
+
+  ${device.mobileL`
+    padding: 10px;
+    width: 90vw;
+    height: 80vh;
+  `}
 `;
 
 const Title = styled.h1`
