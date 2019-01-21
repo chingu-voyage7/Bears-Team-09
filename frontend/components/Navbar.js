@@ -37,7 +37,7 @@ class Navbar extends React.Component {
                 <NavAuthBtnsLoggedIn>
                   <UnAuthSection>
                     <Link href="/login">
-                      <NavLink>Login</NavLink>
+                      <NavLink>Log in</NavLink>
                     </Link>
                     <Link href="/register">
                       <NavLink>Register</NavLink>
