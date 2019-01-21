@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { UserConsumer, UserContext } from './UserProvider';
+import { UserContext } from './UserProvider';
 import config from '../config.json';
 
 class GoogleRegisterButton extends Component {
@@ -12,18 +12,13 @@ class GoogleRegisterButton extends Component {
     this.setState({ GoogleLogin });
   }
 
-  onSuccess = data => {
-    // this.context.logIn({ data: data.profileObj, method: 'oauth' });
-    this.props.onCompletion(data);
-  };
-
   onFailure = err => {
     console.error(err);
     this.props.onFailure();
   };
 
   render = () => {
-    const { theme, title, onCompletion, onFailure } = this.props;
+    const { theme, title } = this.props;
     const { GoogleLogin } = this.state;
 
     if (GoogleLogin)
@@ -31,7 +26,7 @@ class GoogleRegisterButton extends Component {
         <GoogleLogin
           clientId={config.GOOGLE_CLIENT_ID}
           buttonText="Login"
-          onSuccess={this.onSuccess}
+          onSuccess={this.props.onCompletion}
           onFailure={this.onFailure}
           render={renderProps => (
             <StyledAuthBtn onClick={renderProps.onClick} onKeyPress={renderProps.onClick} theme={theme}>
