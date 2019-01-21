@@ -9,7 +9,8 @@ class UserProvider extends Component {
     lastName: null,
     email: null,
     token: null,
-    bio: null
+    bio: null,
+    image: null
   };
 
   componentDidMount() {
@@ -19,24 +20,28 @@ class UserProvider extends Component {
       lastName: localStorage.getItem("lastName"),
       email: localStorage.getItem("email"),
       token: localStorage.getItem("token"),
-      bio: localStorage.getItem("bio")
+      bio: localStorage.getItem("bio"),
+      image: localStorage.getItem("image")
     });
   }
 
   logIn = ({ data, method = "password" }) => {
+    console.log(data);
     if (!["oauth", "password"].includes(method)) throw new Error("Auth method not recognized");
 
     if (method === "oauth") {
       this.setState({ loggedIn: true, firstName: data.givenName, lastName: data.familyName, email: data.email });
     } else if (method === "password") {
-      this.setState({
-        loggedIn: true,
-        firstName: data.first_name,
-        lastName: data.last_name,
-        email: data.email,
-        token: data.token,
-        bio: data.bio
+      const allowedFields = ["first_name", "last_name", "email", "token", "bio", "image"];
+      const newState = { loggedIn: true };
+      Object.entries(data).forEach(([key, value]) => {
+        if (allowedFields.includes(key)) {
+          if (key === "first_name") newState["firstName"] = value;
+          else if (key === "last_name") newState["lastName"] = value;
+          else newState[key] = value;
+        }
       });
+      this.setState(newState);
     }
     console.log(`Logged in as ${this.state.firstName} ${this.state.lastName}`);
     Object.entries(this.state).forEach(([key, value]) => {
@@ -45,7 +50,7 @@ class UserProvider extends Component {
   };
 
   logOut = () => {
-    this.setState({ loggedIn: false, firstName: null, lastName: null, email: null, token: null });
+    this.setState({ loggedIn: false, firstName: null, lastName: null, email: null, token: null, image: null });
     localStorage.clear();
   };
 
