@@ -72,12 +72,24 @@ export class event extends Component {
             <Name>{name}</Name>
             <InfoWrapper>
               <InfoPanel>
-                <Description>Description: {description}</Description>
+                <Description>
+                  <Title>Description</Title>
+                  <SubTitle>{description}</SubTitle>
+                </Description>
                 <div>
-                  Location: {city}, {country}
+                  <Title>Location: </Title>
+                  <SubTitle>
+                    {city}, {country}
+                  </SubTitle>
                 </div>
-                <DateTime>Date/Time: {dateFrom}</DateTime>
-                <DateTime>Date/Time: {dateTo}</DateTime>
+                <DateTime>
+                  <Title>Starts: </Title>
+                  <SubTitle>{dateFrom}</SubTitle>
+                </DateTime>
+                <DateTime>
+                  <Title>Ends: </Title>
+                  <SubTitle>{dateTo}</SubTitle>
+                </DateTime>
               </InfoPanel>
               <EventImage src={eventImage} alt="people in a group" />
             </InfoWrapper>
@@ -115,6 +127,9 @@ const InfoWrapper = styled.div`
 
 const InfoPanel = styled.div`
   border: 1px solid grey;
+  text-align: left;
+  padding: 10px;
+  border-radius: 10px;
 `;
 
 const EventImage = styled.img`
@@ -122,16 +137,28 @@ const EventImage = styled.img`
   border-radius: 10px;
 `;
 
-const DateTime = styled.div`
-  color: grey;
+const Title = styled.p`
+  font-size: 1em;
+  font-weight: 700;
+  margin: 0;
 `;
+
+const SubTitle = styled.p`
+  font-size: 1em;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 10px;
+`;
+
+const DateTime = styled.div``;
 const Name = styled.div`
   text-transform: capitalize;
   font-size: 3rem;
   margin-bottom: 25px;
 `;
 const Description = styled.div`
-  font-size: 2em;
+  border-bottom: 1px dotted #1b115a;
+  margin-bottom: 5px;
 `;
 
 event.propTypes = {
