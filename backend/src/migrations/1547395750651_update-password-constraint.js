@@ -4,4 +4,6 @@ exports.up = (pgm) => {
     pgm.alterColumn('users', 'password', {notNull: false});
 };
 
-exports.down = () => {};
+exports.down = (pgm) => {
+    pgm.alterColumn('users', 'password', {notNull: true});
+};

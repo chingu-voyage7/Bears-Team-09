@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 
 // create an event
 router.post('/', (req, res) => {
-    const newEvent = new Event(req.body);
+    const newEvent = new Event({author_id: req.user.id,...req.body});
     newEvent.create()
     .then(([data]) => {
         newEvent.data = data;
@@ -57,7 +57,13 @@ router.get('/:id/attendees', (req, res) => {
 // delete an event
 router.delete('/:id', (req, res) => {
     const newEvent = new Event({id: req.params.id});
-    newEvent.delete()
+    newEvent.read()
+    .then(([data]) => {
+        if (data.author_id !== req.user.id) {
+            throw new APIError("Permission denied", 403);
+        }
+        return newEvent.delete();
+    })
     .then(() => {res.status(204).json();})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
