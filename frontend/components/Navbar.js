@@ -1,8 +1,8 @@
-import React from "react";
-import Link from "next/link";
-import styled from "styled-components";
-import { UserConsumer } from "./UserProvider";
-import device from "../styles/device";
+import React from 'react';
+import Link from 'next/link';
+import styled from 'styled-components';
+import { UserConsumer } from './UserProvider';
+import device from '../styles/device';
 
 class Navbar extends React.Component {
   render() {
@@ -28,21 +28,19 @@ class Navbar extends React.Component {
                 <NavAuthBtns>
                   <AuthSection>
                     <Link href="/profile">
-                      <button type="button">Profile</button>
+                      <NavLink>Profile</NavLink>
                     </Link>
-                    <button onClick={logOut} type="button">
-                      Logout
-                    </button>
+                    <NavLink onClick={logOut}>Logout</NavLink>
                   </AuthSection>
                 </NavAuthBtns>
               ) : (
                 <NavAuthBtnsLoggedIn>
                   <UnAuthSection>
                     <Link href="/login">
-                      <LoginBtn>Login</LoginBtn>
+                      <NavLink>Login</NavLink>
                     </Link>
                     <Link href="/register">
-                      <RegisterBtn>Register</RegisterBtn>
+                      <NavLink>Register</NavLink>
                     </Link>
                   </UnAuthSection>
                 </NavAuthBtnsLoggedIn>
@@ -102,15 +100,6 @@ const Logo = styled.img`
   width: 100px;
 `;
 
-const RegisterBtn = styled.a`
-  border: 2px solid white;
-  padding: 2px;
-  border-radius: 3px;
-  background: white;
-  color: #6071ec;
-  margin-left: 10px;
-`;
-
 const NavAuthBtns = styled.li`
   margin-left: auto;
 
@@ -125,19 +114,6 @@ const NavAuthBtnsLoggedIn = styled.li`
   ${device.mobileL`
     font-size: 0.8rem;
   `}
-`;
-
-const LoginBtn = styled.a`
-  border: 2px solid white;
-  padding: 2px;
-  border-radius: 3px;
-`;
-
-const LogoutBtn = styled.a`
-  border: 1px solid white;
-  padding: 3px;
-  border-radius: 1px;
-  font-size: 1rem;
 `;
 
 const NavLink = styled.a`
@@ -155,6 +131,7 @@ const NavLink = styled.a`
 
 const UnAuthSection = styled.div`
   margin-right: 10px;
+  font-size: 0.9rem;
 
   ${device.mobileL`
     margin-left: 5px;

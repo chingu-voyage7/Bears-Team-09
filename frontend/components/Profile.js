@@ -1,19 +1,19 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import axios from "axios";
-import ImageUploader from "./ImageUploader";
-import { UserContext } from "./UserProvider";
-import Event from "./Event";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import ImageUploader from './ImageUploader';
+import { UserContext } from './UserProvider';
+import Event from './Event';
 
 class Profile extends Component {
-  static backendUrl = "http://localhost:8000";
+  static backendUrl = 'http://localhost:8000';
 
   state = { events: [] };
 
   async componentDidMount() {
     // Have to get token from localStorage on page reload b/c context is empty
-    const token = this.context.token || localStorage.getItem("token");
+    const token = this.context.token || localStorage.getItem('token');
     const events = await this.getEventsFromBackend(token);
     this.setState({ events });
   }
@@ -32,10 +32,7 @@ class Profile extends Component {
     const { firstName, lastName, loggedIn, email, bio } = this.props.context;
     const events = this.makeEventsDomElements(this.state.events);
 
-    const imageSrc =
-      this.props.context.image !== "null" && this.props.context.image !== null
-        ? this.props.context.image
-        : "../static/no_photo.jpg";
+    const imageSrc = this.props.context.image !== 'null' && this.props.context.image !== null ? this.props.context.image : '../static/no_photo.jpg';
 
     return (
       <Container>
@@ -43,7 +40,7 @@ class Profile extends Component {
           <GridWrapper>
             <SideBar>
               <ProfileImage src={imageSrc} />
-              <ImageUploader style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }} />
+              <ImageUploader style={{ gridColumn: '1 / span 1', gridRow: '2 / span 1' }} />
               <PersonalInfo>
                 <h1>
                   {firstName} {lastName}
@@ -51,19 +48,19 @@ class Profile extends Component {
                 <strong> Email:</strong> {email}
                 <br />
                 <br />
-                <strong>Bio:</strong> {bio !== null && bio !== "null" ? bio : "No bio provided"}
+                <strong>Bio:</strong> {bio !== null && bio !== 'null' ? bio : 'No bio provided'}
               </PersonalInfo>
             </SideBar>
 
             <MainContent>
-              <div style={{ gridColumn: "2 / span 1", gridRow: "1 / span 2" }}>
-                <h2 style={{ marginTop: "0", marginBottom: "0" }}>My events</h2>
+              <div style={{ gridColumn: '2 / span 1', gridRow: '1 / span 2' }}>
+                <h2 style={{ marginTop: '0', marginBottom: '0' }}>My events</h2>
                 {events}
               </div>
             </MainContent>
           </GridWrapper>
         ) : (
-          "Please log in to view this page"
+          'Please log in to view this page'
         )}
       </Container>
     );
@@ -79,7 +76,8 @@ Profile.propTypes = {
     email: PropTypes.string,
     loggedIn: PropTypes.bool,
     image: PropTypes.string,
-    token: PropTypes.string
+    token: PropTypes.string,
+    bio: PropTypes.string
   }).isRequired
 };
 
