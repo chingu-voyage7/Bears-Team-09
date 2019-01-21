@@ -6,6 +6,11 @@ import { withRouter } from "next/router";
 import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
 
+function getOwnership(eventID, userID) {
+  // helper function to determine if current user is the owner of the event
+  // returns boolean of ownership
+}
+
 export class event extends Component {
   state = {
     name: "",
@@ -17,7 +22,9 @@ export class event extends Component {
     city: "",
     country: "",
     maxPeople: "",
-    minPeople: ""
+    minPeople: "",
+    eventAttendees: "",
+    dataLoaded: false
   };
 
   async componentDidMount() {
@@ -25,6 +32,7 @@ export class event extends Component {
     const { tokenCtx } = this.context;
     const token = tokenCtx || localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
+
     const currentEvent = await axios({
       method: "get",
       url: `http://localhost:8000/events/${router.query.id}`,
@@ -32,7 +40,16 @@ export class event extends Component {
         Authorization: AuthStr
       }
     });
-    console.log(currentEvent.data);
+
+    const attendees = await axios({
+      method: "get",
+      url: `http://localhost:8000/events/${router.query.id}/attendees`,
+      headers: { Authorization: AuthStr }
+    });
+
+    // console.log(currentEvent.data);
+    // console.log(attendees.data);
+
     const {
       name,
       date_from: dateFrom,
@@ -56,51 +73,91 @@ export class event extends Component {
       city,
       country,
       maxPeople,
-      minPeople
+      minPeople,
+      eventAttendees: attendees.data,
+      dataLoaded: true
     });
   }
 
-  render() {
-    const { name, dateFrom, dateTo, description, image, city, country } = this.state;
+  deleteEvent = () => {
+    console.log(`deleting event`);
+    // 1.make sure user is the author of the event
+    // 2.delete event
+    // 3.Show success/failure modal
+    // 4.Redirect to /events page
+  };
 
+  render() {
+    const { router } = this.props;
+    const {
+      name,
+      dateFrom,
+      dateTo,
+      description,
+      image,
+      city,
+      country,
+      eventAttendees,
+      maxPeople,
+      dataLoaded
+    } = this.state;
+    // const attendeesIDs = eventAttendees.map(att => att.id);
+    console.log(eventAttendees.length);
     // FIXME: This needs to be tested when backend has images to show, we need to make sure path works with DB
     const eventImage = image || "../static/stock-event.jpg";
+
+    const eventTotalAttendees = eventAttendees.length || 0;
+    const slotsLeft = maxPeople - eventTotalAttendees;
+
+    // this to know -> is user the owner? is user attendee?
+
+    const userIsOwner = getOwnership(router.query.id, "userID");
+    // Question about user = event interaction
+    // how many participants does the event have, attendees < maxPeople ? join : it is full
+    // is user currently attending event? show leave : show join
+
     return (
       <MainLayout>
         <Container>
-          <EventCard>
-            <Name>{name}</Name>
-            <InfoWrapper>
-              <InfoPanel>
-                <Description>
-                  <Title>Description</Title>
-                  <SubTitle>{description}</SubTitle>
-                </Description>
-                <div>
-                  <Title>Location: </Title>
-                  <SubTitle>
-                    {city}, {country}
-                  </SubTitle>
-                </div>
-                <DateTime>
-                  <Title>Starts: </Title>
-                  <SubTitle>{dateFrom}</SubTitle>
-                </DateTime>
-                <DateTime>
-                  <Title>Ends: </Title>
-                  <SubTitle>{dateTo}</SubTitle>
-                </DateTime>
-              </InfoPanel>
-              <EventImage src={eventImage} alt="people in a group" />
-            </InfoWrapper>
-            <JoinPanel>
-              <h4>X spots left</h4>
-              <JoinButton>Join</JoinButton>
-              <LeaveButton>Leave</LeaveButton>
-              <EditButton>Edit</EditButton>
-              <DeleteButton>Delete</DeleteButton>
-            </JoinPanel>
-          </EventCard>
+          {dataLoaded ? (
+            <EventCard>
+              <Name>{name}</Name>
+              <InfoWrapper>
+                <InfoPanel>
+                  <Description>
+                    <Title>Description</Title>
+                    <SubTitle>{description}</SubTitle>
+                  </Description>
+                  <div>
+                    <Title>Location: </Title>
+                    <SubTitle>
+                      {city}, {country}
+                    </SubTitle>
+                  </div>
+                  <div>
+                    <Title>Starts: </Title>
+                    <SubTitle>{dateFrom}</SubTitle>
+                  </div>
+                  <div>
+                    <Title>Ends: </Title>
+                    <SubTitle>{dateTo}</SubTitle>
+                  </div>
+                </InfoPanel>
+                <EventImage src={eventImage} alt="people in a group" />
+              </InfoWrapper>
+              <JoinPanel>
+                {slotsLeft === 0 ? <h4>Event is full</h4> : <h4>{slotsLeft} spots left</h4>}
+                <JoinButton>Join</JoinButton>
+                <LeaveButton>Leave</LeaveButton>
+              </JoinPanel>
+              <ControlButtons>
+                <EditButton>Edit</EditButton>
+                <DeleteButton onClick={this.deleteEvent}>Delete</DeleteButton>
+              </ControlButtons>
+            </EventCard>
+          ) : (
+            <p>Fetching Event Details...</p>
+          )}
         </Container>
       </MainLayout>
     );
@@ -157,7 +214,6 @@ const SubTitle = styled.p`
   margin-bottom: 10px;
 `;
 
-const DateTime = styled.div``;
 const Name = styled.div`
   text-transform: capitalize;
   font-size: 3rem;
@@ -168,7 +224,9 @@ const Description = styled.div`
   margin-bottom: 5px;
 `;
 
-const JoinPanel = styled.div``;
+const JoinPanel = styled.div`
+  padding: 10px;
+`;
 
 const JoinButton = styled.button`
   font-size: 1.4rem;
@@ -176,7 +234,6 @@ const JoinButton = styled.button`
   cursor: pointer;
   outline: 0;
   margin: 0;
-  margin-left: 100px;
   color: white;
   border: 0;
   background: #1d740d;
@@ -191,7 +248,6 @@ const LeaveButton = styled.button`
   cursor: pointer;
   outline: 0;
   margin: 0;
-  margin-left: 100px;
   color: white;
   border: 0;
   background: #1da1f2;
@@ -200,13 +256,17 @@ const LeaveButton = styled.button`
   padding-right: 10px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
 `;
+
+const ControlButtons = styled.div`
+  text-align: right;
+`;
+
 const DeleteButton = styled.button`
   font-size: 1.4rem;
   padding: 4px;
   cursor: pointer;
   outline: 0;
   margin: 0;
-  margin-left: 100px;
   color: white;
   border: 0;
   background: #ea4335;
@@ -214,6 +274,7 @@ const DeleteButton = styled.button`
   padding-left: 10px;
   padding-right: 10px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+  margin-left: 10px;
 `;
 const EditButton = styled.button`
   font-size: 1.4rem;
@@ -221,7 +282,6 @@ const EditButton = styled.button`
   cursor: pointer;
   outline: 0;
   margin: 0;
-  margin-left: 100px;
   color: white;
   border: 0;
   background: salmon;
