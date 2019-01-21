@@ -50,7 +50,7 @@ class EventForm extends Component {
   };
 
   handleBackButton = () => {
-    Router.push(`/events`);
+    Router.push("/events");
   };
 
   handleInput = e => {

@@ -1,8 +1,8 @@
-import React from 'react';
-import Link from 'next/link';
-import styled from 'styled-components';
-import { UserConsumer } from './UserProvider';
-import device from '../styles/device';
+import React from "react";
+import Link from "next/link";
+import styled from "styled-components";
+import { UserConsumer } from "./UserProvider";
+import device from "../styles/device";
 
 class Navbar extends React.Component {
   render() {
@@ -37,7 +37,7 @@ class Navbar extends React.Component {
                 <NavAuthBtnsLoggedIn>
                   <UnAuthSection>
                     <Link href="/login">
-                      <NavLink>Login</NavLink>
+                      <NavLink>Log in</NavLink>
                     </Link>
                     <Link href="/register">
                       <NavLink>Register</NavLink>
