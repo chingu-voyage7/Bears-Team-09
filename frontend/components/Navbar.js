@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import { UserConsumer } from "./UserProvider";
+import device from "../styles/device";
 
 class Navbar extends React.Component {
   render() {
@@ -57,6 +58,47 @@ class Navbar extends React.Component {
 
 export default Navbar;
 
+const StyledNav = styled.nav`
+  background: rgb(22, 67, 75);
+  background: linear-gradient(90deg, rgba(22, 67, 75, 1) 0%, rgba(28, 12, 91, 1) 100%);
+  color: white;
+  padding: 8px;
+
+  ${device.mobileL`
+    padding: 4px;
+  `}
+
+  ul {
+    list-style-type: none;
+    padding: 3px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+
+    ${device.mobileL`
+      font-size: 1rem;
+    `}
+  }
+
+  a {
+    cursor: pointer;
+    transition: all 300ms ease-out;
+    text-decoration: none;
+  }
+`;
+
+const LogoWrapper = styled.div`
+  cursor: pointer;
+  margin-right: 10px;
+  margin-left: 15px;
+
+  ${device.mobileL`
+    margin-right: 10px;
+    margin-left: 3px;
+  `}
+`;
+
 const Logo = styled.img`
   width: 100px;
 `;
@@ -72,10 +114,18 @@ const RegisterBtn = styled.a`
 
 const NavAuthBtns = styled.li`
   margin-left: auto;
+
+  ${device.mobileL`
+    font-size: 0.8rem;
+  `}
 `;
 
 const NavAuthBtnsLoggedIn = styled.li`
   margin-left: auto;
+
+  ${device.mobileL`
+    font-size: 0.8rem;
+  `}
 `;
 
 const LoginBtn = styled.a`
@@ -97,38 +147,20 @@ const NavLink = styled.a`
   &:hover {
     color: gold;
   }
-`;
 
-const StyledNav = styled.nav`
-  background: rgb(22, 67, 75);
-  background: linear-gradient(90deg, rgba(22, 67, 75, 1) 0%, rgba(28, 12, 91, 1) 100%);
-  color: white;
-  padding: 8px;
-
-  ul {
-    list-style-type: none;
-    padding: 3px;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    font-size: 1.1rem;
-  }
-
-  a {
-    cursor: pointer;
-    transition: all 300ms ease-out;
-    text-decoration: none;
-  }
-`;
-
-const LogoWrapper = styled.div`
-  margin-left: 15px;
-  margin-right: 10px;
-  cursor: pointer;
+  ${device.mobileL`
+    margin-left: 10px;
+    margin-right: 10px;
+  `}
 `;
 
 const UnAuthSection = styled.div`
   margin-right: 10px;
+
+  ${device.mobileL`
+    margin-left: 5px;
+    margin-right: 3px;
+  `}
 `;
 
 const AuthSection = styled.div`

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import RegisterForm from "../components/RegisterForm";
 import MainLayout from "../components/MainLayout";
 import { UserConsumer } from "../components/UserProvider";
+import device from "../styles/device";
 
 class Register extends Component {
   render() {
@@ -35,6 +36,11 @@ const RegisterWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  ${device.mobileL`
+    padding-top: 10px;
+    padding-bottom: 10px;
+  `}
 `;
 
 const InputSection = styled.div`
@@ -45,6 +51,12 @@ const InputSection = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 100%;
+
+  ${device.mobileL`
+    padding: 10px;
+    width 90vw;
+    height: 80vh;
+  `}
 `;
 
 const Title = styled.h1`

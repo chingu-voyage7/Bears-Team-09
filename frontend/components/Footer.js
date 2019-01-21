@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import device from "../styles/device";
 
 const Footer = () => (
   <StyledFooter>
@@ -38,10 +39,18 @@ const StyledFooter = styled.footer`
   justify-content: center;
   text-align: center;
 
+  ${device.mobileL`
+    padding: 5px;
+  `}
+
   p {
     padding: 0;
     margin: 0;
     font-size: 0.7rem;
+
+    ${device.mobileL`
+      font-size: 0.5rem;
+    `}
   }
 
   a {
@@ -54,6 +63,10 @@ const StyledFooter = styled.footer`
     width: 20px;
     border: 1px solid white;
     border-radius: 20px;
+
+    ${device.mobileL`
+      width: 15px;
+    `}
   }
 
   div {
