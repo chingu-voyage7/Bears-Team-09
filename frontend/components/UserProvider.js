@@ -9,7 +9,8 @@ class UserProvider extends Component {
     lastName: null,
     email: null,
     token: null,
-    bio: null
+    bio: null,
+    id: null
   };
 
   componentDidMount() {
@@ -19,7 +20,8 @@ class UserProvider extends Component {
       lastName: localStorage.getItem("lastName"),
       email: localStorage.getItem("email"),
       token: localStorage.getItem("token"),
-      bio: localStorage.getItem("bio")
+      bio: localStorage.getItem("bio"),
+      id: localStorage.getItem("id")
     });
   }
 
@@ -35,7 +37,8 @@ class UserProvider extends Component {
         lastName: data.last_name,
         email: data.email,
         token: data.token,
-        bio: data.bio
+        bio: data.bio,
+        id: data.id
       });
     }
     console.log(`Logged in as ${this.state.firstName} ${this.state.lastName}`);
@@ -45,7 +48,7 @@ class UserProvider extends Component {
   };
 
   logOut = () => {
-    this.setState({ loggedIn: false, firstName: null, lastName: null, email: null, token: null });
+    this.setState({ loggedIn: false, firstName: null, lastName: null, email: null, token: null, id: null });
     localStorage.clear();
   };
 

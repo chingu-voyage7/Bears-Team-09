@@ -7,12 +7,15 @@ import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
 
 function getOwnership(eventID, userID) {
+  // console.log(id);
   // helper function to determine if current user is the owner of the event
   // returns boolean of ownership
+  // console.log(eventID, userID);
 }
 
 export class event extends Component {
   state = {
+    userID: "",
     name: "",
     dateFrom: "",
     dateTo: "",
@@ -29,10 +32,11 @@ export class event extends Component {
 
   async componentDidMount() {
     const { router } = this.props;
-    const { tokenCtx } = this.context;
+    const { tokenCtx, id } = this.context;
     const token = tokenCtx || localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-
+    const userID = id || localStorage.getItem("id");
+    this.setState({ userID });
     const currentEvent = await axios({
       method: "get",
       url: `http://localhost:8000/events/${router.query.id}`,
