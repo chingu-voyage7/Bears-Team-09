@@ -38,9 +38,7 @@ const StyledFooter = styled.footer`
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+  flex-shrink: 0;
 
   ${device.mobileL`
     padding: 5px;

@@ -21,7 +21,7 @@ class NewEvent extends React.Component {
     this.setState({ AuthStr });
     const placesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/places`,
+      url: "http://localhost:8000/places",
       headers: {
         Authorization: AuthStr
       }
@@ -29,7 +29,7 @@ class NewEvent extends React.Component {
 
     const activitiesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/activities`,
+      url: "http://localhost:8000/activities",
       headers: {
         Authorization: AuthStr
       }
@@ -44,7 +44,7 @@ class NewEvent extends React.Component {
     console.log(event);
     axios({
       method: "post",
-      url: `http://localhost:8000/events`,
+      url: "http://localhost:8000/events",
       data: event,
       headers: {
         Authorization: this.state.AuthStr

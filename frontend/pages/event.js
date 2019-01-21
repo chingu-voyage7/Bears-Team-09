@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import axios from "axios";
-import moment from 'moment';
-import styled, { ThemeProvider } from 'styled-components';
-import { withRouter } from 'next/router';
-import PropTypes from 'prop-types';
-import MainLayout from '../components/MainLayout';
+import moment from "moment";
+import styled, { ThemeProvider } from "styled-components";
+import { withRouter } from "next/router";
+import PropTypes from "prop-types";
+import MainLayout from "../components/MainLayout";
 
 export class event extends Component {
   state = {
-    name: '',
-    startDate: '',
-    title: '',
-    image: '',
-    description: ''
+    name: "",
+    startDate: "",
+    title: "",
+    image: "",
+    description: ""
   };
 
   async componentDidMount() {
