@@ -1,3 +1,3 @@
-output "aws_public_dns" {
-    value = "${aws_instance.webapp.public_dns}"
+output "fqdn" {
+  value = "aws_route53_record.record.name"
 }
