@@ -93,6 +93,13 @@ export class event extends Component {
               </InfoPanel>
               <EventImage src={eventImage} alt="people in a group" />
             </InfoWrapper>
+            <JoinPanel>
+              <h4>X spots left</h4>
+              <JoinButton>Join</JoinButton>
+              <LeaveButton>Leave</LeaveButton>
+              <EditButton>Edit</EditButton>
+              <DeleteButton>Delete</DeleteButton>
+            </JoinPanel>
           </EventCard>
         </Container>
       </MainLayout>
@@ -121,7 +128,7 @@ const EventCard = styled.div`
 
 const InfoWrapper = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 2fr 350px;
   grid-gap: 30px;
 `;
 
@@ -133,7 +140,7 @@ const InfoPanel = styled.div`
 `;
 
 const EventImage = styled.img`
-  width: 300px;
+  width: 100%;
   border-radius: 10px;
 `;
 
@@ -159,6 +166,69 @@ const Name = styled.div`
 const Description = styled.div`
   border-bottom: 1px dotted #1b115a;
   margin-bottom: 5px;
+`;
+
+const JoinPanel = styled.div``;
+
+const JoinButton = styled.button`
+  font-size: 1.4rem;
+  padding: 4px;
+  cursor: pointer;
+  outline: 0;
+  margin: 0;
+  margin-left: 100px;
+  color: white;
+  border: 0;
+  background: #1d740d;
+  border-radius: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+`;
+const LeaveButton = styled.button`
+  font-size: 1.4rem;
+  padding: 4px;
+  cursor: pointer;
+  outline: 0;
+  margin: 0;
+  margin-left: 100px;
+  color: white;
+  border: 0;
+  background: #1da1f2;
+  border-radius: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+`;
+const DeleteButton = styled.button`
+  font-size: 1.4rem;
+  padding: 4px;
+  cursor: pointer;
+  outline: 0;
+  margin: 0;
+  margin-left: 100px;
+  color: white;
+  border: 0;
+  background: #ea4335;
+  border-radius: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+`;
+const EditButton = styled.button`
+  font-size: 1.4rem;
+  padding: 4px;
+  cursor: pointer;
+  outline: 0;
+  margin: 0;
+  margin-left: 100px;
+  color: white;
+  border: 0;
+  background: salmon;
+  border-radius: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
 `;
 
 event.propTypes = {
