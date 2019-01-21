@@ -27,9 +27,12 @@ class Navbar extends React.Component {
               loggedIn ? (
                 <NavAuthBtns>
                   <AuthSection>
-                    <LogoutBtn onClick={logOut} type="button">
+                    <Link href="/profile">
+                      <button type="button">Profile</button>
+                    </Link>
+                    <button onClick={logOut} type="button">
                       Logout
-                    </LogoutBtn>
+                    </button>
                   </AuthSection>
                 </NavAuthBtns>
               ) : (
