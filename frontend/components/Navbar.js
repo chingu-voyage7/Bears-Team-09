@@ -1,8 +1,8 @@
-import React from 'react';
-import Link from 'next/link';
-import styled from 'styled-components';
-import { UserConsumer } from './UserProvider';
-import device from '../styles/device';
+import React from "react";
+import Link from "next/link";
+import styled from "styled-components";
+import { UserConsumer } from "./UserProvider";
+import device from "../styles/device";
 
 class Navbar extends React.Component {
   render() {

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import Link from 'next/link';
+import React, { Component } from "react";
+import styled from "styled-components";
+import Link from "next/link";
 
 class EventListItem extends Component {
   render({ id, name, description } = this.props) {

@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import device from '../styles/device';
+import React from "react";
+import styled from "styled-components";
+import device from "../styles/device";
 
 const Footer = () => (
   <StyledFooter>

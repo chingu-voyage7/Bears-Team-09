@@ -52,7 +52,7 @@ class Dashboard extends Component {
 
     const placesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/places`,
+      url: "http://localhost:8000/places",
       headers: {
         Authorization: AuthStr
       }
@@ -60,7 +60,7 @@ class Dashboard extends Component {
 
     const activitiesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/activities`,
+      url: "http://localhost:8000/activities",
       headers: {
         Authorization: AuthStr
       }
