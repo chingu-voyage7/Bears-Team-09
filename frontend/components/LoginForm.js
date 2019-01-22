@@ -17,12 +17,10 @@ class LoginForm extends Component {
     loginFailed: false
   };
 
-  backendUrl = `http://localhost:8000`;
-
   handleGoogleAuth = data => {
     const accessToken = data.accessToken.replace(/['"]+/g, '');
     axios
-      .get(`${this.backendUrl}/auth/google?access_token=${accessToken}`)
+      .get(`${backendUrl}/auth/google?access_token=${accessToken}`)
       .then(res => this.props.context.logIn({ data: res.data, method: 'oauth' }))
       .catch(console.log);
     Router.push('/');
