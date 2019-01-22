@@ -9,6 +9,11 @@ import EventList from "../components/EventList";
 import ActivityPicker from "../components/ActivityPicker";
 import LocationSearch from "../components/LocationSearch";
 import { UserContext } from "../components/UserProvider";
+import device from "../styles/device";
+import StyledErrorMsg from "../styles/StyledErrorMsg";
+
+const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+
 // using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS
 // there may be a cleaner solution that I am not aware of
 const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), {
@@ -36,12 +41,11 @@ class Dashboard extends Component {
 
     // const realUlr = `http://localhost:8000/events?compare=gt&date_from=${isoDate}&limit=5`;
 
-
     // Default fetch is any event from today with a limit of 5
     const eventsPromise = axios({
       method: "get",
 
-      url: `http://localhost:8000/events?compare=gt&date_from=${isoDate}&limit=5`,
+      url: `${backendUrl}/events?compare=gt&date_from=${isoDate}&limit=5`,
 
       headers: {
         Authorization: AuthStr
@@ -50,7 +54,7 @@ class Dashboard extends Component {
 
     const placesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/places`,
+      url: `${backendUrl}/places`,
       headers: {
         Authorization: AuthStr
       }
@@ -58,7 +62,7 @@ class Dashboard extends Component {
 
     const activitiesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/activities`,
+      url: `${backendUrl}/activities`,
       headers: {
         Authorization: AuthStr
       }
@@ -90,7 +94,7 @@ class Dashboard extends Component {
 
     const newEvents = await axios({
       method: "get",
-      url: `http://localhost:8000/events?compare=gt&date_from=${isoDate}&limit=5&offset=${newOffset}`,
+      url: `${backendUrl}/events?compare=gt&date_from=${isoDate}&limit=5&offset=${newOffset}`,
       headers: {
         Authorization: AuthStr
       }
@@ -108,21 +112,15 @@ class Dashboard extends Component {
       <MainLayout>
         <TopPanel>
           <div>
-            <h4>Browse existing events</h4>
-            <BrowseImg src=".././static/browsing.png" alt="globe-search" />
-          </div>
-          <div>
-            <h4>or</h4>
-            <ChoiceImg src=".././static/choice1.png" alt="person-choice" />
-          </div>
-          <div>
             <h4>
               <Link href="/newevent">
                 <StyledButton>Create</StyledButton>
               </Link>{" "}
-              your own and PairUp!
+              new event and PairUp
+              <br />
+              or check out existing events below
             </h4>
-            <CreateImg src=".././static/people.png" alt="people" />
+            <DownArrow src=".././static/down-arrow.svg" alt="arrow-pointing-down" />
           </div>
         </TopPanel>
         <Divider>
@@ -131,22 +129,20 @@ class Dashboard extends Component {
           </h4>
         </Divider>
         <FilterControlPanel>
-          <span>Pick a</span>
           <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} />
-          <span>choose</span>
           <DateSelectorDynamic placeholder="date" updateSelection={this.updateFilter} />
-          <span>and</span>
           <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} />
-          <button type="button" onClick={this.clearFilters}>
+          <ClearnButton type="button" onClick={this.clearFilters}>
             Clear
-          </button>
+          </ClearnButton>
         </FilterControlPanel>
-        {events && (
+        {events && events.length !== 0 && (
           <EventContainer>
             <EventList events={events} filters={eventFilters} />{" "}
             <LoadMoreButton onClick={this.loadMoreEvents}>Load More</LoadMoreButton>
           </EventContainer>
         )}
+        {events.length === 0 && <StyledErrorMsg>No events found</StyledErrorMsg>}
       </MainLayout>
     );
   }
@@ -161,25 +157,38 @@ const TopPanel = styled.div`
   padding-right: 100px;
   padding-top: 50px;
   padding-bottom: 50px;
-  border: 1px solid black;
-  background: black;
+  background: rgb(22, 67, 75);
+  background: linear-gradient(90deg, rgba(22, 67, 75, 1) 0%, rgba(28, 12, 91, 1) 100%);
   color: white;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   text-align: center;
   font-size: 1.3rem;
+  height: 20vh;
+
+  ${device.mobileL`
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  `}
+
+  h4 {
+    line-height: 2.3rem;
+
+    ${device.mobileL`
+      line-height: 2.0rem;
+      font-size: 1.0rem;
+  `}
+  }
 `;
 
-const BrowseImg = styled.img`
-  width: 100px;
-`;
+const DownArrow = styled.img`
+  width: 70px;
 
-const CreateImg = styled.img`
-  width: 100px;
-`;
-
-const ChoiceImg = styled.img`
-  width: 100px;
+  ${device.mobileL`
+      width: 40px;
+  `}
 `;
 
 const StyledButton = styled.a`
@@ -215,22 +224,21 @@ const Divider = styled.div`
 
 const FilterControlPanel = styled.div`
   margin: 0 auto;
-  padding: 4px;
+  justify-content: center;
+  padding: 10px;
   background-color: #8bc6ec;
   background-image: linear-gradient(135deg, #8bc6ec 0%, #9599e2 100%);
-  width: 60vw;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 100px 100px 150px 50px;
+  width: auto;
+  grid-gap: 10px;
   border-radius: 4px;
   margin-bottom: 50px;
-  span {
-    font-size: 1.2rem;
-    margin-right: 5px;
-    margin-left: 5px;
-    line-height: 36px;
-  }
+
+  ${device.mobileL`
+    grid-gap: 3px;
+    grid-template-columns: 1fr 1fr 2fr 40px;
+  `}
 `;
 
 const EventContainer = styled.div`
@@ -238,10 +246,32 @@ const EventContainer = styled.div`
 `;
 
 const LoadMoreButton = styled.button`
+  cursor: pointer;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  border: 0;
+  outline: 0;
   padding: 5px;
   font-size: 1.1rem;
   margin-top: 50px;
   margin-bottom: 50px;
   background-color: black;
   color: white;
+
+  &:hover {
+    color: gold;
+  }
+`;
+
+const ClearnButton = styled.button`
+  cursor: pointer;
+  padding: 5px;
+  outline: 0;
+  border: 0;
+  border-radius: 3px;
+
+  &:hover {
+    color: white;
+    background: red;
+  }
 `;

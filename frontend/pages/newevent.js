@@ -4,6 +4,9 @@ import styled from "styled-components";
 import axios from "axios";
 import MainLayout from "../components/MainLayout";
 import NewEventForm from "../components/NewEventForm";
+import device from "../styles/device";
+
+const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
 
 class NewEvent extends React.Component {
   state = {
@@ -20,7 +23,7 @@ class NewEvent extends React.Component {
     this.setState({ AuthStr });
     const placesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/places`,
+      url: `${backendUrl}/places`,
       headers: {
         Authorization: AuthStr
       }
@@ -28,7 +31,7 @@ class NewEvent extends React.Component {
 
     const activitiesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/activities`,
+      url: `${backendUrl}/activities`,
       headers: {
         Authorization: AuthStr
       }
@@ -43,7 +46,7 @@ class NewEvent extends React.Component {
     console.log(event);
     axios({
       method: "post",
-      url: `http://localhost:8000/events`,
+      url: `${backendUrl}/events`,
       data: event,
       headers: {
         Authorization: this.state.AuthStr
@@ -84,6 +87,11 @@ const EventWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  ${device.mobileL`
+    padding-top: 10px;
+    padding-bottom: 10px;
+  `}
 `;
 
 const InputSection = styled.div`
@@ -94,6 +102,12 @@ const InputSection = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 100%;
+
+  ${device.mobileL`
+    padding: 10px;
+    width: 90vw;
+    height: 80vh;
+  `}
 `;
 
 const Title = styled.h1`
