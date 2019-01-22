@@ -6,9 +6,9 @@ import ImageUploader from "./ImageUploader";
 import { UserContext } from "./UserProvider";
 import Event from "./Event";
 
-class Profile extends Component {
-  static backendUrl = "http://localhost:8000";
+const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
 
+class Profile extends Component {
   state = { events: [] };
 
   async componentDidMount() {
@@ -20,7 +20,7 @@ class Profile extends Component {
 
   async getEventsFromBackend(token) {
     if (token == null) return [];
-    return (await axios.get(`${Profile.backendUrl}/events`, {
+    return (await axios.get(`${backendUrl}/events`, {
       headers: { Authorization: `Bearer ${token}` }
     })).data.events;
   }

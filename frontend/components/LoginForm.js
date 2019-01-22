@@ -8,6 +8,8 @@ import LoginButton from './LoginButton';
 import GoogleRegisterButton from './GoogleRegisterButton';
 import StyledErrorMsg from '../styles/StyledErrorMsg';
 
+const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+
 class LoginForm extends Component {
   state = {
     email: '',
@@ -31,7 +33,7 @@ class LoginForm extends Component {
 
     // Handle Success register state -> redirect
     axios
-      .post('http://localhost:8000/auth/login', {
+      .post(`${backendUrl}/auth/login`, {
         email: this.state.email,
         password: this.state.password
       })
