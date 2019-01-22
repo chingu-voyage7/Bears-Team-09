@@ -7,10 +7,17 @@ import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
 
 function getOwnership(eventID, userID) {
-  // console.log(id);
   // helper function to determine if current user is the owner of the event
   // returns boolean of ownership
-  // console.log(eventID, userID);
+}
+
+function getAttendance(userID, eventAttendees) {
+  // helper fn to determine if user is already participating in an event
+  const attendeesIDs = eventAttendees.map(att => String(att.id));
+  if (attendeesIDs.includes(userID)) {
+    return true;
+  }
+  return false;
 }
 
 export class event extends Component {
@@ -27,7 +34,9 @@ export class event extends Component {
     maxPeople: "",
     minPeople: "",
     eventAttendees: "",
-    dataLoaded: false
+    dataLoaded: false,
+    userIsAttending: null,
+    userIsOwner: null
   };
 
   async componentDidMount() {
@@ -51,8 +60,7 @@ export class event extends Component {
       headers: { Authorization: AuthStr }
     });
 
-    // console.log(currentEvent.data);
-    // console.log(attendees.data);
+    const userIsAttending = getAttendance(userID, attendees.data);
 
     const {
       name,
@@ -79,7 +87,8 @@ export class event extends Component {
       maxPeople,
       minPeople,
       eventAttendees: attendees.data,
-      dataLoaded: true
+      dataLoaded: true,
+      userIsAttending
     });
   }
 
@@ -91,9 +100,46 @@ export class event extends Component {
     // 4.Redirect to /events page
   };
 
+  joinEvent = () => {
+    const { router } = this.props;
+    console.log(`leaving event`);
+    // DELETE to events /: id / attend.
+    const token = localStorage.getItem("token");
+    const AuthStr = `Bearer ${token}`;
+    axios({
+      method: "post",
+      url: `http://localhost:8000/events/${router.query.id}/attend`,
+      headers: { Authorization: AuthStr }
+    })
+      .then(response => {
+        console.log(`success! attended the event`);
+        console.log(response);
+      })
+      .catch(error => console.log(error));
+  };
+
+  leaveEvent = () => {
+    const { router } = this.props;
+    console.log(`leaving event`);
+    // DELETE to events /: id / attend.
+    const token = localStorage.getItem("token");
+    const AuthStr = `Bearer ${token}`;
+    axios({
+      method: "delete",
+      url: `http://localhost:8000/events/${router.query.id}/attend`,
+      headers: { Authorization: AuthStr }
+    })
+      .then(response => {
+        console.log(`success! left event`);
+        console.log(response);
+      })
+      .catch(error => console.log(error));
+  };
+
   render() {
     const { router } = this.props;
     const {
+      userID,
       name,
       dateFrom,
       dateTo,
@@ -103,10 +149,9 @@ export class event extends Component {
       country,
       eventAttendees,
       maxPeople,
-      dataLoaded
+      dataLoaded,
+      userIsAttending
     } = this.state;
-    // const attendeesIDs = eventAttendees.map(att => att.id);
-    console.log(eventAttendees.length);
     // FIXME: This needs to be tested when backend has images to show, we need to make sure path works with DB
     const eventImage = image || "../static/stock-event.jpg";
 
@@ -115,7 +160,11 @@ export class event extends Component {
 
     // this to know -> is user the owner? is user attendee?
 
-    const userIsOwner = getOwnership(router.query.id, "userID");
+    if (dataLoaded) {
+      // const userIsOwner = getOwnership(router.query.id, userID);
+      // const userIsAttending = getAttendance(userID, eventAttendees);
+      // this.setState({ userIsAttending: getAttendance(userID, eventAttendees) });
+    }
     // Question about user = event interaction
     // how many participants does the event have, attendees < maxPeople ? join : it is full
     // is user currently attending event? show leave : show join
@@ -151,8 +200,11 @@ export class event extends Component {
               </InfoWrapper>
               <JoinPanel>
                 {slotsLeft === 0 ? <h4>Event is full</h4> : <h4>{slotsLeft} spots left</h4>}
-                <JoinButton>Join</JoinButton>
-                <LeaveButton>Leave</LeaveButton>
+                {!userIsAttending ? (
+                  <JoinButton onClick={this.joinEvent}>Join</JoinButton>
+                ) : (
+                  <LeaveButton onClick={this.leaveEvent}>Leave</LeaveButton>
+                )}
               </JoinPanel>
               <ControlButtons>
                 <EditButton>Edit</EditButton>
