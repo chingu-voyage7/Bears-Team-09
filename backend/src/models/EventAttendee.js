@@ -25,12 +25,14 @@ class EventAttendee extends Table {
   }
 
   getAllEvents() {
-    const text = `SELECT events.id, events.name, CONCAT(users.first_name, ' ', users.last_name) AS 'author', events.image, events.description,
-      activities.name AS activity, places.country, places.city,
-      events.date_from, events.date_to, events.min_people, events.max_people FROM events
+    const text = `SELECT
+      events.id, events.name, users.id as author_id, CONCAT(users.first_name, ' ', users.last_name) AS author_name,
+      events.image, events.description, activities.name AS activity, places.country, places.city, events.date_from,
+      events.date_to, events.min_people, events.max_people
+      FROM events
       INNER JOIN ${this.tableName} ON events.id = ${this.tableName}.event_id
       INNER JOIN activities ON events.activity_id = activities.id
-      INNER JOIN users ON events.auhtor_id = users.id
+      INNER JOIN users ON events.author_id = users.id
       LEFT JOIN places ON places.id = events.place_id`;
       return super.read(text);
   }

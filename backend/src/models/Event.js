@@ -19,7 +19,7 @@ class Event extends Table {
 
   read() {
     const text = `SELECT
-    events.id, events.name, CONCAT(users.first_name, ' ', users.last_name) as author, events.image, events.description,
+    events.id, events.name, author_id, CONCAT(users.first_name, ' ', users.last_name) as author, events.image, events.description,
     activities.name as activity, places.country, places.city,
     events.date_from, events.date_to, events.min_people, events.max_people
     FROM ${this.tableName}
