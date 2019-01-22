@@ -34,4 +34,4 @@ jobs:
         skip_cleanup: true
         script: bash -c "make deploy"
         on:
-          branch: dev
+          branch: master
