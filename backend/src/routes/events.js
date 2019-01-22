@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 
 // create an event
 router.post('/', (req, res) => {
-    const newEvent = new Event({author_id: req.user.id,...req.body});
+    const newEvent = new Event({author_id: req.user.data.id,...req.body});
     newEvent.create()
     .then(([data]) => {
         newEvent.data = data;
@@ -59,7 +59,7 @@ router.delete('/:id', (req, res) => {
     const newEvent = new Event({id: req.params.id});
     newEvent.read()
     .then(([data]) => {
-        if (data.author_id !== req.user.id) {
+        if (data.author_id !== req.user.data.id) {
             throw new APIError("Permission denied", 403);
         }
         return newEvent.delete();
@@ -79,21 +79,27 @@ router.put('/:id', (req, res) => {
 
 // subscribe to attend an event
 router.post('/:id/attend', (req, res) => {
-    const e = new Event({id: req.params.id});
     const attendees = new Attendee({event_id: req.params.id});
     const attendee = new Attendee({
-        user_id: req.user[req.user.pk],
+        user_id: req.user.data.id,
         event_id: req.params.id
     });
     let maxPeople;
-    e.read()
+    (new Event({id: req.params.id})).read()
     .then(([data]) => {
+        if (!data) {
+            throw new APIError('event not found', 404);
+        } else if (Number(data.author_id) === Number(req.user.data.id)) {
+            throw new APIError('cant subscribe your own event', 403);
+        }
         maxPeople = Number(data.max_people);
-        return attendees.getAllAttendees();
+        return attendees.read();
     })
     .then(data => {
-        if (maxPeople && data.length >= maxPeople) {
-            throw new APIError('Event is completely booked', 403);
+        if (data.filter(user => user.user_id === req.user.data.id).length === 1) {
+            throw new APIError("you are already in the attendees list", 400);
+        } else if (maxPeople && data.length >= maxPeople) {
+            throw new APIError('event is completely booked', 403);
         }
         return attendee.create();
     })
@@ -118,10 +124,25 @@ router.post('/images', (req, res) => {
 // unsubscribe from attending an event
 router.delete('/:id/attend', (req, res) => {
     const attendee = new Attendee({
-        user_id: req.user[req.user.pk],
+        user_id: req.user.data.id,
         event_id: req.params.id
     });
-    attendee.delete()
+    (new Event({id: req.params.id})).read()
+    .then(([data]) => {
+        if (!data) {
+            throw new APIError('event not found', 404);
+        } else if (Number(data.author_id) === Number(req.user.data.id)) {
+            throw new APIError('cant unsubscribe from your own event', 403);
+        }
+        return attendee.read();
+    })
+    .then(([data]) => {
+        if (!data) {
+            throw new APIError('you are not attendee of this event', 400);
+        }
+        attendee.data.id = data.id;
+        return attendee.delete();
+    })
     .then(() => {res.status(204).json();})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
