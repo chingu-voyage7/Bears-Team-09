@@ -6,7 +6,7 @@ exports.up = (pgm) => {
         email: { type: 'varchar(256)', notNull: true, unique: true},
         first_name: {type: 'varchar(128)'},
         last_name: {type: 'varchar(128)'},
-        password: {type: 'varchar(256)', notNull: true},
+        password: {type: 'varchar(256)', notNull: false},
         image: {type: 'varchar(128)'},
         bio: {type: 'varchar(1024)'}
     });
@@ -38,16 +38,26 @@ exports.up = (pgm) => {
         name: {type: 'varchar(256)', notNull: true},
         image: {type: 'varchar(128)'},
         description: {type: 'text'},
+        author_id: {
+            type: 'integer',
+            notNull: false,
+            references: '"users"',
+            onDelete: 'set null',
+            deferrable: true,
+            deferred: true
+        },
         activity_id: {
             type: 'integer',
-            notNull: true,
+            notNull: false,
             references: '"activities"',
+            onDelete: 'set null',
             deferrable: true,
             deferred: true
         },
         place_id: {
             type: 'integer',
             references: '"places"',
+            onDelete: 'set null',
             deferrable: true,
             deferred: true
         },
@@ -62,6 +72,7 @@ exports.up = (pgm) => {
             type: 'integer'
         }
     });
+    pgm.createIndex('events', 'author_id');
 
     // Bridge table for many-to-many relationsheep between `events` and `users`
     pgm.createTable('event_attendees', {
@@ -70,6 +81,7 @@ exports.up = (pgm) => {
             type: 'integer',
             notNull: true,
             references: '"events"',
+            onDelete: 'cascade',
             deferrable: true,
             deferred: true
         },
@@ -77,6 +89,7 @@ exports.up = (pgm) => {
             type: 'integer',
             notNull: true,
             references: '"users"',
+            onDelete: 'cascade',
             deferrable: true,
             deferred: true
         }
