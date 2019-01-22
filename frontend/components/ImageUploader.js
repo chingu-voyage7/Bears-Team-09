@@ -1,15 +1,31 @@
 import React, { Component } from "react";
-// import axios from "axios";
+import axios from "axios";
 import styled from "styled-components";
+import { UserContext } from "./UserProvider";
+
+const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
 
 class ImageUploader extends Component {
   state = { selectedFile: null };
 
   handleFileSelect = e => {
-    this.setState({ selectedFile: e.target.files[0] });
+    const imageFile = e.target.files[0];
+    this.setState({selectedFile: imageFile});
     const formData = new FormData();
-    formData.append("myFile", this.state.selectedFile, this.state.selectedFile.name);
-    // axios.post("my-domain.com/file-upload", formData);
+    formData.append("file", imageFile, imageFile.name);
+    axios.post(`${backendUrl}/users/images`, formData, {
+      headers: {
+          'Authorization': `Bearer ${this.context.token}`,
+          'Content-Type': 'multipart/form-data'
+      }
+  })
+    .then((res) => {
+      // At this point, image is already uploaded to the cloud and inserted into DB
+      // Need to refresh current image in profile, seems like on refresh page it does
+      // not fetch data from backend
+      console.log(res.data.url);
+    })
+    .catch(console.log);
   };
 
   handleClick = () => this.selectFile.click();
@@ -33,6 +49,8 @@ class ImageUploader extends Component {
     );
   }
 }
+
+ImageUploader.contextType = UserContext;
 
 export default ImageUploader;
 
