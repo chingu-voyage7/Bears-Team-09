@@ -6,10 +6,12 @@ import { withRouter } from "next/router";
 import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
 
-function getOwnership(eventID, userID) {
-  // helper function to determine if current user is the owner of the event
-  // returns boolean of ownership
-}
+/*
+FIXME: 
+1 - upon leaving or joining event, message that includes "spots left" not updating
+2 - backend is not allowing to leave your own event, is that intended behaviour?
+3 - modal for "are you sure" for deletion of the event is not implemented
+*/
 
 function getAttendance(userID, eventAttendees) {
   // helper fn to determine if user is already participating in an event
@@ -22,6 +24,7 @@ function getAttendance(userID, eventAttendees) {
 
 export class event extends Component {
   state = {
+    authorID: "",
     userID: "",
     name: "",
     dateFrom: "",
@@ -71,7 +74,8 @@ export class event extends Component {
       city,
       country,
       max_people: maxPeople,
-      min_people: minPeople
+      min_people: minPeople,
+      author_id: authorID
     } = currentEvent.data;
     const dateFromFormat = format(dateFrom, "MMMM DD YYYY");
     const dateToFormat = format(dateTo, "MMMM DD YYYY");
@@ -86,6 +90,7 @@ export class event extends Component {
       country,
       maxPeople,
       minPeople,
+      authorID,
       eventAttendees: attendees.data,
       dataLoaded: true,
       userIsAttending
@@ -93,17 +98,36 @@ export class event extends Component {
   }
 
   deleteEvent = () => {
+    const { userID, authorID } = this.state;
+    const { router } = this.props;
+    const token = localStorage.getItem("token");
+    const AuthStr = `Bearer ${token}`;
     console.log(`deleting event`);
-    // 1.make sure user is the author of the event
-    // 2.delete event
-    // 3.Show success/failure modal
-    // 4.Redirect to /events page
+    // 1.check if USER is the AUTHOR, may be redundant because button should not be visible if condition of author === user is not met
+    if (Number(userID) !== Number(authorID)) {
+      return;
+    }
+    // 3.show "are you sure modal"
+
+    // 4.delete event
+    axios({
+      method: "delete",
+      url: `http://localhost:8000/events/${router.query.id}`,
+      headers: { Authorization: AuthStr }
+    })
+      .then(response => {
+        console.log(`success! event was deleted`);
+        console.log(response);
+        // 5.TODO: Show success msg
+        // 6.Redirect to /events page
+        router.push("/events");
+      })
+      .catch(error => console.log(error));
+    // 5.Show error msg
   };
 
   joinEvent = () => {
     const { router } = this.props;
-    console.log(`leaving event`);
-    // DELETE to events /: id / attend.
     const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
     axios({
@@ -114,14 +138,13 @@ export class event extends Component {
       .then(response => {
         console.log(`success! attended the event`);
         console.log(response);
+        this.setState({ userIsAttending: true });
       })
       .catch(error => console.log(error));
   };
 
   leaveEvent = () => {
     const { router } = this.props;
-    console.log(`leaving event`);
-    // DELETE to events /: id / attend.
     const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
     axios({
@@ -132,6 +155,7 @@ export class event extends Component {
       .then(response => {
         console.log(`success! left event`);
         console.log(response);
+        this.setState({ userIsAttending: false });
       })
       .catch(error => console.log(error));
   };
@@ -140,6 +164,7 @@ export class event extends Component {
     const { router } = this.props;
     const {
       userID,
+      authorID,
       name,
       dateFrom,
       dateTo,
@@ -157,17 +182,6 @@ export class event extends Component {
 
     const eventTotalAttendees = eventAttendees.length || 0;
     const slotsLeft = maxPeople - eventTotalAttendees;
-
-    // this to know -> is user the owner? is user attendee?
-
-    if (dataLoaded) {
-      // const userIsOwner = getOwnership(router.query.id, userID);
-      // const userIsAttending = getAttendance(userID, eventAttendees);
-      // this.setState({ userIsAttending: getAttendance(userID, eventAttendees) });
-    }
-    // Question about user = event interaction
-    // how many participants does the event have, attendees < maxPeople ? join : it is full
-    // is user currently attending event? show leave : show join
 
     return (
       <MainLayout>
@@ -199,7 +213,7 @@ export class event extends Component {
                 <EventImage src={eventImage} alt="people in a group" />
               </InfoWrapper>
               <JoinPanel>
-                {slotsLeft === 0 ? <h4>Event is full</h4> : <h4>{slotsLeft} spots left</h4>}
+                {slotsLeft === 0 ? <h4>Event is full</h4> : <h4>{slotsLeft} spot(s) left</h4>}
                 {!userIsAttending ? (
                   <JoinButton onClick={this.joinEvent}>Join</JoinButton>
                 ) : (
@@ -207,8 +221,8 @@ export class event extends Component {
                 )}
               </JoinPanel>
               <ControlButtons>
-                <EditButton>Edit</EditButton>
-                <DeleteButton onClick={this.deleteEvent}>Delete</DeleteButton>
+                <BackButton onClick={() => router.push("/events")}>Back</BackButton>
+                {Number(userID) === Number(authorID) && <DeleteButton onClick={this.deleteEvent}>Delete</DeleteButton>}
               </ControlButtons>
             </EventCard>
           ) : (
@@ -332,7 +346,7 @@ const DeleteButton = styled.button`
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
   margin-left: 10px;
 `;
-const EditButton = styled.button`
+const BackButton = styled.button`
   font-size: 1.4rem;
   padding: 4px;
   cursor: pointer;
@@ -340,7 +354,7 @@ const EditButton = styled.button`
   margin: 0;
   color: white;
   border: 0;
-  background: salmon;
+  background: yellowgreen;
   border-radius: 3px;
   padding-left: 10px;
   padding-right: 10px;
