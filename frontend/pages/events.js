@@ -50,7 +50,7 @@ class Dashboard extends Component {
       headers: {
         Authorization: AuthStr
       }
-    });
+    }).catch(err => console.error(err.response));
 
     const placesPromise = axios({
       method: "get",
@@ -58,7 +58,7 @@ class Dashboard extends Component {
       headers: {
         Authorization: AuthStr
       }
-    });
+    }).catch(err => console.error(err.response));
 
     const activitiesPromise = axios({
       method: "get",
@@ -66,7 +66,7 @@ class Dashboard extends Component {
       headers: {
         Authorization: AuthStr
       }
-    });
+    }).catch(err => console.error(err.response));
     const [events, places, activities] = await Promise.all([eventsPromise, placesPromise, activitiesPromise]);
 
     this.setState({ events: events.data.events, places: places.data.places, activities: activities.data.activities });

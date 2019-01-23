@@ -10,22 +10,23 @@ class ImageUploader extends Component {
 
   handleFileSelect = e => {
     const imageFile = e.target.files[0];
-    this.setState({selectedFile: imageFile});
+    this.setState({ selectedFile: imageFile });
     const formData = new FormData();
     formData.append("file", imageFile, imageFile.name);
-    axios.post(`${backendUrl}/users/images`, formData, {
-      headers: {
-          'Authorization': `Bearer ${this.context.token}`,
-          'Content-Type': 'multipart/form-data'
-      }
-  })
-    .then((res) => {
-      // At this point, image is already uploaded to the cloud and inserted into DB
-      // Need to refresh current image in profile, seems like on refresh page it does
-      // not fetch data from backend
-      console.log(res.data.url);
-    })
-    .catch(console.log);
+    axios
+      .post(`${backendUrl}/users/images`, formData, {
+        headers: {
+          Authorization: `Bearer ${this.context.token}`,
+          "Content-Type": "multipart/form-data"
+        }
+      })
+      .then(res => {
+        // At this point, image is already uploaded to the cloud and inserted into DB
+        // Need to refresh current image in profile, seems like on refresh page it does
+        // not fetch data from backend
+        console.log(res.data.url);
+      })
+      .catch(err => console.error(err.response));
   };
 
   handleClick = () => this.selectFile.click();
