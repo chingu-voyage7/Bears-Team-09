@@ -17,8 +17,11 @@ PairUp is an web application that helps to find like minded people who want to d
 - Front-End: [**Next.js**](https://nextjs.org/)
 - Back-End: [**Node/Express**](https://expressjs.com/)
 - Database: [**PostgreSQL**](https://www.postgresql.org/)
-- Deployment: ??? 
+- Deployment: [**AWS**](https://aws.amazon.com/), [**Docker**](https://www.docker.com/), [**Terraform**](https://terraform.io)
 
+## URL
+
+https://...
 
 ## Authors
 
