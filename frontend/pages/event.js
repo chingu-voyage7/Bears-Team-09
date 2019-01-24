@@ -7,6 +7,8 @@ import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
 import Modal from "../components/Modal";
 
+const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+
 /*
 FIXME: 
 1 - upon leaving or joining event, message that includes "spots left" not updating
@@ -51,7 +53,7 @@ export class event extends Component {
     this.setState({ userID });
     const currentEvent = await axios({
       method: "get",
-      url: `http://localhost:8000/events/${router.query.id}`,
+      url: `${backendUrl}/events/${router.query.id}`,
       headers: {
         Authorization: AuthStr
       }
@@ -59,7 +61,7 @@ export class event extends Component {
 
     const attendees = await axios({
       method: "get",
-      url: `http://localhost:8000/events/${router.query.id}/attendees`,
+      url: `${backendUrl}/events/${router.query.id}/attendees`,
       headers: { Authorization: AuthStr }
     });
 
@@ -109,11 +111,7 @@ export class event extends Component {
     const { router } = this.props;
     const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-    axios({
-      method: "delete",
-      url: `http://localhost:8000/events/${router.query.id}`,
-      headers: { Authorization: AuthStr }
-    })
+    axios({ method: "delete", url: `${backendUrl}/events/${router.query.id}`, headers: { Authorization: AuthStr } })
       .then(response => {
         console.log(`success! event was deleted`);
         console.log(response);
@@ -128,7 +126,7 @@ export class event extends Component {
     const AuthStr = `Bearer ${token}`;
     axios({
       method: "post",
-      url: `http://localhost:8000/events/${router.query.id}/attend`,
+      url: `${backendUrl}/events/${router.query.id}/attend`,
       headers: { Authorization: AuthStr }
     })
       .then(response => {
@@ -145,7 +143,7 @@ export class event extends Component {
     const AuthStr = `Bearer ${token}`;
     axios({
       method: "delete",
-      url: `http://localhost:8000/events/${router.query.id}/attend`,
+      url: `${backendUrl}/events/${router.query.id}/attend`,
       headers: { Authorization: AuthStr }
     })
       .then(response => {
