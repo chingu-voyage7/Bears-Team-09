@@ -32,7 +32,10 @@ class Profile extends Component {
     const { firstName, lastName, loggedIn, email, bio } = this.props.context;
     const events = this.makeEventsDomElements(this.state.events);
 
-    const imageSrc = this.props.context.image !== "null" && this.props.context.image !== null ? this.props.context.image : "../static/no_photo.jpg";
+    const imageSrc =
+      this.props.context.image !== "null" && this.props.context.image !== null
+        ? this.props.context.image
+        : "../static/no_photo.jpg";
 
     return (
       <Container>

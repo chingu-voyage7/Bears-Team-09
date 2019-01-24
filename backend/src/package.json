@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "migrate": "node-pg-migrate",
+    "dev": "nodemon app.js",
     "start": "node app.js",
     "test": "mocha"
   },
