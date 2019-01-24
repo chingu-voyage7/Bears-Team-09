@@ -408,6 +408,12 @@ describe('Test Activity Model', () => {
 });
 
 describe('Test Event Model', () => {
+    let user;
+    before((done) => {
+        user = new User({email: "kenny@gmail.com", password: "123456"});
+        user.create()
+        .finally(() => done());
+    });
     const eventsData = [
         {
             name: 'Fishing',
@@ -442,11 +448,11 @@ describe('Test Event Model', () => {
     ];
 
     eventsData.forEach((data, pos) => {
-        describe(`Create an event #${pos + 1}`, () =>{
+        describe(`Create an event #${pos + 1}`, () => {
             let result;
             let error;
             before((done) => {
-                const ev = new Events({...data});
+                const ev = new Events({author_id: user.data.id, ...data});
                 ev.create()
                 .then(([res]) => {
                     result = res;
@@ -596,9 +602,15 @@ describe('Test EventAttendee Model', () => {
             });
             user1.create()
             .then(() => user2.create())
-            .then(() => event1.create())
-            .then(() => event2.create())
-            .then(() => event3.create())
+            .then(() => {
+                event1.data.author_id = user1.data.id;
+                return event1.create();})
+            .then(() => {
+                event2.data.author_id = user1.data.id;
+                return event2.create();})
+            .then(() => {
+                event3.data.author_id = user1.data.id;
+                return event3.create();})
             .then(() => (new Events()).read())
             .then((data) => {[event1, event2, event3] = data.slice(-3);})
             .then(() => (new Attendee({user_id: user1.data.id, event_id: event1.id})).create())

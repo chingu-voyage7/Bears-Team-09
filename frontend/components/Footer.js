@@ -38,14 +38,14 @@ const StyledFooter = styled.footer`
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  flex-shrink: 0;
 
   ${device.mobileL`
     padding: 5px;
   `}
 
   p {
-    padding: 0;
-    margin: 0;
+    margin: 5px;
     font-size: 0.7rem;
 
     ${device.mobileL`

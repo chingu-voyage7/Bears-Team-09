@@ -6,6 +6,8 @@ import MainLayout from "../components/MainLayout";
 import NewEventForm from "../components/NewEventForm";
 import device from "../styles/device";
 
+const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+
 class NewEvent extends React.Component {
   state = {
     places: [],
@@ -21,7 +23,7 @@ class NewEvent extends React.Component {
     this.setState({ AuthStr });
     const placesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/places`,
+      url: `${backendUrl}/places`,
       headers: {
         Authorization: AuthStr
       }
@@ -29,7 +31,7 @@ class NewEvent extends React.Component {
 
     const activitiesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/activities`,
+      url: `${backendUrl}/activities`,
       headers: {
         Authorization: AuthStr
       }
@@ -44,7 +46,7 @@ class NewEvent extends React.Component {
     console.log(event);
     axios({
       method: "post",
-      url: `http://localhost:8000/events`,
+      url: `${backendUrl}/events`,
       data: event,
       headers: {
         Authorization: this.state.AuthStr
