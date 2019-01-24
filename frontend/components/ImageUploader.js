@@ -22,11 +22,13 @@ class ImageUploader extends Component {
       })
       .then(res => {
         // At this point, image is already uploaded to the cloud and inserted into DB
-        // Need to refresh current image in profile, seems like on refresh page it does
-        // not fetch data from backend
-        console.log(res.data.url);
+        const newImageUrl = res.data.url;
+        this.context.updateImage(newImageUrl);
       })
-      .catch(err => console.error(err.response));
+      .catch(err => {
+        console.error(err.response);
+        console.error(err);
+      });
   };
 
   handleClick = () => this.selectFile.click();
