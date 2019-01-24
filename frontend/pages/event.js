@@ -9,11 +9,6 @@ import Modal from "../components/Modal";
 
 const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
 
-/*
-FIXME: 
-1 - upon leaving or joining event, message that includes "spots left" not updating
-*/
-
 function getAttendance(userID, eventAttendees) {
   // helper fn to determine if user is already participating in an event
   const attendeesIDs = eventAttendees.map(att => String(att.id));
@@ -99,6 +94,21 @@ export class event extends Component {
     });
   }
 
+  updateEventAttendees = async () => {
+    const { router } = this.props;
+    const { tokenCtx, id } = this.context;
+    const token = tokenCtx || localStorage.getItem("token");
+    const AuthStr = `Bearer ${token}`;
+    const userID = id || localStorage.getItem("id");
+    const attendees = await axios({
+      method: "get",
+      url: `${backendUrl}/events/${router.query.id}/attendees`,
+      headers: { Authorization: AuthStr }
+    });
+    const userIsAttending = getAttendance(userID, attendees.data);
+    this.setState({ userIsAttending, eventAttendees: attendees.data });
+  };
+
   showModal = () => {
     this.setState({ showModal: true });
   };
@@ -111,10 +121,12 @@ export class event extends Component {
     const { router } = this.props;
     const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-    axios({ method: "delete", url: `${backendUrl}/events/${router.query.id}`, headers: { Authorization: AuthStr } })
-      .then(response => {
-        console.log(`success! event was deleted`);
-        console.log(response);
+    axios({
+      method: "delete",
+      url: `${backendUrl}/events/${router.query.id}`,
+      headers: { Authorization: AuthStr }
+    })
+      .then(() => {
         router.push("/events");
       })
       .catch(error => console.log(error));
@@ -129,9 +141,8 @@ export class event extends Component {
       url: `${backendUrl}/events/${router.query.id}/attend`,
       headers: { Authorization: AuthStr }
     })
-      .then(response => {
-        console.log(`success! attended the event`);
-        console.log(response);
+      .then(() => {
+        this.updateEventAttendees();
         this.setState({ userIsAttending: true });
       })
       .catch(error => console.log(error));
@@ -146,9 +157,8 @@ export class event extends Component {
       url: `${backendUrl}/events/${router.query.id}/attend`,
       headers: { Authorization: AuthStr }
     })
-      .then(response => {
-        console.log(`success! left event`);
-        console.log(response);
+      .then(() => {
+        this.updateEventAttendees();
         this.setState({ userIsAttending: false });
       })
       .catch(error => console.log(error));
@@ -174,8 +184,9 @@ export class event extends Component {
 
     // FIXME: This needs to be tested when backend has images to show, we need to make sure path works with DB
     const eventImage = image || "../static/stock-event.jpg";
-    const eventTotalAttendees = eventAttendees.length || 0;
-    const slotsLeft = maxPeople - eventTotalAttendees;
+
+    // const eventTotalAttendees = eventAttendees.length;
+    const slotsLeft = maxPeople - eventAttendees.length;
 
     return (
       <MainLayout>
