@@ -5,12 +5,11 @@ import { format } from "date-fns";
 import { withRouter } from "next/router";
 import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
+import Modal from "../components/Modal";
 
 /*
 FIXME: 
 1 - upon leaving or joining event, message that includes "spots left" not updating
-2 - backend is not allowing to leave your own event, is that intended behaviour?
-3 - modal for "are you sure" for deletion of the event is not implemented
 */
 
 function getAttendance(userID, eventAttendees) {
@@ -39,7 +38,8 @@ export class event extends Component {
     eventAttendees: "",
     dataLoaded: false,
     userIsAttending: null,
-    userIsOwner: null
+    userIsOwner: null,
+    showModal: false
   };
 
   async componentDidMount() {
@@ -97,19 +97,18 @@ export class event extends Component {
     });
   }
 
+  showModal = () => {
+    this.setState({ showModal: true });
+  };
+
+  hideModal = () => {
+    this.setState({ showModal: false });
+  };
+
   deleteEvent = () => {
-    const { userID, authorID } = this.state;
     const { router } = this.props;
     const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-    console.log(`deleting event`);
-    // 1.check if USER is the AUTHOR, may be redundant because button should not be visible if condition of author === user is not met
-    if (Number(userID) !== Number(authorID)) {
-      return;
-    }
-    // 3.show "are you sure modal"
-
-    // 4.delete event
     axios({
       method: "delete",
       url: `http://localhost:8000/events/${router.query.id}`,
@@ -118,12 +117,9 @@ export class event extends Component {
       .then(response => {
         console.log(`success! event was deleted`);
         console.log(response);
-        // 5.TODO: Show success msg
-        // 6.Redirect to /events page
         router.push("/events");
       })
       .catch(error => console.log(error));
-    // 5.Show error msg
   };
 
   joinEvent = () => {
@@ -177,9 +173,9 @@ export class event extends Component {
       dataLoaded,
       userIsAttending
     } = this.state;
+
     // FIXME: This needs to be tested when backend has images to show, we need to make sure path works with DB
     const eventImage = image || "../static/stock-event.jpg";
-
     const eventTotalAttendees = eventAttendees.length || 0;
     const slotsLeft = maxPeople - eventTotalAttendees;
 
@@ -214,16 +210,19 @@ export class event extends Component {
               </InfoWrapper>
               <JoinPanel>
                 {slotsLeft === 0 ? <h4>Event is full</h4> : <h4>{slotsLeft} spot(s) left</h4>}
-                {!userIsAttending ? (
-                  <JoinButton onClick={this.joinEvent}>Join</JoinButton>
-                ) : (
-                  <LeaveButton onClick={this.leaveEvent}>Leave</LeaveButton>
-                )}
+                <ControlledAttendenceButtons
+                  userID={userID}
+                  authorID={authorID}
+                  userIsAttending={userIsAttending}
+                  leaveEvent={this.leaveEvent}
+                  joinEvent={this.joinEvent}
+                />
               </JoinPanel>
               <ControlButtons>
                 <BackButton onClick={() => router.push("/events")}>Back</BackButton>
-                {Number(userID) === Number(authorID) && <DeleteButton onClick={this.deleteEvent}>Delete</DeleteButton>}
+                {Number(userID) === Number(authorID) && <DeleteButton onClick={this.showModal}>Delete</DeleteButton>}
               </ControlButtons>
+              <Modal showModal={this.state.showModal} hide={this.hideModal} confirm={this.deleteEvent} />
             </EventCard>
           ) : (
             <p>Fetching Event Details...</p>
@@ -231,6 +230,19 @@ export class event extends Component {
         </Container>
       </MainLayout>
     );
+  }
+}
+
+function ControlledAttendenceButtons({ userID, authorID, userIsAttending, leaveEvent, joinEvent }) {
+  const userIsOwner = Number(userID) === Number(authorID);
+  if (userIsOwner) {
+    return null;
+  }
+  if (userIsAttending) {
+    return <LeaveButton onClick={leaveEvent}>Leave</LeaveButton>;
+  }
+  if (!userIsAttending) {
+    return <JoinButton onClick={joinEvent}>Join</JoinButton>;
   }
 }
 
@@ -296,6 +308,7 @@ const Description = styled.div`
 
 const JoinPanel = styled.div`
   padding: 10px;
+  margin-top: 50px;
 `;
 
 const JoinButton = styled.button`
