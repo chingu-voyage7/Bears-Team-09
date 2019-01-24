@@ -34,7 +34,7 @@ class UserProvider extends Component {
     // if (method === 'oauth') {
     //   this.setState({ loggedIn: true, firstName: data.givenName, lastName: data.familyName, email: data.email });
     // } else if (method === 'password') {
-    const allowedFields = ["first_name", "last_name", "email", "token", "bio", "image"];
+    const allowedFields = ["first_name", "last_name", "email", "token", "bio", "image", "id"];
     const newState = { loggedIn: true };
     Object.entries(data).forEach(([key, value]) => {
       if (allowedFields.includes(key)) {
