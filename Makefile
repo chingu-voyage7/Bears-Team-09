@@ -142,7 +142,7 @@ buildtag:
 
 login:
 	${INFO} "Logging in to Docker registry $$DOCKER_REGISTRY..."
-	@ docker login -u $$DOCKER_USER -p $$DOCKER_PASSWORD $(DOCKER_REGISTRY_AUTH)
+	@ docker login -u $$DOCKER_HUB_USER -p $$DOCKER_HUB_PASSWORD $(DOCKER_REGISTRY_AUTH)
 	${INFO} "Logged in to Docker registry $$DOCKER_REGISTRY"
 
 logout:
@@ -158,8 +158,6 @@ publish:
 
 deploy:
 	${INFO} "Deploying..."
-	@ openssl aes-256-cbc -K ${encrypted_key} -iv ${encrypted_iv} -in ${AWS_SSH_KEY_PATH}.enc -out ${AWS_SSH_KEY_PATH} -d
-	@ chmod 400 ${AWS_SSH_KEY_PATH}
 	@ curl https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip -o terraform.zip
 	@ unzip terraform.zip
 	@ chmod +x ./terraform
@@ -170,16 +168,16 @@ deploy:
 	./terraform plan \
 		-var 'aws_access_key=${AWS_ACCESS_KEY}' \
 		-var 'aws_secret_key=${AWS_SECRET_KEY}' \
-		-var 'key_name=${AWS_KEY_NAME}' \
-		-var 'private_key_path=${AWS_SSH_KEY_PATH}' \
 		-var 'project_name=$(PROJECT_NAME)' \
-		-var 'pg_user=${PG_USER}' \
+		-var 'domain_name=${DOMAIN_NAME}' \
+		-var 'letsenctypt_reg_email=${LETSENCRYPT_REG_EMAIL}' \
 		-var 'pg_db=${PG_DB}' \
+		-var 'pg_user=${PG_USER}' \
 		-var 'pg_password=${PG_PASSWORD}' \
-		-var 'jwt_secret=${JWT_SECRET}' \
-		-var 'backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' \
 		-var 'frontend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front' \
-		-var 'deploy_tag=$(shell git rev-parse --short HEAD)' \
+		-var 'backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' \
+		-var 'image_tag=$(shell git rev-parse --short HEAD)' \
+		-var 'jwt_secret=${JWT_SECRET}' \
 		-var 'cdn_key=${CLOUDINARY_KEY}' \
 		-var 'cdn_secret=${CLOUDINARY_SECRET}' \
 		-var 'node_env=${ENV_NODE}' \
