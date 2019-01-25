@@ -13,11 +13,6 @@ class SelectParticipantRange extends React.Component {
 
   validateInputs = (minValue, maxValue) => {
     const { updateParticipantRange } = this.props;
-    // console.log(this.state.minValue);
-    // console.log(this.state.maxValue);
-
-    // console.log(minValue, maxValue);
-    console.log(typeof minValue, typeof maxValue);
 
     if (minValue < 2 || maxValue < 2) {
       this.setState({ inputError: true, inputErrorMsg: "Participants cannot be less than 2" });

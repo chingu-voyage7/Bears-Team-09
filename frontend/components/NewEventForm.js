@@ -69,12 +69,10 @@ class EventForm extends Component {
   };
 
   updateParticipantRange = (min, max) => {
-    console.log(`incoming`, min, max);
     this.setState({ min_people: min, max_people: max });
   };
 
   updateDateRange = (startDate, endDate) => {
-    console.log(startDate, endDate);
     this.setState({
       date_from: startDate,
       date_to: endDate
