@@ -107,9 +107,9 @@ resource "aws_instance" "server" {
 data "template_file" "nginx_gateway" {
     template = "${file("dropins/nginx.tpl")}"
     vars = {
-        frontend_name = "${var.frontend_name}"
-        backend_name = "${var.backend_name}"
-        server_name = "${var.server_name}"
+        frontend_name = "${var.frontend_image}"
+        backend_name = "${var.backend_image}"
+        server_name = "${var.domain_name}"
     }
 }
 
