@@ -20,7 +20,7 @@ class Profile extends Component {
 
   async getEventsFromBackend(token) {
     if (token == null) return [];
-    return (await axios.get(`${backendUrl}/events`, {
+    return (await axios.get(`${backendUrl}/users/events`, {
       headers: { Authorization: `Bearer ${token}` }
     })).data.events;
   }
