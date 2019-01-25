@@ -4,8 +4,9 @@ import Link from "next/link";
 
 class EventListItem extends Component {
   render({ id, name, description } = this.props) {
+    const href = { pathname: `/event`, query: { id } };
     return (
-      <Link href={`/event?id=${id}`} as={`event/${name}`}>
+      <Link href={href}>
         <ItemContainer>
           <Item>
             <h3>{name}</h3>

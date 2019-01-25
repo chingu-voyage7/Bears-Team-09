@@ -10,6 +10,7 @@ class UserProvider extends Component {
     email: null,
     token: null,
     bio: null,
+    id: null,
     image: null
   };
 
@@ -21,7 +22,8 @@ class UserProvider extends Component {
       email: localStorage.getItem("email"),
       token: localStorage.getItem("token"),
       bio: localStorage.getItem("bio"),
-      image: localStorage.getItem("image")
+      image: localStorage.getItem("image"),
+      id: localStorage.getItem("id")
     });
   }
 
@@ -30,7 +32,7 @@ class UserProvider extends Component {
     // if (method === 'oauth') {
     //   this.setState({ loggedIn: true, firstName: data.givenName, lastName: data.familyName, email: data.email });
     // } else if (method === 'password') {
-    const allowedFields = ["first_name", "last_name", "email", "token", "bio", "image"];
+    const allowedFields = ["first_name", "last_name", "email", "token", "bio", "image", "id"];
     const newState = { loggedIn: true };
     Object.entries(data).forEach(([key, value]) => {
       if (allowedFields.includes(key)) {
@@ -48,7 +50,15 @@ class UserProvider extends Component {
   };
 
   logOut = () => {
-    this.setState({ loggedIn: false, firstName: null, lastName: null, email: null, token: null, image: null });
+    this.setState({
+      loggedIn: false,
+      firstName: null,
+      lastName: null,
+      email: null,
+      token: null,
+      image: null,
+      id: null
+    });
     localStorage.clear();
   };
 
