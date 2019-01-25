@@ -5,7 +5,7 @@ import Router from "next/router";
 import Input from "./Input";
 import LoginButton from "./LoginButton";
 import BackButton from "./BackButton";
-import Select from "./Select";
+import SelectParticipantRange from "./SelectParticipantRange";
 import ActivityPicker from "./ActivityPicker";
 import LocationSearch from "./LocationSearch";
 import DateRangePicker from "./DateRangePicker";
@@ -68,6 +68,11 @@ class EventForm extends Component {
     this.setState({ place_id: id });
   };
 
+  updateParticipantRange = (min, max) => {
+    console.log(`incoming`, min, max);
+    this.setState({ min_people: min, max_people: max });
+  };
+
   handleMaxSelection = e => {
     e.stopPropagation();
     e.preventDefault();
@@ -103,34 +108,7 @@ class EventForm extends Component {
           />
           <ActivityPicker type="form" updateSelection={this.updateActivity} activities={activities} />
           <LocationSearch locations={places} updateSelection={this.updateLocation} />
-          <SelectWrapper>
-            <Select
-              title="Min People"
-              handleSelection={this.handleMinSelection}
-              min={this.state.min_people}
-              max={this.state.max_people}
-              optionsArr={[
-                { id: 2, selectionName: "2", value: "2" },
-                { id: 3, selectionName: "3", value: "3" },
-                { id: 4, selectionName: "4", value: "4" },
-                { id: 5, selectionName: "5", value: "5" },
-                { id: 6, selectionName: "6+", value: "6" }
-              ]}
-            />
-            <Select
-              title="Max People"
-              handleSelection={this.handleMaxSelection}
-              min={this.state.min_people}
-              max={this.state.max_people}
-              optionsArr={[
-                { id: 2, selectionName: "2", value: "2" },
-                { id: 3, selectionName: "3", value: "3" },
-                { id: 4, selectionName: "4", value: "4" },
-                { id: 5, selectionName: "5", value: "5" },
-                { id: 6, selectionName: "6+", value: "6" }
-              ]}
-            />
-          </SelectWrapper>
+          <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
           <DateRangePicker updateDateRange={this.updateDateRange} />
           {!this.state.valid && <ErrorMsg>Error: Please fill all fields to create an event!</ErrorMsg>}
           <ButtonWrapper>
@@ -148,18 +126,6 @@ const ButtonWrapper = styled.div`
   grid-gap: 5px;
   grid-template-columns: 1fr 1fr;
   margin-top: 25px;
-`;
-
-const SelectWrapper = styled.div`
-  display: inline-flex;
-  border-radius: 3px;
-  outline: 0;
-  width: 100%;
-  text-align: left;
-  font-size: 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  color: #757575;
-  margin-top: 5px;
 `;
 
 const ErrorMsg = styled.p`
