@@ -9,7 +9,7 @@ import Event from "./Event";
 const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
 
 class Profile extends Component {
-  state = { events: [], bioEditorOpen: false };
+  state = { events: [] };
 
   async componentDidMount() {
     // Have to get token from localStorage on page reload b/c context is empty
@@ -20,15 +20,13 @@ class Profile extends Component {
 
   async getEventsFromBackend(token) {
     if (token == null) return [];
-    return (await axios.get(`${backendUrl}/users/events`, {
+    return (await axios.get(`${backendUrl}/events`, {
       headers: { Authorization: `Bearer ${token}` }
     })).data.events;
   }
 
   // makeEventsDomElements = events => events.map(event => <div key={event.id}>{event.name}</div>);
   makeEventsDomElements = events => events.map(event => <Event {...event} key={event.id} />);
-
-  addBio = () => this.setState({ bioEditorOpen: true });
 
   render() {
     const { firstName, lastName, loggedIn, email, bio } = this.props.context;
@@ -53,15 +51,7 @@ class Profile extends Component {
                 <strong> Email:</strong> {email}
                 <br />
                 <br />
-                {bio !== null && bio !== "null" ? (
-                  <p>
-                    <strong>Bio:</strong> {bio}
-                  </p>
-                ) : (
-                  <button type="button" onClick={this.addBio}>
-                    Add bio
-                  </button>
-                )}
+                <strong>Bio:</strong> {bio !== null && bio !== "null" ? bio : "No bio provided"}
               </PersonalInfo>
             </SideBar>
 
