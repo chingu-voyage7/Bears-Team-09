@@ -73,18 +73,6 @@ class EventForm extends Component {
     this.setState({ min_people: min, max_people: max });
   };
 
-  handleMaxSelection = e => {
-    e.stopPropagation();
-    e.preventDefault();
-    this.setState({ max_people: e.target.value });
-  };
-
-  handleMinSelection = e => {
-    e.stopPropagation();
-    e.preventDefault();
-    this.setState({ min_people: e.target.value });
-  };
-
   updateDateRange = (startDate, endDate) => {
     console.log(startDate, endDate);
     this.setState({
