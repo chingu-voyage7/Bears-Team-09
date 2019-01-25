@@ -44,13 +44,6 @@ resource "aws_instance" "server" {
         private_key           = "${tls_private_key.ssh_key.private_key_pem}"
     }
     # These provisioners will run only once on instance creation
-    provisioner "remote-exec" {
-        inline = [
-            "sudo yum update -y",
-            "sudo amazon-linux-extras install docker -y",
-            "sudo service docker start"
-        ]
-    }
     provisioner "file" {
         content = "${acme_certificate.certificate.certificate_pem}"
         destination = "/tmp/certificate.pem"
@@ -58,6 +51,18 @@ resource "aws_instance" "server" {
     provisioner "file" {
         content = "${acme_certificate.certificate.private_key_pem}"
         destination = "/tmp/private_key.pem"
+    }
+    provisioner "remote-exec" {
+        inline = [
+            "sudo yum update -y",
+            "sudo amazon-linux-extras install docker -y",
+            "sudo service docker start",
+            "sudo mkdir -p /etc/nginx/certs",
+            "sudo mv /tmp/certificate.pem /etc/nginx/certs/certificate.pem",
+            "sudo mv /tmp/private_key.pem /etc/nginx/certs/private_key.pem",
+            "sudo chown -R root:root /etc/nginx",
+            "sudo chmod 600 /etc/nginx/certs/*"
+        ]
     }
     tags {
         Name = "Web Server"
@@ -85,7 +90,7 @@ resource "null_resource" "app_provisioner" {
             # kill previous version of app, including gateway nginx
             "sudo docker stop gateway frontend backend",
             "sudo docker container prune -f",
-            # Create docker network
+            # Create docker network, so that our docker containers could reach each other
             "sudo docker network create --driver bridge ${var.project_name}-net",
             "sudo docker run --name gateway -d --network ${var.project_name}-net -v /tmp/nginx.conf:/etc/nginx/nginx.conf -v /tmp/certificate.pem:/etc/nginx/certificate.pem -v /tmp/private_key.pem:/etc/nginx/private_key.pem -p 80:80 -p 443:443 nginx:stable-alpine",
             # run migrations if any
