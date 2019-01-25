@@ -5,7 +5,7 @@ data "aws_route53_zone" "zone" {
 
 resource "aws_route53_record" "root_a_record" {
   zone_id = "${data.aws_route53_zone.zone.id}"
-  name    = "${data.aws_route53_zone.zone.name}"
+  name    = "${var.project_name}.${data.aws_route53_zone.zone.name}"
   type    = "A"
   ttl     = "300"
   records = ["${aws_instance.server.public_ip}"]
