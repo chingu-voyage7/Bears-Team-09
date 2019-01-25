@@ -31,6 +31,9 @@ DOCKER_REGISTRY ?= docker.io
 # Set DOCKER_REGISTRY_AUTH to auth endpoint for private Docker registry
 DOCKER_REGISTRY_AUTH ?=
 
+# Deploy settings
+TERRAFORM_VERSION ?= 0.11.11
+
 # Utility functions
 INFO := @bash -c 'echo "=> $$1";' VALUE
 
@@ -79,9 +82,6 @@ ifeq (tag,$(firstword $(MAKECMDGOALS)))
   endif
   $(eval $(TAG_ARGS):;@:)
 endif
-
-# Deploy settings
-TERRAFORM_VERSION ?= 0.11.1
 
 .PHONY: test release tag buildtag login logout publish deploy run clean
 
