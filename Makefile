@@ -164,7 +164,7 @@ deploy:
 	./terraform init -backend=true \
 		-backend-config="access_key=${AWS_ACCESS_KEY}" \
 		-backend-config="secret_key=${AWS_SECRET_KEY}" \
-		deploy
+		deploy/step2
 	./terraform plan \
 		-var 'aws_access_key=${AWS_ACCESS_KEY}' \
 		-var 'aws_secret_key=${AWS_SECRET_KEY}' \
@@ -182,7 +182,7 @@ deploy:
 		-var 'cdn_secret=${CLOUDINARY_SECRET}' \
 		-var 'node_env=${ENV_NODE}' \
 		-out $(PROJECT_NAME).tfplan \
-		deploy
+		deploy/step2
 	./terraform apply $(PROJECT_NAME).tfplan
 	${INFO} "Successfully deployed!"
 
