@@ -77,25 +77,12 @@ resource "aws_instance" "server" {
         user                  = "ec2-user"
         private_key           = "${tls_private_key.ssh_key.private_key_pem}"
     }
-    # These provisioners will run only once on instance creation
-    provisioner "file" {
-        content = "${acme_certificate.certificate.certificate_pem}"
-        destination = "/tmp/certificate.pem"
-    }
-    provisioner "file" {
-        content = "${acme_certificate.certificate.private_key_pem}"
-        destination = "/tmp/private_key.pem"
-    }
+
     provisioner "remote-exec" {
         inline = [
             "sudo yum update -y",
             "sudo amazon-linux-extras install docker -y",
-            "sudo service docker start",
-            "sudo mkdir -p /etc/nginx/certs",
-            "sudo mv /tmp/certificate.pem /etc/nginx/certs/certificate.pem",
-            "sudo mv /tmp/private_key.pem /etc/nginx/certs/private_key.pem",
-            "sudo chown -R root:root /etc/nginx",
-            "sudo chmod 600 /etc/nginx/certs/*"
+            "sudo service docker start"
         ]
     }
     tags {
@@ -113,8 +100,34 @@ data "template_file" "nginx_gateway" {
     }
 }
 
+# These provisioners will run only once on instance creation
+resource "null_resource" "copy_certificates" {
+    connection {
+        host = "${aws_instance.server.public_ip}"
+        user  = "ec2-user"
+        private_key = "${tls_private_key.ssh_key.private_key_pem}"
+    }
+    provisioner "file" {
+        content = "${acme_certificate.certificate.certificate_pem}"
+        destination = "/tmp/certificate.pem"
+    }
+    provisioner "file" {
+        content = "${acme_certificate.certificate.private_key_pem}"
+        destination = "/tmp/private_key.pem"
+    }
+    provisioner "remote-exec" {
+        inline = [
+            "sudo mkdir -p /etc/nginx/certs",
+            "sudo mv /tmp/certificate.pem /etc/nginx/certs/certificate.pem",
+            "sudo mv /tmp/private_key.pem /etc/nginx/certs/private_key.pem",
+            "sudo chown -R root:root /etc/nginx",
+            "sudo chmod 600 /etc/nginx/certs/*"
+        ]
+    }
+}
+
 # this provisioner will run each time when variable `image_tag` is changed
-resource "null_resource" "app_provisioner" {
+resource "null_resource" "restart_apps" {
     triggers {
         image_tag = "${var.image_tag}"
     }
