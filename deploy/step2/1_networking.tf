@@ -15,7 +15,7 @@ resource "aws_subnet" "public_subnet" {
 resource "aws_subnet" "private_subnet" {
     vpc_id = "${aws_vpc.main.id}"
     cidr_block              = "${var.private_subnet}"
-    availability_zone       = "${data.aws_availability_zones.available.names[0]}"
+    availability_zone       = "${data.aws_availability_zones.available.names[1]}"
 }
 
 resource "aws_internet_gateway" "igw" {
