@@ -31,6 +31,40 @@ resource "aws_key_pair" "my_keypair" {
   public_key = "${tls_private_key.ssh_key.public_key_openssh}"
 }
 
+resource "aws_security_group" "server" {
+    vpc_id = "${aws_vpc.main.id}"
+    name = "${var.project_name}-server"
+    description = "Web Application Server"
+    ingress {
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    ingress {
+        from_port = 80
+        to_port  = 80
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    ingress {
+        from_port = 443
+        to_port  = 443
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    tags {
+        Name = "Security group for the Web Server"
+        Project = "${var.project_name}"
+    }
+}
+
 resource "aws_instance" "server" {
     depends_on = ["aws_db_instance.db"]
     ami                       = "${data.aws_ami.amazon_linux.image_id}"
@@ -70,6 +104,15 @@ resource "aws_instance" "server" {
     }
 }
 
+data "template_file" "nginx_gateway" {
+    template = "${file("dropins/nginx.tpl")}"
+    vars = {
+        frontend_name = "${var.frontend_name}"
+        backend_name = "${var.backend_name}"
+        server_name = "${var.server_name}"
+    }
+}
+
 # this provisioner will run each time when variable `image_tag` is changed
 resource "null_resource" "app_provisioner" {
     triggers {
@@ -82,7 +125,7 @@ resource "null_resource" "app_provisioner" {
         private_key = "${tls_private_key.ssh_key.private_key_pem}"
     }
     provisioner "file" {
-        source = "dropins/nginx.conf"
+        content = "${data.template_file.nginx_gateway.rendered}"
         destination = "/tmp/nginx.conf"
     }
     provisioner "remote-exec" {
@@ -92,47 +135,14 @@ resource "null_resource" "app_provisioner" {
             "sudo docker container prune -f",
             # Create docker network, so that our docker containers could reach each other
             "sudo docker network create --driver bridge ${var.project_name}-net",
-            "sudo docker run --name gateway -d --network ${var.project_name}-net -v /tmp/nginx.conf:/etc/nginx/nginx.conf -v /tmp/certificate.pem:/etc/nginx/certificate.pem -v /tmp/private_key.pem:/etc/nginx/private_key.pem -p 80:80 -p 443:443 nginx:stable-alpine",
+            "sudo docker run --name gateway -d --network ${var.project_name}-net -v /tmp/nginx.conf:/etc/nginx/nginx.conf -v /etc/nginx/certs/certificate.pem:/etc/nginx/certificate.pem -v /etc/nginx/certs/private_key.pem:/etc/nginx/private_key.pem -p 80:80 -p 443:443 nginx:stable-alpine",
             # run migrations if any
             "sudo docker run --rm -e DATABASE_URL=postgres://${var.pg_user}:${var.pg_password}@${aws_db_instance.db.address}/${var.pg_db} ${var.backend_image}:${var.image_tag} npm run migrate up",
             # run backend
-            "sudo docker run --name backend -d --network ${var.project_name}-net --restart always -e PGHOST=${aws_db_instance.db.address} -e PGUSER=${var.pg_user} -e PGPASSWORD=${var.pg_password} -e PGDB=${var.pg_db} -e PGPORT=${var.pg_port} -e JWT_SECRET=${var.jwt_secret} -e JWT_EXP_THRESHOLD=${var.jwt_exp_threshold} -e CLOUDINARY_KEY=${var.cdn_key} -e CLOUDINARY_SECRET=${var.cdn_secret} -e NODE_ENV=${var.node_env} ${var.backend_image}:${var.image_tag}",
+            "sudo docker run --name ${var.backend_image} -d --network ${var.project_name}-net --restart always -e PGHOST=${aws_db_instance.db.address} -e PGUSER=${var.pg_user} -e PGPASSWORD=${var.pg_password} -e PGDB=${var.pg_db} -e PGPORT=${var.pg_port} -e JWT_SECRET=${var.jwt_secret} -e JWT_EXP_THRESHOLD=${var.jwt_exp_threshold} -e CLOUDINARY_KEY=${var.cdn_key} -e CLOUDINARY_SECRET=${var.cdn_secret} -e NODE_ENV=${var.node_env} ${var.backend_image}:${var.image_tag}",
             # run frontend
-            "sudo docker run --name frontend -d --network ${var.project_name}-net -e NODE_ENV=${var.node_env} -e BACKEND_URL=https://${var.domain_name}/api --restart always ${var.frontend_image}:${var.image_tag}"
+            "sudo docker run --name ${var.frontend_image} -d --network ${var.project_name}-net -e NODE_ENV=${var.node_env} -e BACKEND_URL=https://${var.domain_name}/api --restart always ${var.frontend_image}:${var.image_tag}"
         ]
     }
 }
 
-resource "aws_security_group" "server" {
-    vpc_id = "${aws_vpc.main.id}"
-    name = "${var.project_name}-server"
-    description = "Web Application Server"
-    ingress {
-        from_port = 22
-        to_port = 22
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    ingress {
-        from_port = 80
-        to_port  = 80
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    ingress {
-        from_port = 443
-        to_port  = 443
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    tags {
-        Name = "Security group for the Web Server"
-        Project = "${var.project_name}"
-    }
-}
