@@ -28,14 +28,14 @@ http {
     gzip_disable "msie6";
 
     server {
-        server_name ${var.server_name};
+        server_name ${server_name};
 
         location / {
-            proxy_pass http://${var.frontend_name}:3000;
+            proxy_pass http://${frontend_name}:3000;
         }
 
         location /api {
-            proxy_pass http://${var.backend_name}:8000;
+            proxy_pass http://${backend_name}:8000;
         }
 
         listen 443 ssl;
@@ -45,7 +45,7 @@ http {
     server {
         listen 80 default_server;
         listen [::]:80 default_server;
-        server_name ${var.server_name};
+        server_name ${server_name};
         return 301 https://$server_name$request_uri;
     }
 }
