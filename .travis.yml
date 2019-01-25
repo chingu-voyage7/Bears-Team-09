@@ -34,4 +34,4 @@ jobs:
         skip_cleanup: true
         script: bash -c "make deploy"
         on:
-          branch: master
+          branch: refactor_deploy_configs
