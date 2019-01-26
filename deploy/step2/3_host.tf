@@ -97,7 +97,7 @@ data "template_file" "nginx_gateway" {
     }
 }
 
-These provisioners will run only once on instance creation
+# These provisioners will run only once on instance creation
 resource "null_resource" "copy_certificates" {
     triggers {
         cert = "${acme_certificate.certificate.certificate_pem}"
