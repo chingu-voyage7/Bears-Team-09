@@ -87,11 +87,11 @@ passport.use(
 module.exports = (strategy) => (req, res, next) =>
     passport.authenticate(strategy, {session: false}, (err, user, info) => {
         if (err || !user) {
-            return res.status(401).json({message: info.message});
+            return res.status(info.statusCode || 401).json({message: info.message});
         }
         req.login(user, {session: false}, (error) => {
             if (error) {
-                return res.status(400).json({message: error.message});
+                return res.status(error.statusCode || 400).json({message: error.message});
             }
             return res;
         });
