@@ -29,9 +29,6 @@ class UserProvider extends Component {
 
   logIn = ({ data, method }) => {
     if (!["oauth", "password"].includes(method)) throw new Error("Auth method not recognized");
-    // if (method === 'oauth') {
-    //   this.setState({ loggedIn: true, firstName: data.givenName, lastName: data.familyName, email: data.email });
-    // } else if (method === 'password') {
     const allowedFields = ["first_name", "last_name", "email", "token", "bio", "image", "id"];
     const newState = { loggedIn: true };
     Object.entries(data).forEach(([key, value]) => {
@@ -74,7 +71,15 @@ class UserProvider extends Component {
 
   render() {
     return (
-      <UserContext.Provider value={{ ...this.state, logIn: this.logIn, logOut: this.logOut, updateUser: this.updateUser, updateImage: this.updateImage }}>
+      <UserContext.Provider
+        value={{
+          ...this.state,
+          logIn: this.logIn,
+          logOut: this.logOut,
+          updateUser: this.updateUser,
+          updateImage: this.updateImage
+        }}
+      >
         {this.props.children}
       </UserContext.Provider>
     );
