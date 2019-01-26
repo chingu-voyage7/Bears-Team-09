@@ -1,26 +1,29 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import Router from "next/dist/lib/router";
-import axios from "axios";
-import PropTypes from "prop-types";
-import Input from "./Input";
-import AuthButton from "./AuthButton";
-import LoginButton from "./LoginButton";
-import GoogleRegisterButton from "./GoogleRegisterButton";
-import StyledErrorMsg from "../styles/StyledErrorMsg";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import Router from 'next/dist/lib/router';
+import axios from 'axios';
+import PropTypes from 'prop-types';
+import Input from './Input';
+import LoginButton from './LoginButton';
+import GoogleRegisterButton from './GoogleRegisterButton';
+import StyledErrorMsg from '../styles/StyledErrorMsg';
+
+const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
 
 class LoginForm extends Component {
   state = {
-    email: "",
-    password: "",
+    email: '',
+    password: '',
     loginFailed: false
   };
 
-  handleAuth = (_, type) => {
-    // Method to be used if we implement auth
-    // with Google, Twitter, Facebook, etc.
-    console.log(`Auth with ${type}`);
-    Router.push("/");
+  handleGoogleAuth = data => {
+    const accessToken = data.accessToken.replace(/['"]+/g, '');
+    axios
+      .get(`${backendUrl}/auth/google?access_token=${accessToken}`)
+      .then(res => this.props.context.logIn({ data: res.data, method: 'oauth' }))
+      .catch(console.log);
+    Router.push('/');
   };
 
   handleSubmit = e => {
@@ -28,13 +31,12 @@ class LoginForm extends Component {
 
     // Handle Success register state -> redirect
     axios
-      .post("http://localhost:8000/auth/login", {
+      .post(`${backendUrl}/auth/login`, {
         email: this.state.email,
         password: this.state.password
       })
       .then(res => {
-        this.props.context.logIn({ data: res.data, method: "password" });
-        this.handleAuth(null, "email/password");
+        this.props.context.logIn({ data: res.data, method: 'password' });
       })
       .catch(err => {
         console.error(err);
@@ -56,27 +58,13 @@ class LoginForm extends Component {
       <>
         <form onSubmit={this.handleSubmit}>
           <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Password"
-            handleChange={this.handleInput}
-            required
-          />
+          <Input id="password" name="password" type="password" placeholder="Password" handleChange={this.handleInput} required />
           <LoginButton title="Log in" />
           {this.state.loginFailed && <StyledErrorMsg>Log in failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>
           <h4>Or use alternatives:</h4>
-          <GoogleRegisterButton
-            theme="#ea4335"
-            title="Log in using Google"
-            onCompletion={e => this.handleAuth(e, "gl")}
-            onFailure={this.handleFail}
-          />
-          <AuthButton theme="#3b5998" title="Log in using Facebook" onCompletion={e => this.handleAuth(e, "fb")} />
-          <AuthButton theme="#1da1f2" title="Log in using Twitter" onCompletion={e => this.handleAuth(e, "tw")} />
+          <GoogleRegisterButton theme="#ea4335" title="Log in using Google" onCompletion={this.handleGoogleAuth} onFailure={console.error} />
         </AuthButtonWrapper>
       </>
     );

@@ -12,6 +12,8 @@ import { UserContext } from "../components/UserProvider";
 import device from "../styles/device";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
 
+const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+
 // using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS
 // there may be a cleaner solution that I am not aware of
 const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), {
@@ -43,28 +45,28 @@ class Dashboard extends Component {
     const eventsPromise = axios({
       method: "get",
 
-      url: `http://localhost:8000/events?compare=gt&date_from=${isoDate}&limit=5`,
+      url: `${backendUrl}/events?compare=gt&date_from=${isoDate}&limit=5`,
 
       headers: {
         Authorization: AuthStr
       }
-    });
+    }).catch(err => console.error(err.response));
 
     const placesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/places`,
+      url: `${backendUrl}/places`,
       headers: {
         Authorization: AuthStr
       }
-    });
+    }).catch(err => console.error(err.response));
 
     const activitiesPromise = axios({
       method: "get",
-      url: `http://localhost:8000/activities`,
+      url: `${backendUrl}/activities`,
       headers: {
         Authorization: AuthStr
       }
-    });
+    }).catch(err => console.error(err.response));
     const [events, places, activities] = await Promise.all([eventsPromise, placesPromise, activitiesPromise]);
 
     this.setState({ events: events.data.events, places: places.data.places, activities: activities.data.activities });
@@ -92,7 +94,7 @@ class Dashboard extends Component {
 
     const newEvents = await axios({
       method: "get",
-      url: `http://localhost:8000/events?compare=gt&date_from=${isoDate}&limit=5&offset=${newOffset}`,
+      url: `${backendUrl}/events?compare=gt&date_from=${isoDate}&limit=5&offset=${newOffset}`,
       headers: {
         Authorization: AuthStr
       }

@@ -1,44 +1,39 @@
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { UserConsumer } from "./UserProvider";
-import config from "../config.json";
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { UserContext } from './UserProvider';
+import config from '../config.json';
 
 class GoogleRegisterButton extends Component {
   state = {};
 
   async componentDidMount() {
-    const { GoogleLogin } = await import("react-google-login");
+    const { GoogleLogin } = await import('react-google-login');
     this.setState({ GoogleLogin });
   }
 
+  onFailure = err => {
+    console.error(err);
+    this.props.onFailure();
+  };
+
   render = () => {
-    const { theme, title, onCompletion, onFailure } = this.props;
+    const { theme, title } = this.props;
     const { GoogleLogin } = this.state;
 
     if (GoogleLogin)
       return (
-        <UserConsumer>
-          {context => (
-            <GoogleLogin
-              clientId={config.GOOGLE_CLIENT_ID}
-              buttonText="Login"
-              onSuccess={data => {
-                context.logIn({ data: data.profileObj, method: "oauth" });
-                onCompletion();
-              }}
-              onFailure={err => {
-                console.error(err);
-                onFailure();
-              }}
-              render={renderProps => (
-                <StyledAuthBtn onClick={renderProps.onClick} onKeyPress={renderProps.onClick} theme={theme}>
-                  {title}
-                </StyledAuthBtn>
-              )}
-            />
+        <GoogleLogin
+          clientId={config.GOOGLE_CLIENT_ID}
+          buttonText="Login"
+          onSuccess={this.props.onCompletion}
+          onFailure={this.onFailure}
+          render={renderProps => (
+            <StyledAuthBtn onClick={renderProps.onClick} onKeyPress={renderProps.onClick} theme={theme}>
+              {title}
+            </StyledAuthBtn>
           )}
-        </UserConsumer>
+        />
       );
     return null;
   };
@@ -50,6 +45,8 @@ GoogleRegisterButton.propTypes = {
   onFailure: PropTypes.func.isRequired,
   theme: PropTypes.string.isRequired
 };
+
+GoogleRegisterButton.contextType = UserContext;
 
 export default GoogleRegisterButton;
 
