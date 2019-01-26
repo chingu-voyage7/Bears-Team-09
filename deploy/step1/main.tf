@@ -10,6 +10,7 @@ variable "aws_secret_key" {}
 variable "aws_region" {
   default = "ca-central-1"
 }
+variable "project_name" {}
 
 ##################
 ### AWS config ###
