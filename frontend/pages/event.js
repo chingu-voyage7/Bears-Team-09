@@ -129,7 +129,7 @@ export class event extends Component {
       .then(() => {
         router.push("/events");
       })
-      .catch(error => console.log(error));
+      .catch(error => console.error(error.response));
   };
 
   joinEvent = () => {
