@@ -5,25 +5,14 @@ data "aws_route53_zone" "zone" {
 
 resource "aws_route53_record" "root_a_record" {
   zone_id = "${data.aws_route53_zone.zone.id}"
-  name    = "${var.project_name}.${data.aws_route53_zone.zone.name}"
+  name    = "${data.aws_route53_zone.zone.name}"
   type    = "A"
   ttl     = "300"
   records = ["${aws_instance.server.public_ip}"]
 }
-###############
-# wildcard cname record, makes each and every subdomain point at A record.
-###############
-#resource "aws_route53_record" "wildcard_CNAME_record" {
-#  zone_id = "${data.aws_route53_zone.zone.id}"
-#  name    = "*.${data.aws_route53_zone.zone.name}"
-#  type    = "CNAME"
-#  ttl     = "300"
-#  records = ["${aws_route53_record.root_a_record.name}"]
-#}
 
 provider "acme" {
   server_url = "https://acme-v02.api.letsencrypt.org/directory"
-  # server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
 
 resource "tls_private_key" "private_key" {
