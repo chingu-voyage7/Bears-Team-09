@@ -97,32 +97,32 @@ data "template_file" "nginx_gateway" {
     }
 }
 
-# These provisioners will run only once on instance creation
-# resource "null_resource" "copy_certificates" {
-#     triggers {
-#         cert = "${acme_certificate.certificate.certificate_pem}"
-#     }
-#     connection {
-#         host = "${aws_instance.server.public_ip}"
-#         user  = "ec2-user"
-#         private_key = "${tls_private_key.ssh_key.private_key_pem}"
-#     }
-#     provisioner "file" {
-#         content = "${acme_certificate.certificate.certificate_pem}"
-#         destination = "/tmp/certificate.pem"
-#     }
-#     provisioner "file" {
-#         content = "${acme_certificate.certificate.private_key_pem}"
-#         destination = "/tmp/private_key.pem"
-#     }
-#     provisioner "remote-exec" {
-#         inline = [
-#             "sudo mv -f /tmp/certificate.pem /tmp/private_key.pem /etc/nginx/certs",
-#             "sudo chown -R root:root /etc/nginx",
-#             "sudo chmod 600 /etc/nginx/certs/*"
-#         ]
-#     }
-# }
+These provisioners will run only once on instance creation
+resource "null_resource" "copy_certificates" {
+    triggers {
+        cert = "${acme_certificate.certificate.certificate_pem}"
+    }
+    connection {
+        host = "${aws_instance.server.public_ip}"
+        user  = "ec2-user"
+        private_key = "${tls_private_key.ssh_key.private_key_pem}"
+    }
+    provisioner "file" {
+        content = "${acme_certificate.certificate.certificate_pem}"
+        destination = "/tmp/certificate.pem"
+    }
+    provisioner "file" {
+        content = "${acme_certificate.certificate.private_key_pem}"
+        destination = "/tmp/private_key.pem"
+    }
+    provisioner "remote-exec" {
+        inline = [
+            "sudo mv -f /tmp/certificate.pem /tmp/private_key.pem /etc/nginx/certs",
+            "sudo chown -R root:root /etc/nginx",
+            "sudo chmod 600 /etc/nginx/certs/*"
+        ]
+    }
+}
 
 # this provisioner will run each time when variable `image_tag` is changed
 resource "null_resource" "restart_apps" {
