@@ -127,7 +127,6 @@ resource "null_resource" "copy_certificates" {
 
 # this provisioner will run each time when variable `image_tag` is changed
 resource "null_resource" "restart_apps" {
-    depends_on = ["${null_resource.copy_certificates}"]
     triggers {
         image_tag = "${var.image_tag}"
     }
