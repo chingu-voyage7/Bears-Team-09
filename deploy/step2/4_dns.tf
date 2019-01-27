@@ -25,6 +25,7 @@ resource "acme_registration" "reg" {
 }
 
 resource "acme_certificate" "certificate" {
+  depends_on                = ["${aws_route53_record.root_a_record}"]
   account_key_pem           = "${acme_registration.reg.account_key_pem}"
   common_name               = "${aws_route53_record.root_a_record.fqdn}"
   subject_alternative_names = ["www.${aws_route53_record.root_a_record.fqdn}"]

@@ -99,6 +99,7 @@ data "template_file" "nginx_gateway" {
 
 # These provisioners will run only once on instance creation
 resource "null_resource" "copy_certificates" {
+    # trigger on change of certificate
     triggers {
         cert = "${acme_certificate.certificate.certificate_pem}"
     }
@@ -126,6 +127,7 @@ resource "null_resource" "copy_certificates" {
 
 # this provisioner will run each time when variable `image_tag` is changed
 resource "null_resource" "restart_apps" {
+    depends_on = ["${null_resource.copy_certificates}"]
     triggers {
         image_tag = "${var.image_tag}"
     }
@@ -150,7 +152,7 @@ resource "null_resource" "restart_apps" {
             # run migrations if any
             "sudo docker run --rm -e DATABASE_URL=postgres://${var.pg_user}:${var.pg_password}@${aws_db_instance.db.address}/${var.pg_db} ${var.backend_image}:${var.image_tag} npm run migrate up",
             # run backend
-            "sudo docker run --name backend -d --network ${var.project_name}-net --restart unless-stopped -e PGHOST=${aws_db_instance.db.address} -e PGUSER=${var.pg_user} -e PGPASSWORD=${var.pg_password} -e PGDB=${var.pg_db} -e PGPORT=${var.pg_port} -e JWT_SECRET=${var.jwt_secret} -e JWT_EXP_THRESHOLD=${var.jwt_exp_threshold} -e CLOUDINARY_KEY=${var.cdn_key} -e CLOUDINARY_SECRET=${var.cdn_secret} -e NODE_ENV=${var.node_env} ${var.backend_image}:${var.image_tag}",
+            "sudo docker run --name backend -d --network ${var.project_name}-net --restart unless-stopped -e PGHOST=${aws_db_instance.db.address} -e PGUSER=${var.pg_user} -e PGPASSWORD=${var.pg_password} -e PGDB=${var.pg_db} -e PGPORT=${var.pg_port} -e JWT_SECRET=${var.jwt_secret} -e JWT_EXP_THRESHOLD='${var.jwt_exp_threshold}' -e CLOUDINARY_KEY=${var.cdn_key} -e CLOUDINARY_SECRET=${var.cdn_secret} -e NODE_ENV=${var.node_env} ${var.backend_image}:${var.image_tag}",
             # run frontend
             "sudo docker run --name frontend -d --network ${var.project_name}-net -e NODE_ENV=${var.node_env} -e BACKEND_URL=https://${var.domain_name}/api --restart unless-stopped ${var.frontend_image}:${var.image_tag}"
         ]
