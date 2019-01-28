@@ -67,13 +67,6 @@ class EditModal extends React.Component {
 
 export default EditModal;
 
-const TextArea = styled.textarea`
-  height: 20em;
-  width: 40em;
-  display: block;
-  margin: 0.5em;
-`;
-
 const Close = styled.button`
   cursor: pointer;
   position: absolute;
