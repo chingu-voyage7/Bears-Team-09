@@ -112,7 +112,7 @@ release:
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up test
 	${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) test
 	${INFO} "Building frontend container..."
-	@ echo "{GOOGLE_CLIENT_ID:"${GOOGLE_CLIENT_ID}",GOOGLE_CLIENT_SECRET:"${GOOGLE_CLIENT_SECRET}",BACKEND_URL:"https://${DOMAIN_NAME}/api"}" > ./frontend/config.json
+	@ echo '{"GOOGLE_CLIENT_ID":"${GOOGLE_CLIENT_ID}","GOOGLE_CLIENT_SECRET":"${GOOGLE_CLIENT_SECRET}","BACKEND_URL":"https://${DOMAIN_NAME}/api"}' > ./frontend/config.json
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull frontend
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up -d frontend
 	${INFO} "Build and release complete"
