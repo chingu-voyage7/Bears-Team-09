@@ -27,9 +27,6 @@ class UserProvider extends Component {
 
   logIn = ({ data, method }) => {
     if (!["oauth", "password"].includes(method)) throw new Error("Auth method not recognized");
-    // if (method === 'oauth') {
-    //   this.setState({ loggedIn: true, firstName: data.givenName, lastName: data.familyName, email: data.email });
-    // } else if (method === 'password') {
     const allowedFields = ["first_name", "last_name", "email", "token", "bio", "image"];
     const newState = { loggedIn: true };
     Object.entries(data).forEach(([key, value]) => {
@@ -40,7 +37,6 @@ class UserProvider extends Component {
       }
     });
     this.setState(newState);
-    // }
     console.log(`Logged in as ${this.state.firstName} ${this.state.lastName}`);
     Object.entries(this.state).forEach(([key, value]) => {
       localStorage.setItem(key, value);
@@ -52,9 +48,11 @@ class UserProvider extends Component {
     localStorage.clear();
   };
 
-  updateUser = newName => {
-    this.setState({ user: newName });
-    localStorage.setItem("user", newName);
+  updateUser = (key, value) => {
+    const allowedFields = ["first_name", "last_name", "email", "token", "bio", "image"];
+    if (!allowedFields.includes(key)) return;
+    this.setState({ [key]: value });
+    localStorage.setItem(key, value);
   };
 
   updateImage = newImage => {
@@ -64,7 +62,15 @@ class UserProvider extends Component {
 
   render() {
     return (
-      <UserContext.Provider value={{ ...this.state, logIn: this.logIn, logOut: this.logOut, updateUser: this.updateUser, updateImage: this.updateImage }}>
+      <UserContext.Provider
+        value={{
+          ...this.state,
+          logIn: this.logIn,
+          logOut: this.logOut,
+          updateUser: this.updateUser,
+          updateImage: this.updateImage
+        }}
+      >
         {this.props.children}
       </UserContext.Provider>
     );

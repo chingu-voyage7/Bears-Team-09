@@ -5,30 +5,56 @@ import axios from "axios";
 import ImageUploader from "./ImageUploader";
 import { UserContext } from "./UserProvider";
 import Event from "./Event";
+import Modal from "./EditModal";
 
 const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
 
 class Profile extends Component {
-  state = { events: [], bioEditorOpen: false };
+  state = { events: [], showModal: false };
 
   async componentDidMount() {
     // Have to get token from localStorage on page reload b/c context is empty
-    const token = this.context.token || localStorage.getItem("token");
-    const events = await this.getEventsFromBackend(token);
+    this.token = this.context.token || localStorage.getItem("token");
+    const events = await this.getEventsFromBackend();
     this.setState({ events });
   }
 
-  async getEventsFromBackend(token) {
-    if (token == null) return [];
-    return (await axios.get(`${backendUrl}/users/events`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })).data.events;
+  async getEventsFromBackend() {
+    if (this.token == null) return [];
+    try {
+      return (await axios
+        .get(`${backendUrl}/users/events`, {
+          headers: { Authorization: `Bearer ${this.token}` }
+        })
+        .catch(res => console.error(res.response))).data.events;
+    } catch (err) {
+      return [];
+    }
   }
 
   // makeEventsDomElements = events => events.map(event => <div key={event.id}>{event.name}</div>);
   makeEventsDomElements = events => events.map(event => <Event {...event} key={event.id} />);
 
-  addBio = () => this.setState({ bioEditorOpen: true });
+  showModal = () => {
+    this.setState({ showModal: true });
+  };
+
+  hideModal = () => {
+    this.setState({ showModal: false });
+  };
+
+  setBio = text => {
+    axios
+      .put(
+        `${backendUrl}/users`,
+        { bio: text },
+        {
+          headers: { Authorization: `Bearer ${this.token}` }
+        }
+      )
+      .catch(err => console.error(err.response));
+    this.props.context.updateUser("bio", text);
+  };
 
   render() {
     const { firstName, lastName, loggedIn, email, bio } = this.props.context;
@@ -58,10 +84,12 @@ class Profile extends Component {
                     <strong>Bio:</strong> {bio}
                   </p>
                 ) : (
-                  <button type="button" onClick={this.addBio}>
-                    Add bio
-                  </button>
+                  <p>No bio</p>
                 )}
+                <button type="button" onClick={this.showModal}>
+                  Edit bio
+                </button>
+                <Modal showModal={this.state.showModal} hide={this.hideModal} confirm={this.setBio} />
               </PersonalInfo>
             </SideBar>
 
