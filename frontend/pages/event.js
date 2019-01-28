@@ -5,8 +5,9 @@ import styled, { ThemeProvider } from "styled-components";
 import { withRouter } from "next/router";
 import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
+import config from '../config.json';
 
-const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+const backendUrl = config.BACKEND_URL;
 
 export class event extends Component {
   state = {

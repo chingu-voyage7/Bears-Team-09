@@ -5,8 +5,9 @@ import axios from "axios";
 import ImageUploader from "./ImageUploader";
 import { UserContext } from "./UserProvider";
 import Event from "./Event";
+import config from '../config.json';
 
-const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+const backendUrl = config.BACKEND_URL;
 
 class Profile extends Component {
   state = { events: [] };
