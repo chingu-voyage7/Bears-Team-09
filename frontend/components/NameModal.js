@@ -25,9 +25,21 @@ class EditModal extends React.Component {
     lastName: this.context.lastName
   };
 
-  handleFirstNameInput = e => this.setState({ firstName: e.target.value });
+  handleKeyPress = e => {
+    const { hide, confirm } = this.props;
+    if (e.key === "Enter") {
+      confirm(this.state.firstName, this.state.lastName);
+      hide();
+    }
+  };
 
-  handleLastNameInput = e => this.setState({ lastName: e.target.value });
+  handleFirstNameInput = e => {
+    this.setState({ firstName: e.target.value });
+  };
+
+  handleLastNameInput = e => {
+    this.setState({ lastName: e.target.value });
+  };
 
   afterOpenModal = () => this.firstNameInput.focus();
 
@@ -49,6 +61,7 @@ class EditModal extends React.Component {
             id="first-name"
             placeholder="First name"
             value={this.state.firstName}
+            onKeyPress={this.handleKeyPress}
             onChange={this.handleFirstNameInput}
             ref={el => (this.firstNameInput = el)}
           />
@@ -61,6 +74,7 @@ class EditModal extends React.Component {
             id="last-name"
             placeholder="Last name"
             value={this.state.lastName}
+            onKeyPress={this.handleKeyPress}
             onChange={this.handleLastNameInput}
           />
         </label>
