@@ -13,7 +13,7 @@ class GoogleRegisterButton extends Component {
   }
 
   onFailure = err => {
-    console.error(err);
+    console.error(err.response);
     this.props.onFailure();
   };
 
