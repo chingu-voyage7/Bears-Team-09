@@ -1,12 +1,5 @@
 FROM node:10.14.1-alpine
 
-ARG backend_url="http://localhost:8000/api/"
-ARG google_client_id=""
-ARG google_client_secret=""
-
-ENV BACKEND_URL=$backend_url
-ENV GOOGLE_CLIENT_ID=$google_client_id
-ENV GOOGLE_CLIENT_SECRET=$google_client_secret
 ENV NODE_ENV='production'
 
 CMD ["npm", "run", "start"]
@@ -17,5 +10,5 @@ COPY ./frontend /app
 
 WORKDIR /app
 
-RUN export && npm install && \
+RUN npm install && \
     npm run build

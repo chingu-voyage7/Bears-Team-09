@@ -8,8 +8,9 @@ import AuthButton from "./AuthButton";
 import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
+import config from '../config.json';
 
-const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+const backendUrl = config.BACKEND_URL;
 
 class RegisterForm extends Component {
   state = {

@@ -5,8 +5,9 @@ import axios from "axios";
 import MainLayout from "../components/MainLayout";
 import NewEventForm from "../components/NewEventForm";
 import device from "../styles/device";
+import config from '../config.json';
 
-const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+const backendUrl = config.BACKEND_URL;
 
 class NewEvent extends React.Component {
   state = {
