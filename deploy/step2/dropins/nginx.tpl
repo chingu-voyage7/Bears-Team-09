@@ -35,7 +35,7 @@ http {
         }
 
         location /api {
-            proxy_pass http://${backend_name}:8000;
+            proxy_pass http://${backend_name}:8000/api;
         }
 
         listen 443 ssl;
