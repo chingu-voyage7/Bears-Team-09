@@ -2,7 +2,7 @@ FROM node:10.14.1-alpine
 
 ARG backend_url="http://localhost:8000/api/"
 ARG google_client_id=""
-ARG google_client_secret =""
+ARG google_client_secret=""
 
 ENV BACKEND_URL=$backend_url
 ENV GOOGLE_CLIENT_ID=$google_client_id
