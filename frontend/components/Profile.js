@@ -81,14 +81,12 @@ class Profile extends Component {
                 <br />
                 {bio !== null && bio !== "null" && bio !== "" ? (
                   <p>
-                    <strong>Bio:</strong> {bio}
+                    <strong>Bio</strong> <EditButton onClick={this.showModal}>(edit)</EditButton>
+                    <br /> {bio}
                   </p>
                 ) : (
                   <p>No bio</p>
                 )}
-                <button type="button" onClick={this.showModal}>
-                  Edit bio
-                </button>
                 <Modal showModal={this.state.showModal} hide={this.hideModal} confirm={this.setBio} />
               </PersonalInfo>
             </SideBar>
@@ -124,6 +122,16 @@ Profile.propTypes = {
 
 export default Profile;
 
+const EditButton = styled.button.attrs({ type: "button" })`
+  background: none;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  color: navy;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 const SideBar = styled.div`
   grid-column: 1 / span 1;
   margin: 2vw 0;
