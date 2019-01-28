@@ -42,15 +42,29 @@ class EditModal extends React.Component {
         contentLabel="Text edit Modal"
       >
         <Close onClick={hide}>X</Close>
-        <h3>Your bio</h3>
-        <input
-          type="text"
-          placeholder="First name"
-          value={this.state.firstName}
-          onChange={this.handleFirstNameInput}
-          ref={el => (this.firstNameInput = el)}
-        />
-        <input type="text" placeholder="Last name" value={this.state.lastName} onChange={this.handleLastNameInput} />
+        <label htmlFor="first-name">
+          First name
+          <NameInput
+            type="text"
+            id="first-name"
+            placeholder="First name"
+            value={this.state.firstName}
+            onChange={this.handleFirstNameInput}
+            ref={el => (this.firstNameInput = el)}
+          />
+        </label>
+        <br />
+        <label htmlFor="last-name">
+          Last name
+          <NameInput
+            type="text"
+            id="last-name"
+            placeholder="Last name"
+            value={this.state.lastName}
+            onChange={this.handleLastNameInput}
+          />
+        </label>
+        <br />
         <CancelButton onClick={hide}>Cancel</CancelButton>
         <ConfirmButton
           onClick={() => {
@@ -66,6 +80,10 @@ class EditModal extends React.Component {
 }
 
 export default EditModal;
+
+const NameInput = styled.input`
+  margin: 1em;
+`;
 
 const Close = styled.button`
   cursor: pointer;
