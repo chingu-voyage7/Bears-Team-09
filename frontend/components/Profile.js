@@ -5,12 +5,13 @@ import axios from "axios";
 import ImageUploader from "./ImageUploader";
 import { UserContext } from "./UserProvider";
 import Event from "./Event";
-import Modal from "./EditModal";
+import BioModal from "./BioModal";
+import NameModal from "./NameModal";
 
 const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
 
 class Profile extends Component {
-  state = { events: [], showModal: false };
+  state = { events: [], bioEditorOpened: false, nameEditorOpened: false };
 
   async componentDidMount() {
     // Have to get token from localStorage on page reload b/c context is empty
@@ -35,13 +36,13 @@ class Profile extends Component {
   // makeEventsDomElements = events => events.map(event => <div key={event.id}>{event.name}</div>);
   makeEventsDomElements = events => events.map(event => <Event {...event} key={event.id} />);
 
-  showModal = () => {
-    this.setState({ showModal: true });
-  };
+  showBioEditor = () => this.setState({ bioEditorOpened: true });
 
-  hideModal = () => {
-    this.setState({ showModal: false });
-  };
+  hideBioEditor = () => this.setState({ bioEditorOpened: false });
+
+  showNameEditor = () => this.setState({ nameEditorOpened: true });
+
+  hideNameEditor = () => this.setState({ nameEditorOpened: false });
 
   setBio = text => {
     axios
@@ -54,6 +55,21 @@ class Profile extends Component {
       )
       .catch(err => console.error(err.response));
     this.props.context.updateUser("bio", text);
+  };
+
+  setName = (firstName, lastName) => {
+    axios
+      .put(
+        `${backendUrl}/users`,
+        { first_name: firstName, last_name: lastName },
+        {
+          headers: { Authorization: `Bearer ${this.token}` }
+        }
+      )
+      .catch(err => console.error(err.response));
+    this.props.context.updateUser("firstName", firstName);
+    this.props.context.updateUser("lastName", lastName);
+    
   };
 
   render() {
@@ -73,21 +89,24 @@ class Profile extends Component {
               <ProfileImage src={imageSrc} />
               <ImageUploader style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }} />
               <PersonalInfo>
-                <h1>
+                <FirstLastName>
                   {firstName} {lastName}
-                </h1>
-                <strong> Email:</strong> {email}
+                </FirstLastName>
+                <EditButton onClick={this.showNameEditor}>(edit)</EditButton>
+                <br />
+                <strong>Email</strong> {email}
                 <br />
                 <br />
                 {bio !== null && bio !== "null" && bio !== "" ? (
                   <p>
-                    <strong>Bio</strong> <EditButton onClick={this.showModal}>(edit)</EditButton>
+                    <strong>Bio</strong> <EditButton onClick={this.showBioEditor}>(edit)</EditButton>
                     <br /> {bio}
                   </p>
                 ) : (
                   <p>No bio</p>
                 )}
-                <Modal showModal={this.state.showModal} hide={this.hideModal} confirm={this.setBio} />
+                <BioModal showModal={this.state.bioEditorOpened} hide={this.hideBioEditor} confirm={this.setBio} />
+                <NameModal showModal={this.state.nameEditorOpened} hide={this.hideNameEditor} confirm={this.setName} />
               </PersonalInfo>
             </SideBar>
 
@@ -121,6 +140,11 @@ Profile.propTypes = {
 };
 
 export default Profile;
+
+const FirstLastName = styled.h3`
+  display: inline-block;
+  margin-right: 0.2em;
+`;
 
 const EditButton = styled.button.attrs({ type: "button" })`
   background: none;
@@ -160,6 +184,6 @@ const PersonalInfo = styled.div`
 
 const GridWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: 1fr 2fr;
   column-gap: 3%;
 `;

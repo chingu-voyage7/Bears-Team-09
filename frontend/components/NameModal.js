@@ -20,11 +20,16 @@ const customStyles = {
 Modal.setAppElement("#__next");
 
 class EditModal extends React.Component {
-  state = { bio: this.context.bio };
+  state = {
+    firstName: this.context.firstName,
+    lastName: this.context.lastName
+  };
 
-  handleInput = e => this.setState({ bio: e.target.value });
+  handleFirstNameInput = e => this.setState({ firstName: e.target.value });
 
-  afterOpenModal = () => this.textArea.focus();
+  handleLastNameInput = e => this.setState({ lastName: e.target.value });
+
+  afterOpenModal = () => this.firstNameInput.focus();
 
   render() {
     const { showModal, hide, confirm } = this.props;
@@ -34,15 +39,22 @@ class EditModal extends React.Component {
         onAfterOpen={this.afterOpenModal}
         onRequestClose={hide}
         style={customStyles}
-        contentLabel="Confirmation Modal"
+        contentLabel="Text edit Modal"
       >
         <Close onClick={hide}>X</Close>
         <h3>Your bio</h3>
-        <TextArea ref={el => (this.textArea = el)} value={this.state.bio} onChange={this.handleInput} />
+        <input
+          type="text"
+          placeholder="First name"
+          value={this.state.firstName}
+          onChange={this.handleFirstNameInput}
+          ref={el => (this.firstNameInput = el)}
+        />
+        <input type="text" placeholder="Last name" value={this.state.lastName} onChange={this.handleLastNameInput} />
         <CancelButton onClick={hide}>Cancel</CancelButton>
         <ConfirmButton
           onClick={() => {
-            confirm(this.textArea.value);
+            confirm(this.state.firstName, this.state.lastName);
             hide();
           }}
         >

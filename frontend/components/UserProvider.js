@@ -49,7 +49,7 @@ class UserProvider extends Component {
   };
 
   updateUser = (key, value) => {
-    const allowedFields = ["first_name", "last_name", "email", "token", "bio", "image"];
+    const allowedFields = ["firstName", "lastName", "email", "token", "bio", "image"];
     if (!allowedFields.includes(key)) return;
     this.setState({ [key]: value });
     localStorage.setItem(key, value);
