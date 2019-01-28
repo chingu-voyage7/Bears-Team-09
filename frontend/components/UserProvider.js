@@ -30,6 +30,7 @@ class UserProvider extends Component {
   logIn = ({ data, method }) => {
     if (!["oauth", "password"].includes(method)) throw new Error("Auth method not recognized");
     const allowedFields = ["first_name", "last_name", "email", "token", "bio", "image", "id"];
+
     const newState = { loggedIn: true };
     Object.entries(data).forEach(([key, value]) => {
       if (allowedFields.includes(key)) {
@@ -39,7 +40,6 @@ class UserProvider extends Component {
       }
     });
     this.setState(newState);
-    // }
     console.log(`Logged in as ${this.state.firstName} ${this.state.lastName}`);
     Object.entries(this.state).forEach(([key, value]) => {
       localStorage.setItem(key, value);
@@ -59,9 +59,11 @@ class UserProvider extends Component {
     localStorage.clear();
   };
 
-  updateUser = newName => {
-    this.setState({ user: newName });
-    localStorage.setItem("user", newName);
+  updateUser = (key, value) => {
+    const allowedFields = ["firstName", "lastName", "email", "token", "bio", "image"];
+    if (!allowedFields.includes(key)) return;
+    this.setState({ [key]: value });
+    localStorage.setItem(key, value);
   };
 
   updateImage = newImage => {

@@ -1,5 +1,5 @@
 {
-  "extends": [ "react-app", "airbnb", "prettier" ],
+  "extends": ["react-app", "airbnb", "prettier"],
   "globals": {
     "window": false,
     "document": false,
@@ -11,30 +11,33 @@
     "no-use-before-define": 0,
     "no-console": 0,
     "no-underscore-dangle": 0,
-    "func-names": [ "off", "as-needed" ],
+    "func-names": ["off", "as-needed"],
     "semi": "error",
     "linebreak-style": "off",
-    "no-param-reassign": [ "error", { "props": false } ],
+    "no-param-reassign": ["error", { "props": false }],
     "react/prefer-stateless-function": 0,
     "react/jsx-filename-extension": 0,
     "react/jsx-one-expression-per-line": 0,
     "react/no-unused-state": 0,
     "react/destructuring-assignment": 0,
     "react/require-default-props": 0,
-    "react/forbid-prop-types": [ 2, { "forbid": [ "any", "array" ] } ],
+    "react/forbid-prop-types": [2, { "forbid": ["any", "array"] }],
     "import/no-unresolved": 0,
     "prefer-destructuring": 0,
     "class-methods-use-this": 0,
-    "quotes": [ "warn", "double" ]
+    "quotes": ["warn", "double"],
+    "no-return-assign": 0,
+    "jsx-a11y/label-has-associated-control": 0,
+    "jsx-a11y/label-has-for": 0
   },
-  "plugins": [ "prettier", "json", "markdown", "html" ],
+  "plugins": ["prettier", "json", "markdown", "html"],
   "env": {
     "jest": true
   },
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [ ".js", ".jsx", ".ts", ".tsx" ]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   }
