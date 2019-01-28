@@ -1,29 +1,29 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import Router from 'next/dist/lib/router';
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import Input from './Input';
-import LoginButton from './LoginButton';
-import GoogleRegisterButton from './GoogleRegisterButton';
-import StyledErrorMsg from '../styles/StyledErrorMsg';
+import React, { Component } from "react";
+import styled from "styled-components";
+import Router from "next/dist/lib/router";
+import axios from "axios";
+import PropTypes from "prop-types";
+import Input from "./Input";
+import LoginButton from "./LoginButton";
+import GoogleRegisterButton from "./GoogleRegisterButton";
+import StyledErrorMsg from "../styles/StyledErrorMsg";
 
 const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
 
 class LoginForm extends Component {
   state = {
-    email: '',
-    password: '',
+    email: "",
+    password: "",
     loginFailed: false
   };
 
   handleGoogleAuth = data => {
-    const accessToken = data.accessToken.replace(/['"]+/g, '');
+    const accessToken = data.accessToken.replace(/['"]+/g, "");
     axios
       .get(`${backendUrl}/auth/google?access_token=${accessToken}`)
-      .then(res => this.props.context.logIn({ data: res.data, method: 'oauth' }))
+      .then(res => this.props.context.logIn({ data: res.data, method: "oauth" }))
       .catch(console.log);
-    Router.push('/');
+    Router.push("/");
   };
 
   handleSubmit = e => {
@@ -36,10 +36,11 @@ class LoginForm extends Component {
         password: this.state.password
       })
       .then(res => {
-        this.props.context.logIn({ data: res.data, method: 'password' });
+        Router.push("/");
+        this.props.context.logIn({ data: res.data, method: "password" });
       })
       .catch(err => {
-        console.error(err);
+        console.error(err.response);
         this.handleFail();
       });
   };
@@ -58,13 +59,25 @@ class LoginForm extends Component {
       <>
         <form onSubmit={this.handleSubmit}>
           <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
-          <Input id="password" name="password" type="password" placeholder="Password" handleChange={this.handleInput} required />
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Password"
+            handleChange={this.handleInput}
+            required
+          />
           <LoginButton title="Log in" />
           {this.state.loginFailed && <StyledErrorMsg>Log in failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>
           <h4>Or use alternatives:</h4>
-          <GoogleRegisterButton theme="#ea4335" title="Log in using Google" onCompletion={this.handleGoogleAuth} onFailure={console.error} />
+          <GoogleRegisterButton
+            theme="#ea4335"
+            title="Log in using Google"
+            onCompletion={this.handleGoogleAuth}
+            onFailure={err => console.error(err.response)}
+          />
         </AuthButtonWrapper>
       </>
     );
