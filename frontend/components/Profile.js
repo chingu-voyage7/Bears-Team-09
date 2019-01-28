@@ -69,7 +69,6 @@ class Profile extends Component {
       .catch(err => console.error(err.response));
     this.props.context.updateUser("firstName", firstName);
     this.props.context.updateUser("lastName", lastName);
-    
   };
 
   render() {
@@ -94,8 +93,8 @@ class Profile extends Component {
                 </FirstLastName>
                 <EditButton onClick={this.showNameEditor}>(edit)</EditButton>
                 <br />
-                <strong>Email</strong> {email}
-                <br />
+                <strong>Email</strong> <br />
+                {email}
                 <br />
                 {bio !== null && bio !== "null" && bio !== "" ? (
                   <p>
@@ -103,7 +102,9 @@ class Profile extends Component {
                     <br /> {bio}
                   </p>
                 ) : (
-                  <p>No bio</p>
+                  <p>
+                    No bio <EditButton onClick={this.showBioEditor}>(add)</EditButton>
+                  </p>
                 )}
                 <BioModal showModal={this.state.bioEditorOpened} hide={this.hideBioEditor} confirm={this.setBio} />
                 <NameModal showModal={this.state.nameEditorOpened} hide={this.hideNameEditor} confirm={this.setName} />
@@ -141,7 +142,7 @@ Profile.propTypes = {
 
 export default Profile;
 
-const FirstLastName = styled.h3`
+const FirstLastName = styled.h2`
   display: inline-block;
   margin-right: 0.2em;
 `;
