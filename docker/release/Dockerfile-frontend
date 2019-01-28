@@ -17,5 +17,5 @@ COPY ./frontend /app
 
 WORKDIR /app
 
-RUN npm install && \
+RUN export && npm install && \
     npm run build
