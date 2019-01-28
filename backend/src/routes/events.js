@@ -108,7 +108,7 @@ router.post('/:id/attend', (req, res) => {
 });
 
 router.post('/images', (req, res) => {
-    const imageHandler = upload('events', { width: 100, height: 150, crop: 'limit' }).single('file');
+    const imageHandler = upload('events', { width: 500, height: 500, crop: 'limit' }).single('file');
     imageHandler(req, res, (err) => {
       if (err) {
         res.status(400).json({message: err.message});
