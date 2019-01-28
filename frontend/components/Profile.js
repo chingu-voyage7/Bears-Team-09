@@ -79,7 +79,7 @@ class Profile extends Component {
                 <strong> Email:</strong> {email}
                 <br />
                 <br />
-                {bio !== null && bio !== "null" ? (
+                {bio !== null && bio !== "null" && bio !== "" ? (
                   <p>
                     <strong>Bio:</strong> {bio}
                   </p>

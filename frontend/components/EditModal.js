@@ -2,6 +2,7 @@ import React from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { UserContext } from "./UserProvider";
 
 const customStyles = {
   content: {
@@ -19,6 +20,10 @@ const customStyles = {
 Modal.setAppElement("#__next");
 
 class EditModal extends React.Component {
+  state = { bio: this.context.bio };
+
+  handleInput = e => this.setState({ bio: e.target.value });
+
   afterOpenModal = () => this.textArea.focus();
 
   render() {
@@ -33,7 +38,7 @@ class EditModal extends React.Component {
       >
         <Close onClick={hide}>X</Close>
         <h3>Your bio</h3>
-        <TextArea ref={el => (this.textArea = el)} />
+        <TextArea ref={el => (this.textArea = el)} value={this.state.bio} onChange={this.handleInput} />
         <CancelButton onClick={hide}>Cancel</CancelButton>
         <ConfirmButton
           onClick={() => {
@@ -78,7 +83,7 @@ const ConfirmButton = styled.button`
   color: white;
   cursor: pointer;
   border: 0;
-  background: #e31f1f;
+  background: hsl(120, 55%, 45%);
   border-radius: 2px;
   padding: 0 15px;
   height: 35px;
@@ -89,7 +94,7 @@ const CancelButton = styled.button`
   color: white;
   cursor: pointer;
   border: 0;
-  background: #008000b5;
+  background: hsl(0, 78%, 51%);
   border-radius: 2px;
   padding: 0 15px;
   height: 35px;
@@ -101,3 +106,5 @@ EditModal.propTypes = {
   hide: PropTypes.func.isRequired,
   confirm: PropTypes.func.isRequired
 };
+
+EditModal.contextType = UserContext;
