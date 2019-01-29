@@ -44,7 +44,7 @@ class LoginForm extends Component {
         this.props.context.logIn({ data: res.data, method: "password" });
       })
       .catch(err => {
-        console.error(err);
+        console.error(err.response);
         this.handleFail();
       });
   };
@@ -80,7 +80,7 @@ class LoginForm extends Component {
             theme="#ea4335"
             title="Log in using Google"
             onCompletion={this.handleGoogleAuth}
-            onFailure={console.error}
+            onFailure={err => console.error(err.response)}
           />
         </AuthButtonWrapper>
       </>

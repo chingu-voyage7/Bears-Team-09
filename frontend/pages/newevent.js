@@ -58,7 +58,7 @@ class NewEvent extends React.Component {
         Router.push("/events");
       })
       .catch(error => {
-        console.error(error);
+        console.error(error.response);
         this.setState({ serverPostFail: true });
       });
   };

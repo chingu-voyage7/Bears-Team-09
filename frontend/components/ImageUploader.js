@@ -28,7 +28,6 @@ class ImageUploader extends Component {
       })
       .catch(err => {
         console.error(err.response);
-        console.error(err);
       });
   };
 

@@ -55,7 +55,7 @@ class RegisterForm extends Component {
         this.handleAuth(null, "email/password");
       })
       .catch(err => {
-        console.error(err);
+        console.error(err.response);
         this.handleFail();
       });
   };
