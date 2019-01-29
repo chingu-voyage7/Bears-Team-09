@@ -42,11 +42,14 @@ class RegisterForm extends Component {
     // Handle Success register state -> redirect
     axios
       .post(`${backendUrl}/auth/register`, {
-        email: this.state.email,
-        password: this.state.password,
-        first_name: this.state.firstName,
-        last_name: this.state.lastName
-      })
+          email: this.state.email,
+          password: this.state.password,
+          first_name: this.state.firstName,
+          last_name: this.state.lastName
+        },
+        {
+          headers: {"Content-Type": "application/json"}
+        })
       .then(res => {
         this.props.context.logIn({ data: res.data, method: "password" });
         this.handleAuth(null, "email/password");

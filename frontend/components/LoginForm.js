@@ -35,6 +35,9 @@ class LoginForm extends Component {
       .post(`${backendUrl}/auth/login`, {
         email: this.state.email,
         password: this.state.password
+      },
+      {
+        headers: {"Content-Type": "application/json"}
       })
       .then(res => {
         Router.push("/");
