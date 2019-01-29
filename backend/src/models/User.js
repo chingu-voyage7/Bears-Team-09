@@ -4,7 +4,7 @@ const APIError = require('../utils/APIError.js');
 const Table = require('./Table');
 
 const SECRET = process.env.JWT_SECRET || 'Default_JWT-Secret';
-const JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || '1 day';
+const JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || '60d';
 
 class User extends Table {
   constructor(rawData={}) {
@@ -36,7 +36,7 @@ class User extends Table {
   }
 
   create() {
-    return this.hashPassword().then(() => super.create()).then(([data]) => {this.data = data; delete this.data.password;});
+    return this.hashPassword().then(() => super.create()).then(([data]) => {this.data = data; delete this.data.password; return this.data;});
   }
 
   read() {
