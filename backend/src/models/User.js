@@ -4,7 +4,7 @@ const APIError = require('../utils/APIError.js');
 const Table = require('./Table');
 
 const SECRET = process.env.JWT_SECRET || 'Default_JWT-Secret';
-const JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || '1 day';
+const JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || '60d';
 
 class User extends Table {
   constructor(rawData={}) {
