@@ -9,7 +9,7 @@ const Attendee = require('../models/EventAttendee');
 const myArgs = process.argv.slice(2);
 if (myArgs.length > 1) {
     throw new Error('Too many arguments, only one filename is accepted');
-} else if (myArgs.length == 0) {
+} else if (myArgs.length === 0) {
     throw new Error('Please pass filename to parse');
 }
 
