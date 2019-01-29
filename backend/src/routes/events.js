@@ -3,6 +3,7 @@ const Event = require('../models/Event');
 const Attendee = require('../models/EventAttendee');
 const APIError = require('../utils/APIError.js');
 const upload  = require('../utils/upload');
+const authenticate = require("../middleware/passport");
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.get('/', (req, res) => {
 });
 
 // create an event
-router.post('/', (req, res) => {
+router.post('/', authenticate("jwt"), (req, res) => {
     const newEvent = new Event({author_id: req.user.data.id,...req.body});
     newEvent.create()
     .then(([data]) => {
@@ -55,7 +56,7 @@ router.get('/:id/attendees', (req, res) => {
 });
 
 // delete an event
-router.delete('/:id', (req, res) => {
+router.delete('/:id', authenticate("jwt"), (req, res) => {
     const newEvent = new Event({id: req.params.id});
     newEvent.read()
     .then(([data]) => {
@@ -69,7 +70,7 @@ router.delete('/:id', (req, res) => {
 });
 
 // update an event
-router.put('/:id', (req, res) => {
+router.put('/:id', authenticate("jwt"), (req, res) => {
     const {id, ...newData} = req.body;
     const newEvent = new Event({id: req.params.id, ...newData});
     newEvent.update()
@@ -78,7 +79,7 @@ router.put('/:id', (req, res) => {
 });
 
 // subscribe to attend an event
-router.post('/:id/attend', (req, res) => {
+router.post('/:id/attend', authenticate("jwt"), (req, res) => {
     const attendees = new Attendee({event_id: req.params.id});
     const attendee = new Attendee({
         user_id: req.user.data.id,
@@ -107,8 +108,8 @@ router.post('/:id/attend', (req, res) => {
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
-router.post('/images', (req, res) => {
-    const imageHandler = upload('events', { width: 100, height: 150, crop: 'limit' }).single('file');
+router.post('/images', authenticate("jwt"), (req, res) => {
+    const imageHandler = upload('events', { width: 500, height: 500, crop: 'limit' }).single('file');
     imageHandler(req, res, (err) => {
       if (err) {
         res.status(400).json({message: err.message});
@@ -122,7 +123,7 @@ router.post('/images', (req, res) => {
   });
 
 // unsubscribe from attending an event
-router.delete('/:id/attend', (req, res) => {
+router.delete('/:id/attend', authenticate("jwt"), (req, res) => {
     const attendee = new Attendee({
         user_id: req.user.data.id,
         event_id: req.params.id

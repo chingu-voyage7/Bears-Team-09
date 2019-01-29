@@ -1,19 +1,19 @@
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { UserContext } from './UserProvider';
-import config from '../config.json';
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { UserContext } from "./UserProvider";
+import config from "../config.json";
 
 class GoogleRegisterButton extends Component {
   state = {};
 
   async componentDidMount() {
-    const { GoogleLogin } = await import('react-google-login');
+    const { GoogleLogin } = await import("react-google-login");
     this.setState({ GoogleLogin });
   }
 
   onFailure = err => {
-    console.error(err);
+    console.error(err.response);
     this.props.onFailure();
   };
 
