@@ -1,6 +1,7 @@
 const express = require('express');
 const Place = require('../models/Place');
 const APIError = require('../utils/APIError.js');
+const authenticate = require("../middleware/passport");
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.get('/', (req, res) => {
 });
 
 // Create
-router.post('/', (req, res) => {
+router.post('/', authenticate("jwt"), (req, res) => {
     const place = new Place(req.body);
     place.create()
     .then(([data]) => {res.status(201).json(data);})
@@ -34,7 +35,7 @@ router.get('/:id', (req, res) => {
 });
 
 // delete one
-router.delete('/:id', (req, res) => {
+router.delete('/:id', authenticate("jwt"), (req, res) => {
     const place = new Place({id: req.params.id});
     place.delete()
     .then(() => {res.status(204).json();})
@@ -42,7 +43,7 @@ router.delete('/:id', (req, res) => {
 });
 
 // update one
-router.put('/:id', (req, res) => {
+router.put('/:id', authenticate("jwt"), (req, res) => {
     const {id, ...newData} = req.body;
     const place = new Place({id: req.params.id, ...newData});
     place.update()
