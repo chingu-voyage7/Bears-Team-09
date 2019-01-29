@@ -33,7 +33,7 @@ variable "image_tag" {}
 # Application settings
 variable "jwt_secret" {}
 variable "jwt_exp_threshold" {
-  default = "1 month"
+  default = "60d"
 }
 # Cloudinary CDN credentials
 variable "cdn_key" {}
