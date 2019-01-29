@@ -1,6 +1,7 @@
 const express = require('express');
 const Activity = require('../models/Activity');
 const APIError = require('../utils/APIError.js');
+const authenticate = require("../middleware/passport");
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ router.get('/', (req, res) => {
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
-router.post('/', (req, res) => {
+router.post('/', authenticate("jwt"), (req, res) => {
     const activity = new Activity(req.body);
     activity.create()
     .then(([data]) => {res.status(201).json(data);})
@@ -30,14 +31,14 @@ router.get('/:id', (req, res) => {
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', authenticate("jwt"), (req, res) => {
     const activity = new Activity({id: req.params.id});
     activity.delete()
     .then(() => {res.status(204).json();})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', authenticate("jwt"), (req, res) => {
     const {id, ...newData} = req.body;
     const activity = new Activity({id: req.params.id, ...newData});
     activity.update()
