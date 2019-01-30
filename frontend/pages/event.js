@@ -74,8 +74,8 @@ export class event extends Component {
       min_people: minPeople,
       author_id: authorID
     } = currentEvent.data;
-    const dateFromFormat = format(dateFrom, "MMMM DD YYYY");
-    const dateToFormat = format(dateTo, "MMMM DD YYYY");
+    const dateFromFormat = dateFrom ? format(dateFrom, "MMMM DD YYYY") : "not set";
+    const dateToFormat = dateTo ? format(dateTo, "MMMM DD YYYY") : "not set";
 
     this.setState({
       name,
@@ -202,9 +202,13 @@ export class event extends Component {
                   </Description>
                   <div>
                     <Title>Location: </Title>
-                    <SubTitle>
-                      {city}, {country}
-                    </SubTitle>
+                    {city ? (
+                      <SubTitle>
+                        {city}, {country}
+                      </SubTitle>
+                    ) : (
+                      <SubTitle>not set</SubTitle>
+                    )}
                   </div>
                   <div>
                     <Title>Starts: </Title>
