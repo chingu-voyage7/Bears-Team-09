@@ -114,8 +114,8 @@ class Dashboard extends Component {
             <h4>
               <Link href="/newevent">
                 <StyledButton>Create</StyledButton>
-              </Link>{" "}
-              new event and PairUp
+              </Link>
+              new PairUp
               <br />
               or check out existing events below
             </h4>
@@ -194,6 +194,7 @@ const StyledButton = styled.a`
   border: 1px solid white;
   border-radius: 2px;
   padding: 4px;
+  margin-right: 0.5em;
   cursor: pointer;
   &:hover {
     color: gold;
