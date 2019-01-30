@@ -69,9 +69,9 @@ Event.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   activity: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  date_from: PropTypes.string.isRequired,
-  date_to: PropTypes.string.isRequired
+  description: PropTypes.string,
+  date_from: PropTypes.string,
+  date_to: PropTypes.string
 };
 
 export default Event;

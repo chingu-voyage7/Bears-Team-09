@@ -14,8 +14,7 @@ import StyledErrorMsg from "../styles/StyledErrorMsg";
 
 const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
 
-// using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS
-// there may be a cleaner solution that I am not aware of
+// using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS. There may be a cleaner solution that I am not aware of
 const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), {
   ssr: false
 });
@@ -37,16 +36,11 @@ class Dashboard extends Component {
 
     const today = format(new Date(), "YYYY-MM-DD");
     const isoDate = `${today}T00:00:000Z`;
-    // console.log(isoDate);
-
-    // const realUlr = `http://localhost:8000/events?compare=gt&date_from=${isoDate}&limit=5`;
 
     // Default fetch is any event from today with a limit of 5
     const eventsPromise = axios({
       method: "get",
-
       url: `${backendUrl}/events?compare=gt&date_from=${isoDate}&limit=5`,
-
       headers: {
         Authorization: AuthStr
       }
@@ -137,9 +131,9 @@ class Dashboard extends Component {
           <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} />
           <DateSelectorDynamic placeholder="date" updateSelection={this.updateFilter} />
           <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} />
-          <ClearnButton type="button" onClick={this.clearFilters}>
+          <ClearButton type="button" onClick={this.clearFilters}>
             Clear
-          </ClearnButton>
+          </ClearButton>
         </FilterControlPanel>
         {events && events.length !== 0 && (
           <EventContainer>
@@ -247,7 +241,8 @@ const FilterControlPanel = styled.div`
 `;
 
 const EventContainer = styled.div`
-  text-align: center;
+  width: 75%;
+  margin: auto;
 `;
 
 const LoadMoreButton = styled.button`
@@ -268,7 +263,7 @@ const LoadMoreButton = styled.button`
   }
 `;
 
-const ClearnButton = styled.button`
+const ClearButton = styled.button`
   cursor: pointer;
   padding: 5px;
   outline: 0;
