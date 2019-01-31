@@ -69,6 +69,11 @@ class Dashboard extends Component {
     }).catch(err => console.error(err.response));
     const [events, places, activities] = await Promise.all([eventsPromise, placesPromise, activitiesPromise]);
 
+    if (!events || !places || !activities) {
+      console.log("One of the following is empty: ", { events, places, activities });
+      return;
+    }
+
     this.setState({ events: events.data.events, places: places.data.places, activities: activities.data.activities });
   }
 
