@@ -3,9 +3,9 @@ const APIError = require("../utils/APIError");
 
 const DB_DATA = {
   user: process.env.PGUSER || 'postgres',
-  host: process.env.PGHOST || 'event-buddies.cbzllsnbisgr.us-east-2.rds.amazonaws.com',
+  host: process.env.PGHOST || 'localhost',
   database: process.env.PGDB || 'postgres',
-  password: process.env.PGPASSWORD || '6?~6wA3WYfW(axLa*t*+7r?cbYS4',
+  password: process.env.PGPASSWORD || '123456',
   port: process.env.PGPORT || 5432
 };
 
