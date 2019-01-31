@@ -7,8 +7,9 @@ import { UserContext } from "./UserProvider";
 import Event from "./Event";
 import BioModal from "./BioModal";
 import NameModal from "./NameModal";
+import config from "../config.json";
 
-const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+const backendUrl = config.BACKEND_URL;
 
 class Profile extends Component {
   state = { events: [], bioEditorOpened: false, nameEditorOpened: false };
