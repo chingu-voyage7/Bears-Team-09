@@ -166,8 +166,6 @@ describe('Test User Model', () => {
             .finally(() => done());
         });
 
-        it('Should return "Not Found" error', () => expect(error.message).to.equal('Not found'));
-
         it('Should contain statusCode', () => expect(error).to.have.nested.property('statusCode'));
 
     });
