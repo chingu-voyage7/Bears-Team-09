@@ -108,17 +108,34 @@ router.post('/:id/attend', authenticate("jwt"), (req, res) => {
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
 
-router.post('/images', authenticate("jwt"), (req, res) => {
+router.post('/:id/images', authenticate("jwt"), (req, res) => {
     const imageHandler = upload('events', { width: 500, height: 500, crop: 'limit' }).single('file');
-    imageHandler(req, res, (err) => {
-      if (err) {
-        res.status(400).json({message: err.message});
-      } else if (!req.file) {
-        res.status(400).json({message: 'File is not set'});
-      } else {
-        res.status(201).json({url: req.file.secure_url});
-      }
-    });
+    // check if event exists
+    (new Event({id: req.params.id}))
+    .read()
+    .then(([data]) => {
+        if (data === undefined) {
+            throw new APIError(`event #${req.params.id} not found`, 404);
+        }
+    })
+    .then(() => {
+        // upload image
+        imageHandler(req, res, (err) => {
+            if (err) {
+                // upload failed
+                res.status(400).json({message: err.message});
+            } else if (!req.file) {
+                res.status(400).json({message: 'File is not set'});
+            } else {
+                (new Event({id: req.params.id, image: req.file.secure_url}))
+                .update()
+                // update failed
+                .catch(e => res.status(400).json({message: e.message}));
+                res.status(201).json({url: req.file.secure_url});
+            }
+        });
+    })
+    .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
     return res;
   });
 
