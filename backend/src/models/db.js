@@ -3,9 +3,9 @@ const APIError = require("../utils/APIError");
 
 const DB_DATA = {
   user: process.env.PGUSER || 'postgres',
-  host: process.env.PGHOST || 'docker.vm',
+  host: process.env.PGHOST || 'event-buddies.cbzllsnbisgr.us-east-2.rds.amazonaws.com',
   database: process.env.PGDB || 'postgres',
-  password: process.env.PGPASSWORD || '123456',
+  password: process.env.PGPASSWORD || '6?~6wA3WYfW(axLa*t*+7r?cbYS4',
   port: process.env.PGPORT || 5432
 };
 
@@ -22,4 +22,4 @@ module.exports = {
 };
 
 // run migrations with
-// DATABASE_URL=postgres://postgres:123456@docker.vm/postgres npm run migrate up
+// DATABASE_URL='postgres://postgres:"6?~6wA3WYfW(axLa*t*+7r?cbYS4"@event-buddies.cbzllsnbisgr.us-east-2.rds.amazonaws.com/postgres' npm run migrate up

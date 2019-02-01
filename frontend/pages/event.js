@@ -145,7 +145,7 @@ export class event extends Component {
         this.updateEventAttendees();
         this.setState({ userIsAttending: true });
       })
-      .catch(error => console.log(error));
+      .catch(error => console.log(error.response));
   };
 
   leaveEvent = () => {

@@ -13,8 +13,9 @@ class ImageUploader extends Component {
     this.setState({ selectedFile: imageFile });
     const formData = new FormData();
     formData.append("file", imageFile, imageFile.name);
+    const url = `${backendUrl}${this.props.url}`;
     axios
-      .post(`${backendUrl}/users/images`, formData, {
+      .post(url, formData, {
         headers: {
           Authorization: `Bearer ${this.context.token}`,
           "Content-Type": "multipart/form-data"
@@ -57,6 +58,7 @@ ImageUploader.contextType = UserContext;
 export default ImageUploader;
 
 const CenteredButton = styled.button`
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right:auto;
   display: block;
 `;
