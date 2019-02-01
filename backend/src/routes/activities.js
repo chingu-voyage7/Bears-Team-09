@@ -24,7 +24,7 @@ router.get('/:id', (req, res) => {
     activity.read()
     .then(([data]) => {
         if (data === undefined) {
-            throw new APIError('Not found', 404);
+            throw new APIError(`activity #${req.params.id} not found`, 404);
         }
         res.json(data);
     })

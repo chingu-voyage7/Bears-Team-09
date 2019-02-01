@@ -8,6 +8,7 @@ import MainLayout from "../components/MainLayout";
 import Modal from "../components/Modal";
 import ImageUploader from "../components/ImageUploader";
 import config from "../config.json";
+import ImageUploader from "../components/ImageUploader";
 
 const backendUrl = config.BACKEND_URL;
 
@@ -168,7 +169,8 @@ export class event extends Component {
 
   updateImage = url => {
     console.log(`Setting new image URL: ${url}`);
-    this.setState({ image: url })};
+    this.setState({ image: url });
+  };
 
   render() {
     const { router } = this.props;
