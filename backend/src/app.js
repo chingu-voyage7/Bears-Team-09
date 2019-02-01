@@ -1,7 +1,7 @@
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const express = require("express");
-const helmet = require('helmet');
+const helmet = require("helmet");
 const logger = require("morgan");
 const activitiesRouter = require("./routes/activities");
 const authenticate = require("./middleware/passport");
@@ -13,8 +13,16 @@ const usersRouter = require("./routes/users");
 const port = process.env.PORT || 8000;
 const app = express();
 
+const fqdn = process.env.FQDN || "localhost";
+const corsOptions = {
+    "origin": `${fqdn}`,
+    "methods": "GET,HEAD,PUT,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+};
+
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(logger("dev"));
 app.use(bodyParser.json());
 
