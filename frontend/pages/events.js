@@ -242,7 +242,7 @@ const FilterControlPanel = styled.div`
 `;
 
 const EventContainer = styled.div`
-  width: 75%;
+  width: 60%;
   margin: auto;
 `;
 

@@ -40,7 +40,7 @@ const makeEventsDomElements = events => events.map(event => <Event {...event} ke
 const EventList = props => {
   const { filters, events } = props;
   const eventsToShow = makeEventsDomElements(applyEventsFilter(events, filters));
-  return <div>{eventsToShow && eventsToShow}</div>;
+  return <div>{eventsToShow}</div>;
 };
 
 export default EventList;
