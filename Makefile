@@ -31,6 +31,9 @@ DOCKER_REGISTRY ?= docker.io
 # Set DOCKER_REGISTRY_AUTH to auth endpoint for private Docker registry
 DOCKER_REGISTRY_AUTH ?=
 
+# Deploy settings
+TERRAFORM_VERSION ?= 0.11.11
+
 # Utility functions
 INFO := @bash -c 'echo "=> $$1";' VALUE
 
@@ -80,9 +83,6 @@ ifeq (tag,$(firstword $(MAKECMDGOALS)))
   $(eval $(TAG_ARGS):;@:)
 endif
 
-# Deploy settings
-TERRAFORM_VERSION ?= 0.11.1
-
 .PHONY: test release tag buildtag login logout publish deploy run clean
 
 test:
@@ -112,6 +112,7 @@ release:
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up test
 	${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) test
 	${INFO} "Building frontend container..."
+	@ echo '{"GOOGLE_CLIENT_ID":"${GOOGLE_CLIENT_ID}","GOOGLE_CLIENT_SECRET":"${GOOGLE_CLIENT_SECRET}","BACKEND_URL":"https://${DOMAIN_NAME}/api"}' > ./frontend/config.json
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build --pull frontend
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up -d frontend
 	${INFO} "Build and release complete"
@@ -142,7 +143,7 @@ buildtag:
 
 login:
 	${INFO} "Logging in to Docker registry $$DOCKER_REGISTRY..."
-	@ docker login -u $$DOCKER_USER -p $$DOCKER_PASSWORD $(DOCKER_REGISTRY_AUTH)
+	@ docker login -u $$DOCKER_HUB_USER -p $$DOCKER_HUB_PASSWORD $(DOCKER_REGISTRY_AUTH)
 	${INFO} "Logged in to Docker registry $$DOCKER_REGISTRY"
 
 logout:
@@ -158,33 +159,31 @@ publish:
 
 deploy:
 	${INFO} "Deploying..."
-	@ openssl aes-256-cbc -K ${encrypted_key} -iv ${encrypted_iv} -in ${AWS_SSH_KEY_PATH}.enc -out ${AWS_SSH_KEY_PATH} -d
-	@ chmod 400 ${AWS_SSH_KEY_PATH}
 	@ curl https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip -o terraform.zip
 	@ unzip terraform.zip
 	@ chmod +x ./terraform
 	./terraform init -backend=true \
 		-backend-config="access_key=${AWS_ACCESS_KEY}" \
 		-backend-config="secret_key=${AWS_SECRET_KEY}" \
-		deploy
+		deploy/step2
 	./terraform plan \
 		-var 'aws_access_key=${AWS_ACCESS_KEY}' \
 		-var 'aws_secret_key=${AWS_SECRET_KEY}' \
-		-var 'key_name=${AWS_KEY_NAME}' \
-		-var 'private_key_path=${AWS_SSH_KEY_PATH}' \
 		-var 'project_name=$(PROJECT_NAME)' \
-		-var 'pg_user=${PG_USER}' \
+		-var 'domain_name=${DOMAIN_NAME}' \
+		-var 'letsenctypt_reg_email=${LETSENCRYPT_REG_EMAIL}' \
 		-var 'pg_db=${PG_DB}' \
+		-var 'pg_user=${PG_USER}' \
 		-var 'pg_password=${PG_PASSWORD}' \
-		-var 'jwt_secret=${JWT_SECRET}' \
-		-var 'backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' \
 		-var 'frontend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-front' \
-		-var 'deploy_tag=$(shell git rev-parse --short HEAD)' \
+		-var 'backend_image=$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)-back' \
+		-var 'image_tag=$(shell git rev-parse --short HEAD)' \
+		-var 'jwt_secret=${JWT_SECRET}' \
 		-var 'cdn_key=${CLOUDINARY_KEY}' \
 		-var 'cdn_secret=${CLOUDINARY_SECRET}' \
 		-var 'node_env=${ENV_NODE}' \
 		-out $(PROJECT_NAME).tfplan \
-		deploy
+		deploy/step2
 	./terraform apply $(PROJECT_NAME).tfplan
 	${INFO} "Successfully deployed!"
 

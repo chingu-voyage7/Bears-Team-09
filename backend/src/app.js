@@ -18,10 +18,11 @@ app.use(cors());
 app.use(logger("dev"));
 app.use(bodyParser.json());
 
-app.use("/auth", authRouter);
-app.use("/users", authenticate("jwt"), usersRouter);
-app.use("/activities", activitiesRouter);
-app.use("/places", placesRouter);
-app.use("/events", eventsRouter);
-app.use((err, req, res, next) => res.headersSent ? next(err) : res.status(400).json({message: err.message}));
+app.use("/api/auth", authRouter);
+app.use("/api/users", authenticate("jwt"), usersRouter);
+app.use("/api/activities", authenticate("jwt"), activitiesRouter);
+app.use("/api/places", authenticate("jwt"), placesRouter);
+app.use("/api/events", authenticate("jwt"), eventsRouter);
+app.use((err, req, res, next) => res.headersSent ? next(err) : res.status(500).json({message: err.message}));
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

@@ -1,5 +1,7 @@
 FROM node:10.14.1-alpine
 
+ENV NODE_ENV='production'
+
 CMD ["npm", "run", "start"]
 
 EXPOSE 3000

@@ -5,7 +5,7 @@ const { expect } = chai;
 
 chai.use(chaiHttp);
 
-const url = process.env.API_URL || 'http://app:8000/';
+const url = process.env.API_URL || 'http://localhost:8000/api/';
 
 const assert = (result, prop) => expect(result).to.have.nested.property(prop);
 const assertNot = (result, prop) => expect(result).to.not.have.nested.property(prop);

@@ -3,7 +3,7 @@ const APIError = require("../utils/APIError");
 
 const DB_DATA = {
   user: process.env.PGUSER || 'postgres',
-  host: process.env.PGHOST || 'docker.vm',
+  host: process.env.PGHOST || 'localhost',
   database: process.env.PGDB || 'postgres',
   password: process.env.PGPASSWORD || '123456',
   port: process.env.PGPORT || 5432

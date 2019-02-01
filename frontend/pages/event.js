@@ -6,8 +6,9 @@ import { withRouter } from "next/router";
 import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
 import Modal from "../components/Modal";
+import config from "../config.json";
 
-const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+const backendUrl = config.BACKEND_URL;
 
 function getAttendance(userID, eventAttendees) {
   // helper fn to determine if user is already participating in an event

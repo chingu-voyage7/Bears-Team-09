@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { UserContext } from "./UserProvider";
+import config from "../config.json";
 
-const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
+const backendUrl = config.BACKEND_URL;
 
 class ImageUploader extends Component {
   state = { selectedFile: null };
