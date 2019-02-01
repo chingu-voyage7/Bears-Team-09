@@ -85,7 +85,7 @@ class Profile extends Component {
           <GridWrapper>
             <SideBar>
               <ProfileImage src={imageSrc} />
-              <ImageUploader style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }} />
+              <ImageUploader url="/users/images" style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }} />
               <PersonalInfo>
                 <FirstLastName>
                   {firstName} {lastName}
