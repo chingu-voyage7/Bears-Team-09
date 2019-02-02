@@ -187,7 +187,7 @@ export class event extends Component {
     const eventImage = image || "../static/stock-event.jpg";
 
     // const eventTotalAttendees = eventAttendees.length;
-    const slotsLeft = maxPeople - eventAttendees.length;
+    const spotsLeft = maxPeople - eventAttendees.length;
 
     return (
       <MainLayout>
@@ -223,14 +223,14 @@ export class event extends Component {
                 <EventImage src={eventImage} alt="people in a group" />
               </InfoWrapper>
               <JoinPanel>
-                {slotsLeft === 0 ? <h4>Event is full</h4> : <h4>{slotsLeft} spot(s) left</h4>}
+                <AvailableSpotsLeftNotice spotsLeft={spotsLeft} maxPeople={maxPeople} />
                 <ControlledAttendenceButtons
                   userID={userID}
                   authorID={authorID}
                   userIsAttending={userIsAttending}
                   leaveEvent={this.leaveEvent}
                   joinEvent={this.joinEvent}
-                  eventIsFull={slotsLeft === 0}
+                  eventIsFull={spotsLeft === 0}
                 />
               </JoinPanel>
               <ControlButtons>
@@ -246,6 +246,16 @@ export class event extends Component {
       </MainLayout>
     );
   }
+}
+
+function AvailableSpotsLeftNotice({ spotsLeft, maxPeople }) {
+  if (maxPeople === null) {
+    return null;
+  }
+  if (spotsLeft === 0) {
+    return <h4>Event is full</h4>;
+  }
+  return <h4>{spotsLeft} spot(s) left</h4>;
 }
 
 function ControlledAttendenceButtons({ userID, authorID, userIsAttending, leaveEvent, joinEvent, eventIsFull }) {
@@ -394,6 +404,11 @@ const BackButton = styled.button`
 
 event.propTypes = {
   router: PropTypes.object.isRequired
+};
+
+AvailableSpotsLeftNotice.propTypes = {
+  spotsLeft: PropTypes.number.isRequired,
+  maxPeople: PropTypes.string
 };
 
 export default withRouter(event);
