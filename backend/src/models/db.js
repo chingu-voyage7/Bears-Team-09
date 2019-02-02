@@ -22,4 +22,4 @@ module.exports = {
 };
 
 // run migrations with
-// DATABASE_URL='postgres://postgres:"6?~6wA3WYfW(axLa*t*+7r?cbYS4"@event-buddies.cbzllsnbisgr.us-east-2.rds.amazonaws.com/postgres' npm run migrate up
+// DATABASE_URL=postgres://postgres:123456@docker.vm/postgres npm run migrate up
