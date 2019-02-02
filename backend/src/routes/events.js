@@ -39,7 +39,7 @@ router.get('/:id', (req, res) => {
     newEvent.read()
     .then(([data]) => {
         if (data === undefined) {
-            throw new APIError('Not found', 404);
+            throw new APIError(`event #${req.params.id} not found`, 404);
         }
         res.json(data);
     })
@@ -61,7 +61,7 @@ router.delete('/:id', authenticate("jwt"), (req, res) => {
     newEvent.read()
     .then(([data]) => {
         if (data.author_id !== req.user.data.id) {
-            throw new APIError("Permission denied", 403);
+            throw new APIError("permission denied", 403);
         }
         return newEvent.delete();
     })
@@ -89,7 +89,7 @@ router.post('/:id/attend', authenticate("jwt"), (req, res) => {
     (new Event({id: req.params.id})).read()
     .then(([data]) => {
         if (!data) {
-            throw new APIError('event not found', 404);
+            throw new APIError(`event #${req.params.id} not found`, 404);
         } else if (Number(data.author_id) === Number(req.user.data.id)) {
             throw new APIError('cant subscribe your own event', 403);
         }
@@ -114,7 +114,7 @@ router.post('/images', authenticate("jwt"), (req, res) => {
       if (err) {
         res.status(400).json({message: err.message});
       } else if (!req.file) {
-        res.status(400).json({message: 'File is not set'});
+        res.status(400).json({message: 'file is not set'});
       } else {
         res.status(201).json({url: req.file.secure_url});
       }
@@ -131,7 +131,7 @@ router.delete('/:id/attend', authenticate("jwt"), (req, res) => {
     (new Event({id: req.params.id})).read()
     .then(([data]) => {
         if (!data) {
-            throw new APIError('event not found', 404);
+            throw new APIError(`event not #${req.params.id} found`, 404);
         } else if (Number(data.author_id) === Number(req.user.data.id)) {
             throw new APIError('cant unsubscribe from your own event', 403);
         }

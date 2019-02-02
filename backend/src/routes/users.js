@@ -46,7 +46,7 @@ router.post('/images', (req, res) => {
     if (err) {
       res.status(400).json({message: err.message});
     } else if (!req.file) {
-      res.status(400).json({message: 'File is not set'});
+      res.status(400).json({message: 'file is not set'});
     } else {
       (new User({id: req.user.data.id, image: req.file.secure_url}))
       .update()
