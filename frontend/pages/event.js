@@ -230,6 +230,7 @@ export class event extends Component {
                   userIsAttending={userIsAttending}
                   leaveEvent={this.leaveEvent}
                   joinEvent={this.joinEvent}
+                  eventIsFull={slotsLeft === 0}
                 />
               </JoinPanel>
               <ControlButtons>
@@ -247,9 +248,12 @@ export class event extends Component {
   }
 }
 
-function ControlledAttendenceButtons({ userID, authorID, userIsAttending, leaveEvent, joinEvent }) {
+function ControlledAttendenceButtons({ userID, authorID, userIsAttending, leaveEvent, joinEvent, eventIsFull }) {
   const userIsOwner = Number(userID) === Number(authorID);
   if (userIsOwner) {
+    return null;
+  }
+  if (eventIsFull && !userIsAttending) {
     return null;
   }
   if (userIsAttending) {
