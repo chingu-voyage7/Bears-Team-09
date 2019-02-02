@@ -69,7 +69,7 @@ class NewEvent extends React.Component {
       <MainLayout>
         <EventWrapper>
           <InputSection>
-            <Title>Create New Event:</Title>
+            <Title>Create New Event</Title>
             <NewEventForm createEvent={this.createEvent} places={places} activities={activities} />
             {serverPostFail && <p style={{ color: "red" }}>Event creation failed, try again</p>}
           </InputSection>
@@ -113,4 +113,5 @@ const InputSection = styled.div`
 
 const Title = styled.h1`
   font-size: 2.5rem;
+  text-align: center;
 `;

@@ -9,7 +9,11 @@ import SelectParticipantRange from "./SelectParticipantRange";
 import ActivityPicker from "./ActivityPicker";
 import LocationSearch from "./LocationSearch";
 import DateRangePicker from "./DateRangePicker";
-
+import DynamicActivitySearch from "./DynamicActivitySearch";
+/*
+Current flow is , Event Name, Description, Activity, City, Min PPl/Max PPl, Start/End Dates
+Probably need to add Country field
+*/
 class EventForm extends Component {
   state = {
     name: "",
@@ -92,8 +96,9 @@ class EventForm extends Component {
             placeholder="Description"
             handleChange={this.handleInput}
           />
-          <ActivityPicker type="form" updateSelection={this.updateActivity} activities={activities} />
-          <LocationSearch locations={places} updateSelection={this.updateLocation} />
+          <DynamicActivitySearch />
+          {/* <ActivityPicker type="form" updateSelection={this.updateActivity} activities={activities} />
+          <LocationSearch locations={places} updateSelection={this.updateLocation} /> */}
           <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
           <DateRangePicker updateDateRange={this.updateDateRange} />
           {!this.state.valid && <ErrorMsg>Error: Please fill all fields to create an event!</ErrorMsg>}
