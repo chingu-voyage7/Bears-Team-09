@@ -24,7 +24,8 @@ class ImageUploader extends Component {
       .then(res => {
         // At this point, image is already uploaded to the cloud and inserted into DB
         const newImageUrl = res.data.url;
-        this.context.updateImage(newImageUrl);
+        this.context.wupdateImage(newImageUrl);
+        this.props.onCompletion(newImageUrl);
       })
       .catch(err => {
         console.error(err.response);
@@ -59,6 +60,6 @@ export default ImageUploader;
 
 const CenteredButton = styled.button`
   margin-left: auto;
-  margin-right:auto;
+  margin-right: auto;
   display: block;
 `;
