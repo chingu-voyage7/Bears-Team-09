@@ -8,7 +8,6 @@ import MainLayout from "../components/MainLayout";
 import Modal from "../components/Modal";
 import ImageUploader from "../components/ImageUploader";
 import config from "../config.json";
-import ImageUploader from "../components/ImageUploader";
 
 const backendUrl = config.BACKEND_URL;
 
