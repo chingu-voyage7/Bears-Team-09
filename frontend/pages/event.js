@@ -167,10 +167,7 @@ export class event extends Component {
       .catch(error => console.log(error));
   };
 
-  updateImage = url => {
-    console.log(`Setting new image URL: ${url}`);
-    this.setState({ image: url });
-  };
+  updateImage = url => this.setState({ image: url });
 
   render() {
     const { router } = this.props;
@@ -243,7 +240,7 @@ export class event extends Component {
                 <BackButton onClick={() => router.push("/events")}>Back</BackButton>
                 {Number(userID) === Number(authorID) && <DeleteButton onClick={this.showModal}>Delete</DeleteButton>}
               </ControlButtons>
-              <ImageUploader url="/events/images" onCompletion={this.updateImage} />
+              <ImageUploader url={`/events/${this.props.router.query.id}/images`} onCompletion={this.updateImage} />
               <Modal showModal={this.state.showModal} hide={this.hideModal} confirm={this.deleteEvent} />
             </EventCard>
           ) : (

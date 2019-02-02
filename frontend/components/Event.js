@@ -3,9 +3,11 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import moment from "moment";
 import Link from "next/link";
+import Router from "next/router";
 
 class Event extends Component {
   render() {
+    console.log(Router.query);
     const { id, name, activity, description, date_from: dateFromRaw, date_to: dateToRaw, image } = this.props;
     let dateFormatFrom = "lll";
 
@@ -22,7 +24,7 @@ class Event extends Component {
     return (
       <EventCard>
         <EventImage src={image} />
-        <Link href={`/event?id=${id}`} as={`event/${name}`}>
+        <Link href={`/event?id=${id}`}>
           <EventTitle>{name}</EventTitle>
         </Link>
         <EventSubtitle>{activity} </EventSubtitle>
