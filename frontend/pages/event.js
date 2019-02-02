@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { withRouter } from "next/router";
 import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
+import Attendees from "../components/Attendees";
 import Modal from "../components/Modal";
 import config from "../config.json";
 
@@ -183,10 +184,7 @@ export class event extends Component {
       userIsAttending
     } = this.state;
 
-    // FIXME: This needs to be tested when backend has images to show, we need to make sure path works with DB
     const eventImage = image || "../static/stock-event.jpg";
-
-    // const eventTotalAttendees = eventAttendees.length;
     const spotsLeft = maxPeople - eventAttendees.length;
 
     return (
@@ -222,6 +220,7 @@ export class event extends Component {
                 </InfoPanel>
                 <EventImage src={eventImage} alt="people in a group" />
               </InfoWrapper>
+              <Attendees attendees={eventAttendees} />
               <JoinPanel>
                 <AvailableSpotsLeftNotice spotsLeft={spotsLeft} maxPeople={maxPeople} />
                 <ControlledAttendenceButtons
