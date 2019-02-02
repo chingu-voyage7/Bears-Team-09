@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import { UserContext } from "./UserProvider";
 import config from "../config.json";
 
@@ -64,3 +65,8 @@ const CenteredButton = styled.button`
   margin-right: auto;
   display: block;
 `;
+
+ImageUploader.propTypes = {
+  url: PropTypes.string.isRequired,
+  onCompletion: PropTypes.func
+};
