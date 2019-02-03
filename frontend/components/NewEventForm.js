@@ -22,13 +22,17 @@ class EventForm extends Component {
     place_id: "",
     date_from: "",
     date_to: "",
-    min_people: "2",
-    max_people: "2",
-    valid: true
+    min_people: null,
+    max_people: null,
+    valid: true,
+    nameIsValid: true,
+    activity_idIsValid: true,
+    max_peopleIsValid: true
   };
 
   handleSubmit = e => {
     e.preventDefault();
+    // create new event object to be sent to API
     const newEvent = {
       name: this.state.name,
       min_people: this.state.min_people,
@@ -40,13 +44,20 @@ class EventForm extends Component {
       date_to: this.state.date_to
     };
 
-    // validation of fields
-    const eventArr = Object.keys(newEvent);
-    for (let i = 0; i < eventArr.length; i++) {
-      // define optional fields here for early return and no validation
-      if (eventArr[i] === "valid" || eventArr[i] === "date_from" || eventArr[i] === "date_to") break;
-      if (newEvent[eventArr[i]].length === 0) {
-        this.setState({ valid: false });
+    // validate new object
+    const REQUIRED_FIELDS = ["name", "activity_id", "max_people"];
+    for (let i = 0; i < REQUIRED_FIELDS.length; i++) {
+      if (newEvent[REQUIRED_FIELDS[i]] === null || newEvent[REQUIRED_FIELDS[i]] === "") {
+        console.log(`validation is failing at ${REQUIRED_FIELDS[i]}`);
+        if (REQUIRED_FIELDS[i] === "name") {
+          this.setState({ valid: false, nameIsValid: false });
+        } else if (REQUIRED_FIELDS[i] === "activity_id") {
+          this.setState({ valid: false, activity_idIsValid: false });
+          return;
+        } else {
+          this.setState({ valid: false, max_peopleIsValid: false });
+          return;
+        }
         return;
       }
     }
@@ -133,6 +144,7 @@ class EventForm extends Component {
   };
 
   render() {
+    const { valid, nameIsValid, activity_idIsValid: activityValid, max_peopleIsValid } = this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
@@ -149,11 +161,12 @@ class EventForm extends Component {
             type="activities"
             placeholder="Activity"
             allowNew
+            activityValid
           />
           <DynamicLocationSearch updateLocation={this.updateLocation} placeholder="City" allowNew />
           <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
           <DateRangePicker updateDateRange={this.updateDateRange} />
-          {!this.state.valid && <ErrorMsg>Error: Please fill all fields to create an event!</ErrorMsg>}
+          {!valid && <ErrorMsg>Please make sure you filled name, activity and max people fields to continue!</ErrorMsg>}
           <ButtonWrapper>
             <BackButton handleBackButton={this.handleBackButton} />
             <LoginButton title="Create" />

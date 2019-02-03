@@ -11,37 +11,8 @@ const backendUrl = config.BACKEND_URL;
 
 class NewEvent extends React.Component {
   state = {
-    places: [],
-    activities: [],
-    AuthStr: "",
     serverPostFail: false
   };
-
-  async componentDidMount() {
-    const { tokenCtx } = this.context;
-    const token = tokenCtx || localStorage.getItem("token");
-    const AuthStr = `Bearer ${token}`;
-    this.setState({ AuthStr });
-    const placesPromise = axios({
-      method: "get",
-      url: `${backendUrl}/places`,
-      headers: {
-        Authorization: AuthStr
-      }
-    });
-
-    const activitiesPromise = axios({
-      method: "get",
-      url: `${backendUrl}/activities`,
-      headers: {
-        Authorization: AuthStr
-      }
-    });
-
-    const [places, activities] = await Promise.all([placesPromise, activitiesPromise]);
-
-    this.setState({ places: places.data.places, activities: activities.data.activities });
-  }
 
   createEvent = event => {
     console.log(event);
@@ -64,13 +35,13 @@ class NewEvent extends React.Component {
   };
 
   render() {
-    const { places, activities, serverPostFail } = this.state;
+    const { serverPostFail } = this.state;
     return (
       <MainLayout>
         <EventWrapper>
           <InputSection>
             <Title>Create New Event</Title>
-            <NewEventForm createEvent={this.createEvent} places={places} activities={activities} />
+            <NewEventForm createEvent={this.createEvent} />
             {serverPostFail && <p style={{ color: "red" }}>Event creation failed, try again</p>}
           </InputSection>
         </EventWrapper>
