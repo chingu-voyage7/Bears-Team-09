@@ -11,6 +11,7 @@ import SelectParticipantRange from "./SelectParticipantRange";
 // import LocationSearch from "./LocationSearch";
 import DateRangePicker from "./DateRangePicker";
 import DynamicActivitySearch from "./DynamicActivitySearch";
+import DynamicLocationSearch from "./DynamicLocationSearch";
 import config from "../config.json";
 
 const backendUrl = config.BACKEND_URL;
@@ -131,6 +132,7 @@ class EventForm extends Component {
             handleChange={this.handleInput}
           />
           <DynamicActivitySearch updateAttribute={this.updateAttribute} type="activities" placeholder="Activity" />
+          <DynamicLocationSearch updateAttribute={this.updateAttribute} type="activities" placeholder="City" />
           {/* <ActivityPicker type="form" updateSelection={this.updateActivity} activities={activities} />
           <LocationSearch locations={places} updateSelection={this.updateLocation} /> */}
           <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
