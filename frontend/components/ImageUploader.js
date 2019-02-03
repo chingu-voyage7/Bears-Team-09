@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
-import styled from "styled-components";
 import PropTypes from "prop-types";
 import { UserContext } from "./UserProvider";
 import config from "../config.json";
+import { NeutralButton } from "./shared/Buttons";
 
 const backendUrl = config.BACKEND_URL;
 
@@ -38,7 +38,7 @@ class ImageUploader extends Component {
 
   render() {
     return (
-      <div style={{ position: "relative" }}>
+      <>
         <input
           type="file"
           onChange={this.handleFileSelect}
@@ -48,10 +48,10 @@ class ImageUploader extends Component {
           accept="image/png, image/jpeg"
           style={{ display: "none" }}
         />
-        <CenteredButton type="button" onClick={this.handleClick}>
+        <NeutralButton type="button" onClick={this.handleClick}>
           Upload new picture
-        </CenteredButton>
-      </div>
+        </NeutralButton>
+      </>
     );
   }
 }
@@ -59,12 +59,6 @@ class ImageUploader extends Component {
 ImageUploader.contextType = UserContext;
 
 export default ImageUploader;
-
-const CenteredButton = styled.button`
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-`;
 
 ImageUploader.propTypes = {
   url: PropTypes.string.isRequired,

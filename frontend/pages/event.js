@@ -223,7 +223,10 @@ export class event extends Component {
                     <SubTitle>{dateTo}</SubTitle>
                   </div>
                 </InfoPanel>
-                <EventImage src={eventImage} alt="people in a group" />
+                <div>
+                  <EventImage src={eventImage} alt="people in a group" />
+                  <ImageUploader url={`/events/${this.props.router.query.id}/images`} onCompletion={this.updateImage} />
+                </div>
               </InfoWrapper>
               <JoinPanel>
                 {slotsLeft === 0 ? <h4>Event is full</h4> : <h4>{slotsLeft} spot(s) left</h4>}
@@ -239,7 +242,6 @@ export class event extends Component {
                 <BackButton onClick={() => router.push("/events")}>Back</BackButton>
                 {Number(userID) === Number(authorID) && <DeleteButton onClick={this.showModal}>Delete</DeleteButton>}
               </ControlButtons>
-              <ImageUploader url={`/events/${this.props.router.query.id}/images`} onCompletion={this.updateImage} />
               <Modal showModal={this.state.showModal} hide={this.hideModal} confirm={this.deleteEvent} />
             </EventCard>
           ) : (

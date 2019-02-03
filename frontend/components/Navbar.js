@@ -57,7 +57,7 @@ export default Navbar;
 
 const StyledNav = styled.nav`
   background: rgb(22, 67, 75);
-  background: linear-gradient(90deg, rgba(22, 67, 75, 1) 0%, rgba(28, 12, 91, 1) 100%);
+  background: linear-gradient(90deg, hsla(189, 54%, 19%, 1) 0%, hsla(189, 54%, 19%, 1) 100%);
   color: white;
   padding: 8px;
 
