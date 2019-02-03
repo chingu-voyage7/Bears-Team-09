@@ -63,7 +63,6 @@ class DynamicActivitySearch extends React.Component {
         Authorization: AuthStr
       }
     });
-    console.log(suggestions);
     const suggestionArray = suggestions.data["activities"];
     if (suggestionArray.length === 0) {
       // no results found
@@ -84,15 +83,16 @@ class DynamicActivitySearch extends React.Component {
     }
   };
 
-  handleClickSelect = (e, id, name) => {
+  handleClickSelect = (id, name) => {
     // handler for direct click on suggestion
-    const { type, updateActivity } = this.props;
+    const { updateActivity } = this.props;
     const payload = {
       id,
       name
     };
     this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
-    updateActivity(type, payload, true);
+
+    updateActivity(payload, true);
   };
 
   // method that is needed for hiding popup if clicked outside functionality
@@ -103,7 +103,7 @@ class DynamicActivitySearch extends React.Component {
   };
 
   handleKeyDown = (e, id, name) => {
-    const { type, updateActivity } = this.props;
+    const { updateActivity } = this.props;
     const payload = {
       id,
       name
@@ -115,7 +115,7 @@ class DynamicActivitySearch extends React.Component {
     if (e.keyCode === 13) {
       // Select item if ENTER key is pressed
       this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
-      updateActivity(type, payload, true);
+      updateActivity(payload, true);
     }
   };
 
@@ -125,7 +125,7 @@ class DynamicActivitySearch extends React.Component {
     const suggestionsList = suggestions.map(suggestion => (
       <SuggestionItem
         tabIndex={0}
-        onClick={e => this.handleClickSelect(e, suggestion.id, suggestion.name)}
+        onClick={() => this.handleClickSelect(suggestion.id, suggestion.name)}
         onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.name)}
         key={suggestion.id}
       >
@@ -159,7 +159,6 @@ class DynamicActivitySearch extends React.Component {
 }
 DynamicActivitySearch.propTypes = {
   placeholder: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
   allowNew: PropTypes.bool.isRequired,
   updateActivity: PropTypes.func
 };

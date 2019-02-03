@@ -15,13 +15,15 @@ class NewEvent extends React.Component {
   };
 
   createEvent = event => {
+    const token = localStorage.getItem("token");
+    const AuthStr = `Bearer ${token}`;
     console.log(event);
     axios({
       method: "post",
       url: `${backendUrl}/events`,
       data: event,
       headers: {
-        Authorization: this.state.AuthStr
+        Authorization: AuthStr
       }
     })
       .then(() => {

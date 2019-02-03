@@ -18,16 +18,13 @@ class EventForm extends Component {
   state = {
     name: "",
     description: "",
-    activity_id: "",
-    place_id: "",
-    date_from: "",
-    date_to: "",
+    activity_id: null,
+    place_id: null,
+    date_from: null,
+    date_to: null,
     min_people: null,
     max_people: null,
-    valid: true,
-    nameIsValid: true,
-    activity_idIsValid: true,
-    max_peopleIsValid: true
+    valid: true
   };
 
   handleSubmit = e => {
@@ -48,16 +45,7 @@ class EventForm extends Component {
     const REQUIRED_FIELDS = ["name", "activity_id", "max_people"];
     for (let i = 0; i < REQUIRED_FIELDS.length; i++) {
       if (newEvent[REQUIRED_FIELDS[i]] === null || newEvent[REQUIRED_FIELDS[i]] === "") {
-        console.log(`validation is failing at ${REQUIRED_FIELDS[i]}`);
-        if (REQUIRED_FIELDS[i] === "name") {
-          this.setState({ valid: false, nameIsValid: false });
-        } else if (REQUIRED_FIELDS[i] === "activity_id") {
-          this.setState({ valid: false, activity_idIsValid: false });
-          return;
-        } else {
-          this.setState({ valid: false, max_peopleIsValid: false });
-          return;
-        }
+        this.setState({ valid: false });
         return;
       }
     }
@@ -86,7 +74,6 @@ class EventForm extends Component {
       const data = {
         name: payload.name
       };
-      console.log(data);
       axios({
         method: "post",
         url: `${backendUrl}/activities`,
@@ -96,7 +83,6 @@ class EventForm extends Component {
         }
       })
         .then(response => {
-          console.log(response);
           this.setState({ activity_id: response.data.id });
         })
         .catch(error => console.error(error));
@@ -115,7 +101,6 @@ class EventForm extends Component {
         city: payload.city,
         country: payload.country
       };
-      console.log(data);
       axios({
         method: "post",
         url: `${backendUrl}/places`,
@@ -125,7 +110,6 @@ class EventForm extends Component {
         }
       })
         .then(response => {
-          console.log(response);
           this.setState({ place_id: response.data.id });
         })
         .catch(error => console.error(error));
@@ -144,7 +128,7 @@ class EventForm extends Component {
   };
 
   render() {
-    const { valid, nameIsValid, activity_idIsValid: activityValid, max_peopleIsValid } = this.state;
+    const { valid } = this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
@@ -161,7 +145,6 @@ class EventForm extends Component {
             type="activities"
             placeholder="Activity"
             allowNew
-            activityValid
           />
           <DynamicLocationSearch updateLocation={this.updateLocation} placeholder="City" allowNew />
           <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
