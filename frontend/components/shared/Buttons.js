@@ -5,8 +5,8 @@ export const NeutralButton = styled.button`
   margin-right: auto;
   display: block;
   padding: 0.5rem;
-  background: hsla(212, 100%, 19%, 0.4);
-  color:  hsla(212, 20%, 19%, 1);
+  background: hsla(212, 60%, 29%, 0.8);
+  color:  hsla(212, 5%, 95%, 1);
   border: none;
   cursor: pointer;
   border-radius: 0.2rem;
