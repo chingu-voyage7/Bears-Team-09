@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
 import Attendees from "../components/Attendees";
 import Modal from "../components/Modal";
+import ImageUploader from "../components/ImageUploader";
 import config from "../config.json";
 
 const backendUrl = config.BACKEND_URL;
@@ -147,7 +148,7 @@ export class event extends Component {
         this.updateEventAttendees();
         this.setState({ userIsAttending: true });
       })
-      .catch(error => console.log(error));
+      .catch(error => console.log(error.response));
   };
 
   leaveEvent = () => {
@@ -165,6 +166,8 @@ export class event extends Component {
       })
       .catch(error => console.log(error));
   };
+
+  updateImage = url => this.setState({ image: url });
 
   render() {
     const { router } = this.props;
@@ -236,6 +239,7 @@ export class event extends Component {
                 <BackButton onClick={() => router.push("/events")}>Back</BackButton>
                 {Number(userID) === Number(authorID) && <DeleteButton onClick={this.showModal}>Delete</DeleteButton>}
               </ControlButtons>
+              <ImageUploader url={`/events/${this.props.router.query.id}/images`} onCompletion={this.updateImage} />
               <Modal showModal={this.state.showModal} hide={this.hideModal} confirm={this.deleteEvent} />
             </EventCard>
           ) : (

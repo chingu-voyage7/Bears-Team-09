@@ -34,7 +34,6 @@ class Profile extends Component {
     }
   }
 
-  // makeEventsDomElements = events => events.map(event => <div key={event.id}>{event.name}</div>);
   makeEventsDomElements = events => events.map(event => <Event {...event} key={event.id} />);
 
   showBioEditor = () => this.setState({ bioEditorOpened: true });
@@ -87,7 +86,7 @@ class Profile extends Component {
           <GridWrapper>
             <SideBar>
               <ProfileImage src={imageSrc} />
-              <ImageUploader style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }} />
+              <ImageUploader url="/users/images" style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }} />
               <PersonalInfo>
                 <FirstLastName>
                   {firstName} {lastName}
@@ -113,10 +112,10 @@ class Profile extends Component {
             </SideBar>
 
             <MainContent>
-              <div style={{ gridColumn: "2 / span 1", gridRow: "1 / span 2" }}>
+              <>
                 <h2 style={{ marginTop: "0", marginBottom: "0" }}>My events</h2>
                 {events}
-              </div>
+              </>
             </MainContent>
           </GridWrapper>
         ) : (
@@ -164,6 +163,7 @@ const SideBar = styled.div`
 `;
 const MainContent = styled.div`
   grid-column: 2 / span 1;
+  grid-row: 1 / span 2;
   margin: 2vw;
 `;
 
