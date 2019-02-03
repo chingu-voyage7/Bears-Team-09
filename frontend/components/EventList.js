@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Event from "./Event";
+import StyledErrorMsg from "../styles/StyledErrorMsg";
 
 // we would use this helper function to filter events, may need to push out //to utils folder for cleaner looking component
 function applyEventsFilter(events, filters) {
@@ -41,6 +42,7 @@ const makeEventsDomElements = events => events.map(event => <Event {...event} ke
 const EventList = props => {
   const { filters, events } = props;
   const eventsToShow = makeEventsDomElements(applyEventsFilter(events, filters));
+  if (eventsToShow.length === 0) return <StyledErrorMsg>No events found</StyledErrorMsg>;
   return <StyledList>{eventsToShow}</StyledList>;
 };
 

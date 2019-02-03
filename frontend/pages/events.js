@@ -10,8 +10,8 @@ import ActivityPicker from "../components/ActivityPicker";
 import LocationSearch from "../components/LocationSearch";
 import { UserContext } from "../components/UserProvider";
 import device from "../styles/device";
-import StyledErrorMsg from "../styles/StyledErrorMsg";
 import config from "../config.json";
+import { NeutralButton } from "../components/shared/Buttons";
 
 const backendUrl = config.BACKEND_URL;
 
@@ -139,10 +139,10 @@ class Dashboard extends Component {
         {events && events.length !== 0 && (
           <EventContainer>
             <EventList events={events} filters={eventFilters} />{" "}
-            <LoadMoreButton onClick={this.loadMoreEvents}>Load More</LoadMoreButton>
+            <NeutralButton onClick={this.loadMoreEvents}>Load More</NeutralButton>
           </EventContainer>
         )}
-        {events.length === 0 && <StyledErrorMsg>No events found</StyledErrorMsg>}
+        {/* {events.length === 0 && <StyledErrorMsg>No events found</StyledErrorMsg>} */}
       </MainLayout>
     );
   }
