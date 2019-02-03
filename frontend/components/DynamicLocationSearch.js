@@ -14,7 +14,8 @@ class DynamicLocationSearch extends React.Component {
       inputVal: "",
       suggestions: [],
       selectionID: null,
-      selectionName: null,
+      selectionCity: null,
+      selectionCountry: null,
       showSuggestions: false,
       showAddButton: true
     };
@@ -45,16 +46,16 @@ class DynamicLocationSearch extends React.Component {
     // const type = "activities";
     console.log(`adding something here`);
     // normalize the input to lowercase
-    const currentValue = this.state.inputVal.toLocaleLowerCase();
-    console.log(currentValue);
-    this.setState({ showAddButton: false });
-    // send the info to the parent component indicating new addition to db
-    // fn sendInfo(type, currentValue)
-    const payload = {
-      name: currentValue,
-      id: null
-    };
-    this.props.updateAttribute(type, payload, false);
+    // const currentValue = this.state.inputVal.toLocaleLowerCase();
+    // console.log(currentValue);
+    // this.setState({ showAddButton: false });
+    // // send the info to the parent component indicating new addition to db
+    // // fn sendInfo(type, currentValue)
+    // const payload = {
+    //   name: currentValue,
+    //   id: null
+    // };
+    // this.props.updateAttribute(type, payload, false);
   };
 
   // Fetch suggestions based on the input
@@ -64,11 +65,13 @@ class DynamicLocationSearch extends React.Component {
     const AuthStr = `Bearer ${token}`;
     const suggestions = await axios({
       method: "get",
-      url: `${backendUrl}/${type}?limit=5&name=${input}&compare=in`,
+      url: `${backendUrl}/${type}?limit=5&city=${input}&compare=in`,
       headers: {
         Authorization: AuthStr
       }
     });
+    console.log(suggestions);
+
     const suggestionArray = suggestions.data[type];
     if (suggestionArray.length === 0) {
       // no results found
@@ -83,21 +86,29 @@ class DynamicLocationSearch extends React.Component {
     if (e.target.value.length > 2) {
       // trigger API call to fetch latest suggestions
       // FIXME: I think we need to throtthle these calls to api
-      this.getSuggestions(e.target.value.toLocaleLowerCase());
+      // FIXME: need to add to lowercase in production
+      this.getSuggestions(e.target.value);
       this.setState({ inputVal: e.target.value, showAddButton: true });
     } else {
       this.setState({ inputVal: e.target.value, showSuggestions: false });
     }
   };
 
-  handleClickSelect = (e, id, name) => {
+  handleClickSelect = (e, id, city, country) => {
     // handler for direct click on suggestion
     const { type, updateAttribute } = this.props;
     const payload = {
       id,
-      name
+      city,
+      country
     };
-    this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
+    this.setState({
+      showSuggestions: false,
+      inputVal: city,
+      selectionID: id,
+      selectionCity: city,
+      selectionCountry: country
+    });
     updateAttribute(type, payload, true);
   };
 
@@ -131,11 +142,11 @@ class DynamicLocationSearch extends React.Component {
     const suggestionsList = suggestions.map(suggestion => (
       <SuggestionItem
         tabIndex={0}
-        onClick={e => this.handleClickSelect(e, suggestion.id, suggestion.name)}
-        onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.name)}
+        onClick={e => this.handleClickSelect(e, suggestion.id, suggestion.city, suggestion.country)}
+        onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.city)}
         key={suggestion.id}
       >
-        {suggestion.name}
+        {suggestion.city}, {suggestion.country}
       </SuggestionItem>
     ));
 

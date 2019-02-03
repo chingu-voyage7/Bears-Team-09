@@ -7,8 +7,6 @@ import Input from "./Input";
 import LoginButton from "./LoginButton";
 import BackButton from "./BackButton";
 import SelectParticipantRange from "./SelectParticipantRange";
-// import ActivityPicker from "./ActivityPicker";
-// import LocationSearch from "./LocationSearch";
 import DateRangePicker from "./DateRangePicker";
 import DynamicActivitySearch from "./DynamicActivitySearch";
 import DynamicLocationSearch from "./DynamicLocationSearch";
@@ -66,41 +64,32 @@ class EventForm extends Component {
     this.setState(inputValue);
   };
 
-  updateAttribute = (type, payload, existsInDB) => {
-    // determine which type of information is coming [activity, city or country]
+  updateActivity = (payload, existsInDB) => {
     // existsInDB flag is used to determine if that is a brand new attribute coming and needs to be created in DB or it is existing one
-    if (type === "activities") {
-      console.log(`updating ${type}`);
-      console.log(payload);
-
-      if (existsInDB) {
-        this.setState({ activity_id: payload.id });
-      } else {
-        // create new instance of attribute with the ID
-        const token = localStorage.getItem("token");
-        const AuthStr = `Bearer ${token}`;
-        const data = {
-          name: payload.name
-        };
-        axios({
-          method: "post",
-          url: `${backendUrl}/${type}`,
-          data,
-          headers: {
-            Authorization: AuthStr
-          }
+    if (existsInDB) {
+      this.setState({ activity_id: payload.id });
+    } else {
+      // create new instance of attribute with the ID
+      const token = localStorage.getItem("token");
+      const AuthStr = `Bearer ${token}`;
+      const data = {
+        name: payload.name
+      };
+      console.log(data);
+      axios({
+        method: "post",
+        url: `${backendUrl}/activities`,
+        data,
+        headers: {
+          Authorization: AuthStr
+        }
+      })
+        .then(response => {
+          console.log(response);
+          this.setState({ activity_id: response.data.id });
         })
-          .then(response => {
-            console.log(response);
-            this.setState({ activity_id: response.data.id });
-          })
-          .catch(error => console.error(error));
-      }
+        .catch(error => console.error(error));
     }
-  };
-
-  updateActivity = (type, name, id) => {
-    this.setState({ activity: name, activity_id: id });
   };
 
   updateLocation = (type, name, id) => {
@@ -119,7 +108,6 @@ class EventForm extends Component {
   };
 
   render() {
-    // const { places, activities } = this.props;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
@@ -131,10 +119,13 @@ class EventForm extends Component {
             placeholder="Description"
             handleChange={this.handleInput}
           />
-          <DynamicActivitySearch updateAttribute={this.updateAttribute} type="activities" placeholder="Activity" />
-          <DynamicLocationSearch updateAttribute={this.updateAttribute} type="activities" placeholder="City" />
-          {/* <ActivityPicker type="form" updateSelection={this.updateActivity} activities={activities} />
-          <LocationSearch locations={places} updateSelection={this.updateLocation} /> */}
+          <DynamicActivitySearch
+            updateActivity={this.updateActivity}
+            type="activities"
+            placeholder="Activity"
+            allowNew
+          />
+          <DynamicLocationSearch type="places" placeholder="City" />
           <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
           <DateRangePicker updateDateRange={this.updateDateRange} />
           {!this.state.valid && <ErrorMsg>Error: Please fill all fields to create an event!</ErrorMsg>}
@@ -161,7 +152,5 @@ const ErrorMsg = styled.p`
 export default EventForm;
 
 EventForm.propTypes = {
-  places: PropTypes.arrayOf(PropTypes.object).isRequired,
-  activities: PropTypes.arrayOf(PropTypes.object).isRequired,
   createEvent: PropTypes.func.isRequired
 };

@@ -40,50 +40,44 @@ class DynamicActivitySearch extends React.Component {
   }
 
   // Add suggestion based on the input
-  handleAdd = async () => {
-    const { type } = this.props;
-    // const type = "activities";
-    console.log(`adding something here`);
-    // normalize the input to lowercase
-    const currentValue = this.state.inputVal.toLocaleLowerCase();
-    console.log(currentValue);
+  handleAdd = () => {
+    const { updateActivity } = this.props;
+    const currentValue = this.state.inputVal;
     this.setState({ showAddButton: false });
     // send the info to the parent component indicating new addition to db
-    // fn sendInfo(type, currentValue)
     const payload = {
       name: currentValue,
       id: null
     };
-    this.props.updateAttribute(type, payload, false);
+    updateActivity(payload, false);
   };
 
   // Fetch suggestions based on the input
   getSuggestions = async input => {
-    const { type } = this.props;
     const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
     const suggestions = await axios({
       method: "get",
-      url: `${backendUrl}/${type}?limit=5&name=${input}&compare=in`,
+      url: `${backendUrl}/activities?limit=5&name=${input}&compare=in`,
       headers: {
         Authorization: AuthStr
       }
     });
-    const suggestionArray = suggestions.data[type];
+    console.log(suggestions);
+    const suggestionArray = suggestions.data["activities"];
     if (suggestionArray.length === 0) {
       // no results found
-      this.setState({ showSuggestions: false });
+      this.setState({ suggestions: [], showSuggestions: false });
     } else {
       this.setState({ suggestions: suggestionArray, showSuggestions: true });
     }
   };
 
   handleChange = e => {
-    console.log(e.target.value.length);
     if (e.target.value.length > 2) {
       // trigger API call to fetch latest suggestions
       // FIXME: I think we need to throtthle these calls to api
-      this.getSuggestions(e.target.value.toLocaleLowerCase());
+      this.getSuggestions(e.target.value);
       this.setState({ inputVal: e.target.value, showAddButton: true });
     } else {
       this.setState({ inputVal: e.target.value, showSuggestions: false });
@@ -92,13 +86,13 @@ class DynamicActivitySearch extends React.Component {
 
   handleClickSelect = (e, id, name) => {
     // handler for direct click on suggestion
-    const { type, updateAttribute } = this.props;
+    const { type, updateActivity } = this.props;
     const payload = {
       id,
       name
     };
     this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
-    updateAttribute(type, payload, true);
+    updateActivity(type, payload, true);
   };
 
   // method that is needed for hiding popup if clicked outside functionality
@@ -109,7 +103,7 @@ class DynamicActivitySearch extends React.Component {
   };
 
   handleKeyDown = (e, id, name) => {
-    const { type, updateAttribute } = this.props;
+    const { type, updateActivity } = this.props;
     const payload = {
       id,
       name
@@ -121,13 +115,13 @@ class DynamicActivitySearch extends React.Component {
     if (e.keyCode === 13) {
       // Select item if ENTER key is pressed
       this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
-      updateAttribute(type, payload, true);
+      updateActivity(type, payload, true);
     }
   };
 
   render() {
     const { showSuggestions, inputVal, suggestions, showAddButton } = this.state;
-    const { placeholder } = this.props;
+    const { placeholder, allowNew } = this.props;
     const suggestionsList = suggestions.map(suggestion => (
       <SuggestionItem
         tabIndex={0}
@@ -151,7 +145,7 @@ class DynamicActivitySearch extends React.Component {
               onKeyDown={e => this.handleKeyDown(e)}
             />
           </Label>
-          {inputVal && showAddButton && suggestions.length === 0 && (
+          {allowNew && inputVal && showAddButton && suggestions.length === 0 && (
             <AddButton onClick={this.handleAdd} tabIndex={0}>
               <span>+</span>
               Add
@@ -165,7 +159,9 @@ class DynamicActivitySearch extends React.Component {
 }
 DynamicActivitySearch.propTypes = {
   placeholder: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired
+  type: PropTypes.string.isRequired,
+  allowNew: PropTypes.bool.isRequired,
+  updateActivity: PropTypes.func
 };
 
 export default DynamicActivitySearch;
@@ -196,6 +192,7 @@ const AddButton = styled.div`
   transform: translateY(-50%);
   background: white;
   color: green;
+  z-index: 1;
   span {
     font-weight: 700;
     padding-left: 4px;
