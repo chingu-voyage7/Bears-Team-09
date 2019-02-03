@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import { UserContext } from "./UserProvider";
 import config from "../config.json";
 
@@ -14,8 +15,9 @@ class ImageUploader extends Component {
     this.setState({ selectedFile: imageFile });
     const formData = new FormData();
     formData.append("file", imageFile, imageFile.name);
+    const url = `${backendUrl}${this.props.url}`;
     axios
-      .post(`${backendUrl}/users/images`, formData, {
+      .post(url, formData, {
         headers: {
           Authorization: `Bearer ${this.context.token}`,
           "Content-Type": "multipart/form-data"
@@ -25,6 +27,7 @@ class ImageUploader extends Component {
         // At this point, image is already uploaded to the cloud and inserted into DB
         const newImageUrl = res.data.url;
         this.context.updateImage(newImageUrl);
+        this.props.onCompletion(newImageUrl);
       })
       .catch(err => {
         console.error(err.response);
@@ -58,6 +61,12 @@ ImageUploader.contextType = UserContext;
 export default ImageUploader;
 
 const CenteredButton = styled.button`
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
   display: block;
 `;
+
+ImageUploader.propTypes = {
+  url: PropTypes.string.isRequired,
+  onCompletion: PropTypes.func
+};
