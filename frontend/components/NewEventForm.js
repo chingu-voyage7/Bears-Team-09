@@ -92,8 +92,33 @@ class EventForm extends Component {
     }
   };
 
-  updateLocation = (type, name, id) => {
-    this.setState({ place_id: id });
+  updateLocation = (payload, existsInDB) => {
+    // existsInDB flag is used to determine if that is a brand new attribute coming and needs to be created in DB or it is existing one
+    if (existsInDB) {
+      this.setState({ place_id: payload.id });
+    } else {
+      // create new instance of attribute with the ID
+      const token = localStorage.getItem("token");
+      const AuthStr = `Bearer ${token}`;
+      const data = {
+        city: payload.city,
+        country: payload.country
+      };
+      console.log(data);
+      axios({
+        method: "post",
+        url: `${backendUrl}/places`,
+        data,
+        headers: {
+          Authorization: AuthStr
+        }
+      })
+        .then(response => {
+          console.log(response);
+          this.setState({ place_id: response.data.id });
+        })
+        .catch(error => console.error(error));
+    }
   };
 
   updateParticipantRange = (min, max) => {
@@ -125,7 +150,7 @@ class EventForm extends Component {
             placeholder="Activity"
             allowNew
           />
-          <DynamicLocationSearch type="places" placeholder="City" />
+          <DynamicLocationSearch updateLocation={this.updateLocation} placeholder="City" allowNew />
           <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
           <DateRangePicker updateDateRange={this.updateDateRange} />
           {!this.state.valid && <ErrorMsg>Error: Please fill all fields to create an event!</ErrorMsg>}

@@ -12,12 +12,14 @@ class DynamicLocationSearch extends React.Component {
     this.setPopupRef = this.setPopupRef.bind(this);
     this.state = {
       inputVal: "",
+      inputCountryVal: "",
       suggestions: [],
       selectionID: null,
       selectionCity: null,
       selectionCountry: null,
       showSuggestions: false,
-      showAddButton: true
+      showAddButton: true,
+      showCountryInput: false
     };
   }
 
@@ -40,39 +42,35 @@ class DynamicLocationSearch extends React.Component {
     this.popupRef = node;
   }
 
-  // Add suggestion based on the input
-  handleAdd = async () => {
-    const { type } = this.props;
-    // const type = "activities";
-    console.log(`adding something here`);
-    // normalize the input to lowercase
-    // const currentValue = this.state.inputVal.toLocaleLowerCase();
-    // console.log(currentValue);
-    // this.setState({ showAddButton: false });
-    // // send the info to the parent component indicating new addition to db
-    // // fn sendInfo(type, currentValue)
-    // const payload = {
-    //   name: currentValue,
-    //   id: null
-    // };
-    // this.props.updateAttribute(type, payload, false);
+  handleAdd = () => {
+    const { showCountryInput, inputCountryVal, inputVal } = this.state;
+    if (!showCountryInput) {
+      this.setState({ showCountryInput: true });
+    } else {
+      const payload = {
+        city: inputVal,
+        country: inputCountryVal
+      };
+      this.setState({ showAddButton: false });
+      this.props.updateLocation(payload, false);
+    }
+    // send the info to the parent component indicating new addition to db
+    // we need to promp user here and ask for City, Country combo
   };
 
   // Fetch suggestions based on the input
   getSuggestions = async input => {
-    const { type } = this.props;
     const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
     const suggestions = await axios({
       method: "get",
-      url: `${backendUrl}/${type}?limit=5&city=${input}&compare=in`,
+      url: `${backendUrl}/places?limit=5&city=${input}&compare=in`,
       headers: {
         Authorization: AuthStr
       }
     });
-    console.log(suggestions);
 
-    const suggestionArray = suggestions.data[type];
+    const suggestionArray = suggestions.data["places"];
     if (suggestionArray.length === 0) {
       // no results found
       this.setState({ showSuggestions: false });
@@ -82,11 +80,8 @@ class DynamicLocationSearch extends React.Component {
   };
 
   handleChange = e => {
-    console.log(e.target.value.length);
     if (e.target.value.length > 2) {
-      // trigger API call to fetch latest suggestions
       // FIXME: I think we need to throtthle these calls to api
-      // FIXME: need to add to lowercase in production
       this.getSuggestions(e.target.value);
       this.setState({ inputVal: e.target.value, showAddButton: true });
     } else {
@@ -94,9 +89,13 @@ class DynamicLocationSearch extends React.Component {
     }
   };
 
+  handleCountryInputChange = e => {
+    this.setState({ inputCountryVal: e.target.value });
+  };
+
   handleClickSelect = (e, id, city, country) => {
     // handler for direct click on suggestion
-    const { type, updateAttribute } = this.props;
+    const { updateLocation } = this.props;
     const payload = {
       id,
       city,
@@ -109,7 +108,7 @@ class DynamicLocationSearch extends React.Component {
       selectionCity: city,
       selectionCountry: country
     });
-    updateAttribute(type, payload, true);
+    updateLocation(payload, true);
   };
 
   // method that is needed for hiding popup if clicked outside functionality
@@ -120,7 +119,7 @@ class DynamicLocationSearch extends React.Component {
   };
 
   handleKeyDown = (e, id, name) => {
-    const { type, updateAttribute } = this.props;
+    const { updateLocation } = this.props;
     const payload = {
       id,
       name
@@ -132,13 +131,13 @@ class DynamicLocationSearch extends React.Component {
     if (e.keyCode === 13) {
       // Select item if ENTER key is pressed
       this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
-      updateAttribute(type, payload, true);
+      updateLocation(payload, true);
     }
   };
 
   render() {
-    const { showSuggestions, inputVal, suggestions, showAddButton } = this.state;
-    const { placeholder } = this.props;
+    const { showSuggestions, showCountryInput, inputVal, inputCountryVal, suggestions, showAddButton } = this.state;
+    const { placeholder, allowNew } = this.props;
     const suggestionsList = suggestions.map(suggestion => (
       <SuggestionItem
         tabIndex={0}
@@ -162,7 +161,17 @@ class DynamicLocationSearch extends React.Component {
               onKeyDown={e => this.handleKeyDown(e)}
             />
           </Label>
-          {inputVal && showAddButton && suggestions.length === 0 && (
+          {showCountryInput && (
+            <Label htmlFor="country">
+              <input
+                onChange={this.handleCountryInputChange}
+                type="text"
+                placeholder="Specify Country"
+                value={inputCountryVal}
+              />
+            </Label>
+          )}
+          {inputVal && allowNew && showAddButton && suggestions.length === 0 && (
             <AddButton onClick={this.handleAdd} tabIndex={0}>
               <span>+</span>
               Add
@@ -176,7 +185,8 @@ class DynamicLocationSearch extends React.Component {
 }
 DynamicLocationSearch.propTypes = {
   placeholder: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired
+  allowNew: PropTypes.bool.isRequired,
+  updateLocation: PropTypes.func
 };
 
 export default DynamicLocationSearch;
