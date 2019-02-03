@@ -245,6 +245,7 @@ const FilterControlPanel = styled.div`
 const EventContainer = styled.div`
   width: 60%;
   margin: auto;
+  text-align: center;
 `;
 
 const LoadMoreButton = styled.button`
@@ -255,8 +256,10 @@ const LoadMoreButton = styled.button`
   outline: 0;
   padding: 5px;
   font-size: 1.1rem;
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
   background-color: black;
   color: white;
 
