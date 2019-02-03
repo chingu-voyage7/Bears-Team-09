@@ -2,18 +2,19 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Router from "next/router";
+import axios from "axios";
 import Input from "./Input";
 import LoginButton from "./LoginButton";
 import BackButton from "./BackButton";
 import SelectParticipantRange from "./SelectParticipantRange";
-import ActivityPicker from "./ActivityPicker";
-import LocationSearch from "./LocationSearch";
+// import ActivityPicker from "./ActivityPicker";
+// import LocationSearch from "./LocationSearch";
 import DateRangePicker from "./DateRangePicker";
 import DynamicActivitySearch from "./DynamicActivitySearch";
-/*
-Current flow is , Event Name, Description, Activity, City, Min PPl/Max PPl, Start/End Dates
-Probably need to add Country field
-*/
+import config from "../config.json";
+
+const backendUrl = config.BACKEND_URL;
+
 class EventForm extends Component {
   state = {
     name: "",
@@ -64,6 +65,39 @@ class EventForm extends Component {
     this.setState(inputValue);
   };
 
+  updateAttribute = (type, payload, existsInDB) => {
+    // determine which type of information is coming [activity, city or country]
+    // existsInDB flag is used to determine if that is a brand new attribute coming and needs to be created in DB or it is existing one
+    if (type === "activities") {
+      console.log(`updating ${type}`);
+      console.log(payload);
+
+      if (existsInDB) {
+        this.setState({ activity_id: payload.id });
+      } else {
+        // create new instance of attribute with the ID
+        const token = localStorage.getItem("token");
+        const AuthStr = `Bearer ${token}`;
+        const data = {
+          name: payload.name
+        };
+        axios({
+          method: "post",
+          url: `${backendUrl}/${type}`,
+          data,
+          headers: {
+            Authorization: AuthStr
+          }
+        })
+          .then(response => {
+            console.log(response);
+            this.setState({ activity_id: response.data.id });
+          })
+          .catch(error => console.error(error));
+      }
+    }
+  };
+
   updateActivity = (type, name, id) => {
     this.setState({ activity: name, activity_id: id });
   };
@@ -84,7 +118,7 @@ class EventForm extends Component {
   };
 
   render() {
-    const { places, activities } = this.props;
+    // const { places, activities } = this.props;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
@@ -96,7 +130,7 @@ class EventForm extends Component {
             placeholder="Description"
             handleChange={this.handleInput}
           />
-          <DynamicActivitySearch />
+          <DynamicActivitySearch updateAttribute={this.updateAttribute} type="activities" placeholder="Activity" />
           {/* <ActivityPicker type="form" updateSelection={this.updateActivity} activities={activities} />
           <LocationSearch locations={places} updateSelection={this.updateLocation} /> */}
           <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
