@@ -2,29 +2,34 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Router from "next/router";
+import axios from "axios";
 import Input from "./Input";
 import LoginButton from "./LoginButton";
 import BackButton from "./BackButton";
 import SelectParticipantRange from "./SelectParticipantRange";
-import ActivityPicker from "./ActivityPicker";
-import LocationSearch from "./LocationSearch";
 import DateRangePicker from "./DateRangePicker";
+import DynamicActivitySearch from "./DynamicActivitySearch";
+import DynamicLocationSearch from "./DynamicLocationSearch";
+import config from "../config.json";
+
+const backendUrl = config.BACKEND_URL;
 
 class EventForm extends Component {
   state = {
     name: "",
     description: "",
-    activity_id: "",
-    place_id: "",
-    date_from: "",
-    date_to: "",
-    min_people: "2",
-    max_people: "2",
+    activity_id: null,
+    place_id: null,
+    date_from: null,
+    date_to: null,
+    min_people: null,
+    max_people: null,
     valid: true
   };
 
   handleSubmit = e => {
     e.preventDefault();
+    // create new event object to be sent to API
     const newEvent = {
       name: this.state.name,
       min_people: this.state.min_people,
@@ -36,12 +41,10 @@ class EventForm extends Component {
       date_to: this.state.date_to
     };
 
-    // validation of fields
-    const eventArr = Object.keys(newEvent);
-    for (let i = 0; i < eventArr.length; i++) {
-      // define optional fields here for early return and no validation
-      if (eventArr[i] === "valid" || eventArr[i] === "date_from" || eventArr[i] === "date_to") break;
-      if (newEvent[eventArr[i]].length === 0) {
+    // validate new object
+    const REQUIRED_FIELDS = ["name", "activity_id", "max_people"];
+    for (let i = 0; i < REQUIRED_FIELDS.length; i++) {
+      if (newEvent[REQUIRED_FIELDS[i]] === null || newEvent[REQUIRED_FIELDS[i]] === "") {
         this.setState({ valid: false });
         return;
       }
@@ -60,12 +63,57 @@ class EventForm extends Component {
     this.setState(inputValue);
   };
 
-  updateActivity = (type, name, id) => {
-    this.setState({ activity: name, activity_id: id });
+  updateActivity = (payload, existsInDB) => {
+    // existsInDB flag is used to determine if that is a brand new attribute coming and needs to be created in DB or it is existing one
+    if (existsInDB) {
+      this.setState({ activity_id: payload.id });
+    } else {
+      // create new instance of attribute with the ID
+      const token = localStorage.getItem("token");
+      const AuthStr = `Bearer ${token}`;
+      const data = {
+        name: payload.name
+      };
+      axios({
+        method: "post",
+        url: `${backendUrl}/activities`,
+        data,
+        headers: {
+          Authorization: AuthStr
+        }
+      })
+        .then(response => {
+          this.setState({ activity_id: response.data.id });
+        })
+        .catch(error => console.error(error));
+    }
   };
 
-  updateLocation = (type, name, id) => {
-    this.setState({ place_id: id });
+  updateLocation = (payload, existsInDB) => {
+    // existsInDB flag is used to determine if that is a brand new attribute coming and needs to be created in DB or it is existing one
+    if (existsInDB) {
+      this.setState({ place_id: payload.id });
+    } else {
+      // create new instance of attribute with the ID
+      const token = localStorage.getItem("token");
+      const AuthStr = `Bearer ${token}`;
+      const data = {
+        city: payload.city,
+        country: payload.country
+      };
+      axios({
+        method: "post",
+        url: `${backendUrl}/places`,
+        data,
+        headers: {
+          Authorization: AuthStr
+        }
+      })
+        .then(response => {
+          this.setState({ place_id: response.data.id });
+        })
+        .catch(error => console.error(error));
+    }
   };
 
   updateParticipantRange = (min, max) => {
@@ -80,7 +128,7 @@ class EventForm extends Component {
   };
 
   render() {
-    const { places, activities } = this.props;
+    const { valid } = this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
@@ -92,11 +140,16 @@ class EventForm extends Component {
             placeholder="Description"
             handleChange={this.handleInput}
           />
-          <ActivityPicker type="form" updateSelection={this.updateActivity} activities={activities} />
-          <LocationSearch locations={places} updateSelection={this.updateLocation} />
+          <DynamicActivitySearch
+            updateActivity={this.updateActivity}
+            type="activities"
+            placeholder="Activity"
+            allowNew
+          />
+          <DynamicLocationSearch updateLocation={this.updateLocation} placeholder="City" allowNew />
           <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
           <DateRangePicker updateDateRange={this.updateDateRange} />
-          {!this.state.valid && <ErrorMsg>Error: Please fill all fields to create an event!</ErrorMsg>}
+          {!valid && <ErrorMsg>Please make sure you filled name, activity and max people fields to continue!</ErrorMsg>}
           <ButtonWrapper>
             <BackButton handleBackButton={this.handleBackButton} />
             <LoginButton title="Create" />
@@ -120,7 +173,5 @@ const ErrorMsg = styled.p`
 export default EventForm;
 
 EventForm.propTypes = {
-  places: PropTypes.arrayOf(PropTypes.object).isRequired,
-  activities: PropTypes.arrayOf(PropTypes.object).isRequired,
   createEvent: PropTypes.func.isRequired
 };

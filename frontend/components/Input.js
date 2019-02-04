@@ -6,8 +6,8 @@ const Input = props => {
   const { name, type, handleChange, placeholder, required } = props;
   return (
     <div>
-      <Label htmlFor={name}>
-        <input
+      <label htmlFor={name}>
+        <InputField
           id={name}
           name={name}
           type={type}
@@ -15,7 +15,7 @@ const Input = props => {
           placeholder={placeholder}
           required={required}
         />
-      </Label>
+      </label>
     </div>
   );
 };
@@ -30,14 +30,12 @@ Input.propTypes = {
 
 export default Input;
 
-const Label = styled.label`
-  input {
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 3px;
-    padding: 5px;
-    background-color: #fafafa;
-    width: 100%;
-    margin-bottom: 5px;
-    font-size: 1rem;
-  }
+const InputField = styled.input`
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+  padding: 5px;
+  background-color: #fafafa;
+  width: 100%;
+  margin-bottom: 5px;
+  font-size: 1rem;
 `;

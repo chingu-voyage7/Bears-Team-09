@@ -6,7 +6,7 @@ import StyledErrorMsg from "../styles/StyledErrorMsg";
 class SelectParticipantRange extends React.Component {
   state = {
     minValue: 2,
-    maxValue: 2,
+    maxValue: "",
     inputError: false,
     inputErrorMsg: null
   };
