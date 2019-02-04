@@ -23,15 +23,16 @@ jobs:
           make tag latest `git rev-parse --short HEAD` `git tag --points-at HEAD` && \
           make buildtag master `git tag --points-at HEAD` && \
           make login && \
-          make publish
+          make publish && \
+          echo To plan manual deploy run: terraform plan -var-file=main.tfvars -var image_tag=`git rev-parse --short HEAD` -out tfplan
       after_script:
         - make clean
         - make logout
-    - stage: Deploy
-      language: minimal
-      deploy:
-        provider: script
-        skip_cleanup: true
-        script: bash -c "make deploy"
-        on:
-          branch: master
+    # - stage: Deploy
+    #   language: minimal
+    #   deploy:
+    #     provider: script
+    #     skip_cleanup: true
+    #     script: bash -c "make deploy"
+    #     on:
+    #       branch: master
