@@ -36,6 +36,9 @@ variable "jwt_exp_threshold" {
   default = "60d"
 }
 # Cloudinary CDN credentials
+variable "cdn_name" {
+  default = "pairup"
+}
 variable "cdn_key" {}
 variable "cdn_secret" {}
 # Production mode switch, set to 'production'
