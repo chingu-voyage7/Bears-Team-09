@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { withRouter } from "next/router";
 import PropTypes from "prop-types";
 import MainLayout from "../components/MainLayout";
+import Attendees from "../components/Attendees";
 import Modal from "../components/Modal";
 import ImageUploader from "../components/ImageUploader";
 import config from "../config.json";
@@ -186,11 +187,8 @@ export class event extends Component {
       userIsAttending
     } = this.state;
 
-    // FIXME: This needs to be tested when backend has images to show, we need to make sure path works with DB
     const eventImage = image || "../static/stock-event.jpg";
-
-    // const eventTotalAttendees = eventAttendees.length;
-    const slotsLeft = maxPeople - eventAttendees.length;
+    const spotsLeft = maxPeople - eventAttendees.length;
 
     return (
       <MainLayout>
@@ -228,14 +226,16 @@ export class event extends Component {
                   <ImageUploader url={`/events/${this.props.router.query.id}/images`} onCompletion={this.updateImage} />
                 </div>
               </InfoWrapper>
+              <Attendees attendees={eventAttendees} />
               <JoinPanel>
-                {slotsLeft === 0 ? <h4>Event is full</h4> : <h4>{slotsLeft} spot(s) left</h4>}
+                <AvailableSpotsLeftNotice spotsLeft={spotsLeft} maxPeople={maxPeople} />
                 <ControlledAttendenceButtons
                   userID={userID}
                   authorID={authorID}
                   userIsAttending={userIsAttending}
                   leaveEvent={this.leaveEvent}
                   joinEvent={this.joinEvent}
+                  eventIsFull={spotsLeft === 0}
                 />
               </JoinPanel>
               <ControlButtons>
@@ -253,9 +253,22 @@ export class event extends Component {
   }
 }
 
-function ControlledAttendenceButtons({ userID, authorID, userIsAttending, leaveEvent, joinEvent }) {
+function AvailableSpotsLeftNotice({ spotsLeft, maxPeople }) {
+  if (maxPeople === null) {
+    return null;
+  }
+  if (spotsLeft === 0) {
+    return <h4>Event is full</h4>;
+  }
+  return <h4>{spotsLeft} spot(s) left</h4>;
+}
+
+function ControlledAttendenceButtons({ userID, authorID, userIsAttending, leaveEvent, joinEvent, eventIsFull }) {
   const userIsOwner = Number(userID) === Number(authorID);
   if (userIsOwner) {
+    return null;
+  }
+  if (eventIsFull && !userIsAttending) {
     return null;
   }
   if (userIsAttending) {
@@ -396,6 +409,11 @@ const BackButton = styled.button`
 
 event.propTypes = {
   router: PropTypes.object.isRequired
+};
+
+AvailableSpotsLeftNotice.propTypes = {
+  spotsLeft: PropTypes.number.isRequired,
+  maxPeople: PropTypes.string
 };
 
 export default withRouter(event);
