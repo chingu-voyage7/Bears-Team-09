@@ -10,13 +10,12 @@ import ActivityPicker from "../components/ActivityPicker";
 import LocationSearch from "../components/LocationSearch";
 import { UserContext } from "../components/UserProvider";
 import device from "../styles/device";
-import StyledErrorMsg from "../styles/StyledErrorMsg";
 import config from "../config.json";
+import { NeutralButton } from "../components/shared/Buttons";
 
 const backendUrl = config.BACKEND_URL;
 
-// using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS
-// there may be a cleaner solution that I am not aware of
+// using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS. There may be a cleaner solution that I am not aware of
 const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), {
   ssr: false
 });
@@ -38,16 +37,11 @@ class Dashboard extends Component {
 
     const today = format(new Date(), "YYYY-MM-DD");
     const isoDate = `${today}T00:00:000Z`;
-    // console.log(isoDate);
-
-    // const realUlr = `http://localhost:8000/events?compare=gt&date_from=${isoDate}&limit=5`;
 
     // Default fetch is any event from today with a limit of 5
     const eventsPromise = axios({
       method: "get",
-
       url: `${backendUrl}/events?compare=gt&date_from=${isoDate}&limit=5`,
-
       headers: {
         Authorization: AuthStr
       }
@@ -121,8 +115,8 @@ class Dashboard extends Component {
             <h4>
               <Link href="/newevent">
                 <StyledButton>Create</StyledButton>
-              </Link>{" "}
-              new event and PairUp
+              </Link>
+              new PairUp
               <br />
               or check out existing events below
             </h4>
@@ -138,17 +132,17 @@ class Dashboard extends Component {
           <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} />
           <DateSelectorDynamic placeholder="date" updateSelection={this.updateFilter} />
           <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} />
-          <ClearnButton type="button" onClick={this.clearFilters}>
+          <ClearButton type="button" onClick={this.clearFilters}>
             Clear
-          </ClearnButton>
+          </ClearButton>
         </FilterControlPanel>
         {events && events.length !== 0 && (
           <EventContainer>
             <EventList events={events} filters={eventFilters} />{" "}
-            <LoadMoreButton onClick={this.loadMoreEvents}>Load More</LoadMoreButton>
+            <NeutralButton onClick={this.loadMoreEvents}>Load More</NeutralButton>
           </EventContainer>
         )}
-        {events.length === 0 && <StyledErrorMsg>No events found</StyledErrorMsg>}
+        {/* {events.length === 0 && <StyledErrorMsg>No events found</StyledErrorMsg>} */}
       </MainLayout>
     );
   }
@@ -201,6 +195,7 @@ const StyledButton = styled.a`
   border: 1px solid white;
   border-radius: 2px;
   padding: 4px;
+  margin-right: 0.5em;
   cursor: pointer;
   &:hover {
     color: gold;
@@ -248,28 +243,12 @@ const FilterControlPanel = styled.div`
 `;
 
 const EventContainer = styled.div`
+  width: 60%;
+  margin: auto;
   text-align: center;
 `;
 
-const LoadMoreButton = styled.button`
-  cursor: pointer;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3);
-  border-radius: 2px;
-  border: 0;
-  outline: 0;
-  padding: 5px;
-  font-size: 1.1rem;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  background-color: black;
-  color: white;
-
-  &:hover {
-    color: gold;
-  }
-`;
-
-const ClearnButton = styled.button`
+const ClearButton = styled.button`
   cursor: pointer;
   padding: 5px;
   outline: 0;

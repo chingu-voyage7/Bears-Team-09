@@ -27,12 +27,10 @@ class ActivityPicker extends Component {
     return (
       <ActivityWrapper type={type}>
         <ActivityBox
-          tabIndex="0"
           type={type}
           onFocus={() => this.setState({ popupOpen: true })}
           onClick={() => this.setState({ popupOpen: true })}
         >
-          {" "}
           {selectedActivity}
         </ActivityBox>
         {popupOpen && <ul>{categoryList}</ul>}
@@ -56,7 +54,7 @@ const ActivityWrapper = styled.div`
   }
   ul {
     list-style-type: none;
-    margin: 2px 0px 0px 0px;
+    margin: 2px 2px 0px 0px;
     padding: 0;
     position: absolute;
     display: grid;
@@ -73,6 +71,7 @@ const ActivityWrapper = styled.div`
 
 const ActivityBox = styled.div`
   padding: 5px;
+  width: 90%;
   cursor: pointer;
   text-align: left;
   text-transform: capitalize;

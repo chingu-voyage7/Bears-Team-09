@@ -136,7 +136,6 @@ router.post('/:id/images', authenticate("jwt"), (req, res) => {
         });
     })
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
-
     return res;
   });
 
