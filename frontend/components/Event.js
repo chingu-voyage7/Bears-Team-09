@@ -74,6 +74,7 @@ const EventImage = styled.img`
   max-height: 23vh;
   clear: both;
   max-width: 25vw;
+  border-radius: 0.25rem;
 `;
 
 Event.propTypes = {

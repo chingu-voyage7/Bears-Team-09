@@ -10,8 +10,8 @@ import ActivityPicker from "../components/ActivityPicker";
 import LocationSearch from "../components/LocationSearch";
 import { UserContext } from "../components/UserProvider";
 import device from "../styles/device";
-import StyledErrorMsg from "../styles/StyledErrorMsg";
 import config from "../config.json";
+import { NeutralButton } from "../components/shared/Buttons";
 
 const backendUrl = config.BACKEND_URL;
 
@@ -139,10 +139,10 @@ class Dashboard extends Component {
         {events && events.length !== 0 && (
           <EventContainer>
             <EventList events={events} filters={eventFilters} />{" "}
-            <LoadMoreButton onClick={this.loadMoreEvents}>Load More</LoadMoreButton>
+            <NeutralButton onClick={this.loadMoreEvents}>Load More</NeutralButton>
           </EventContainer>
         )}
-        {events.length === 0 && <StyledErrorMsg>No events found</StyledErrorMsg>}
+        {/* {events.length === 0 && <StyledErrorMsg>No events found</StyledErrorMsg>} */}
       </MainLayout>
     );
   }
@@ -245,24 +245,7 @@ const FilterControlPanel = styled.div`
 const EventContainer = styled.div`
   width: 60%;
   margin: auto;
-`;
-
-const LoadMoreButton = styled.button`
-  cursor: pointer;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3);
-  border-radius: 2px;
-  border: 0;
-  outline: 0;
-  padding: 5px;
-  font-size: 1.1rem;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  background-color: black;
-  color: white;
-
-  &:hover {
-    color: gold;
-  }
+  text-align: center;
 `;
 
 const ClearButton = styled.button`
