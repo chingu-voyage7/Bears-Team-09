@@ -60,11 +60,12 @@ class DynamicLocationSearch extends React.Component {
 
   // Fetch suggestions based on the input
   getSuggestions = async input => {
+    const capitalizedInput = input.charAt(0).toUpperCase() + input.slice(1);
     const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
     const suggestions = await axios({
       method: "get",
-      url: `${backendUrl}/places?limit=5&city=${input}&compare=in`,
+      url: `${backendUrl}/places?limit=5&city=${capitalizedInput}&compare=in`,
       headers: {
         Authorization: AuthStr
       }
