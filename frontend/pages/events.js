@@ -248,26 +248,6 @@ const EventContainer = styled.div`
   text-align: center;
 `;
 
-const LoadMoreButton = styled.button`
-  cursor: pointer;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3);
-  border-radius: 2px;
-  border: 0;
-  outline: 0;
-  padding: 5px;
-  font-size: 1.1rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: black;
-  color: white;
-
-  &:hover {
-    color: gold;
-  }
-`;
-
 const ClearButton = styled.button`
   cursor: pointer;
   padding: 5px;
