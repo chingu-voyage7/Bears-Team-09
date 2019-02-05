@@ -15,6 +15,7 @@ if (myArgs.length > 1) {
 
 const data = JSON.parse(fs.readFileSync(myArgs[0]));
 
+console.log("Populating users, places and activities...");
 Promise.all(
     // create users, activities and places first and append their id's to base object
     data.users.map((userData, pos) => (new User(userData)).create().then((res) => {data.users[pos].id = res.id;}).catch(console.log)),
@@ -22,7 +23,9 @@ Promise.all(
     data.activities.map((activityData, pos) => (new Activity(activityData)).create().then(([res]) => {data.activities[pos].id = res.id;}).catch(console.log))
 )
 // Create events
-.then(() => Promise.all(
+.then(() => {
+    console.log("Populating events...");
+    return Promise.all(
     data.events
            .map(eventData => {
                 const fullEventData = {...eventData, author_id: data.users[eventData.author_id].id, activity_id: data.activities[eventData.activity_id].id};
@@ -32,12 +35,14 @@ Promise.all(
                 return fullEventData;
            })
            .map((eventData, pos) => (new Event(eventData)).create().then(([res]) => {data.events[pos].id = res.id;}).catch(console.log))
-))
+    );}
+)
 // create event attendees
 .then(() => {
+    console.log("Populating event attendees...");
     data.event_attendees.map((eaData) => {
         const fullEAData = {event_id: data.events[eaData.event_id].id, user_id: data.users[eaData.user_id].id};
-        return (new Attendee(fullEAData)).create().catch(console.log);
+        return (new Attendee(fullEAData)).create().catch(() => {});
     });
 })
 .catch(console.log);
