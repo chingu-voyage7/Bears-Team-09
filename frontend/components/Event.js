@@ -1,15 +1,16 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { format } from "date-fns";
+import { format, isEqual } from "date-fns";
 import Link from "next/link";
 
 class Event extends Component {
   render() {
     const { id, name, activity, description, date_from: dateFromRaw, date_to: dateToRaw, image } = this.props;
 
-    const dateFromFormatted = dateFromRaw ? format(dateFromRaw, "MMM Do, YYYY h:mm A") : "";
-    const dateToFormatted = dateToRaw ? format(dateToRaw, "MMM Do, YYYY h:mm A") : "";
+    const dateFromFormatted = dateFromRaw ? format(dateFromRaw, "MMM Do, YYYY ") : "";
+    const dateToFormatted = dateToRaw ? format(dateToRaw, "MMM Do, YYYY") : "";
+    const dateToFormattedCheck = isEqual(dateFromRaw, dateToRaw) ? null : dateToFormatted;
 
     return (
       <EventCard>
@@ -19,7 +20,7 @@ class Event extends Component {
         </Link>
         <EventSubtitle>{activity} </EventSubtitle>
         <EventDate>
-          {dateFromFormatted} - {dateToFormatted}
+          {dateFromFormatted} - {dateToFormattedCheck}
         </EventDate>
         <p>{description}</p>
       </EventCard>
