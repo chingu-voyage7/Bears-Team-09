@@ -3,11 +3,9 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import moment from "moment";
 import Link from "next/link";
-import Router from "next/router";
 
 class Event extends Component {
   render() {
-    console.log(Router.query);
     const { id, name, activity, description, date_from: dateFromRaw, date_to: dateToRaw, image } = this.props;
     let dateFormatFrom = "lll";
 

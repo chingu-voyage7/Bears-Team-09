@@ -71,6 +71,10 @@ class Profile extends Component {
     this.props.context.updateUser("lastName", lastName);
   };
 
+  updateImage = url => {
+    this.props.context.updateUser("image", url);
+  };
+
   render() {
     const { firstName, lastName, loggedIn, email, bio } = this.props.context;
     const events = this.makeEventsDomElements(this.state.events);
@@ -86,7 +90,11 @@ class Profile extends Component {
           <GridWrapper>
             <SideBar>
               <ProfileImage src={imageSrc} />
-              <ImageUploader url="/users/images" style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }} />
+              <ImageUploader
+                url="/users/images"
+                onCompletion={this.updateImage}
+                style={{ gridColumn: "1 / span 1", gridRow: "2 / span 1" }}
+              />
               <PersonalInfo>
                 <FirstLastName>
                   {firstName} {lastName}
