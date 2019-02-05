@@ -1,25 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import moment from "moment";
+import { format } from "date-fns";
 import Link from "next/link";
-import Router from "next/router";
 
 class Event extends Component {
   render() {
-    console.log(Router.query);
     const { id, name, activity, description, date_from: dateFromRaw, date_to: dateToRaw, image } = this.props;
-    let dateFormatFrom = "lll";
 
-    const dateFrom = moment(dateFromRaw, "YYYY-MM-DDTHH:mm:ss.sssZ");
-    const dateTo = moment(dateToRaw, "YYYY-MM-DDTHH:mm:ss.sssZ");
-
-    if (dateFrom.format("YYYY") === moment().format("YYYY") && dateTo.format("YYYY") === moment().format("YYYY"))
-      dateFormatFrom = "MMM Do, LT";
-    const dateFormatTo = dateFrom.day() === dateTo.day() ? "LT" : dateFormatFrom;
-
-    const dateFromFormatted = moment(dateFromRaw, "YYYY-MM-DD HH:mm").format(dateFormatFrom);
-    const dateToFormatted = moment(dateToRaw, "YYYY-MM-DD HH:mm").format(dateFormatTo);
+    const dateFromFormatted = dateFromRaw ? format(dateFromRaw, "MMM Do, YYYY h:mm A") : "";
+    const dateToFormatted = dateToRaw ? format(dateToRaw, "MMM Do, YYYY h:mm A") : "";
 
     return (
       <EventCard>

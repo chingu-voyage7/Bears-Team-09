@@ -5,9 +5,6 @@ import dynamic from "next/dynamic";
 import axios from "axios";
 import MainLayout from "../components/MainLayout";
 import EventList from "../components/EventList";
-import ActivityPicker from "../components/ActivityPicker";
-import LocationSearch from "../components/LocationSearch";
-import { UserContext } from "../components/UserProvider";
 import device from "../styles/device";
 import config from "../config.json";
 import { NeutralButton } from "../components/shared/Buttons";
@@ -16,27 +13,20 @@ import DynamicActivitySearch from "../components/DynamicActivitySearch";
 
 const backendUrl = config.BACKEND_URL;
 
-// using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS. There may be a cleaner solution that I am not aware of
 const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), {
   ssr: false
 });
 
 class Dashboard extends Component {
   state = {
-    eventFilters: { datefrom: null, city: null, activity: null },
+    eventFilters: { date_from: null, city: null, activity: null },
     events: [],
-    places: [],
-    activities: [],
     offset: 0
   };
 
   async componentDidMount() {
-    // getting token from context, falling back to localStorage if no context exists (happens when page is refreshed)
     const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-
-    // const today = format(new Date(), "YYYY-MM-DD");
-    // const isoDate = `${today}T00:00:000Z`;
 
     // Default fetch is any event from today with a limit of 5
     const eventsPromise = axios({
@@ -47,40 +37,19 @@ class Dashboard extends Component {
       }
     }).catch(err => console.error(err.response));
 
-    const placesPromise = axios({
-      method: "get",
-      url: `${backendUrl}/places`,
-      headers: {
-        Authorization: AuthStr
-      }
-    }).catch(err => console.error(err.response));
-
-    const activitiesPromise = axios({
-      method: "get",
-      url: `${backendUrl}/activities`,
-      headers: {
-        Authorization: AuthStr
-      }
-    }).catch(err => console.error(err.response));
-    const [events, places, activities] = await Promise.all([eventsPromise, placesPromise, activitiesPromise]);
-
-    if (!events || !places || !activities) {
-      console.log("One of the following is empty: ", { events, places, activities });
-      return;
-    }
-
-    this.setState({ events: events.data.events, places: places.data.places, activities: activities.data.activities });
+    const events = await eventsPromise;
+    this.setState({ events: events.data.events });
   }
 
-  updateFilter = (type, data) => {
+  updateDate = date => {
     const oldState = Object.assign({}, this.state);
     const oldFilters = oldState.eventFilters;
-    oldFilters[type] = data;
+    oldFilters["date_from"] = date;
     this.setState({ eventFilters: oldFilters });
   };
 
   clearFilters = () => {
-    this.setState({ eventFilters: { datefrom: null, city: null, activity: null } });
+    this.setState({ eventFilters: { date_from: null, city: null, activity: null } });
   };
 
   loadMoreEvents = async () => {
@@ -104,7 +73,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { events, places, activities, eventFilters } = this.state;
+    const { events, eventFilters } = this.state;
     return (
       <MainLayout>
         <TopPanel>
@@ -127,9 +96,9 @@ class Dashboard extends Component {
         </Divider>
         <FilterControlPanel>
           <DynamicActivitySearch placeholder="Activity" allowNew={false} />
-          <DynamicLocationSearch placeholder="City" allowNew={false} />
+          <DynamicLocationSearch placeholder="City" updateLocation={this.updateFilter} allowNew={false} />
           {/* <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} /> */}
-          <DateSelectorDynamic placeholder="date" updateSelection={this.updateFilter} />
+          <DateSelectorDynamic placeholder="date" updateSelection={this.updateDate} />
           {/* <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} /> */}
           <ClearButton type="button" onClick={this.clearFilters}>
             Clear
@@ -145,8 +114,6 @@ class Dashboard extends Component {
     );
   }
 }
-
-Dashboard.contextType = UserContext;
 
 export default Dashboard;
 

@@ -12,15 +12,14 @@ class DateSelector extends React.Component {
   handleChange = date => {
     const { updateSelection } = this.props;
     if (date === null) {
-      this.setState({ startDate: null }, updateSelection("datefrom", null));
+      this.setState({ startDate: null }, updateSelection(null));
     } else {
-      this.setState({ startDate: date }, updateSelection("datefrom", date));
+      this.setState({ startDate: date }, updateSelection(date));
     }
   };
 
   render() {
     const { placeholder } = this.props;
-    // let { minDate, maxDate } = this.props
     const { startDate } = this.state;
     return (
       <DatePickerStylingWrapper type="form">
