@@ -1,0 +1,5 @@
+{
+  "GOOGLE_CLIENT_ID": "your_client_id",
+  "GOOGLE_CLIENT_SECRET": "your_client_secret",
+  "BACKEND_URL": "http://localhost:8000/api"
+}

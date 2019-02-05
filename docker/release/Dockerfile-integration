@@ -1,0 +1,9 @@
+FROM node:10.14.1-alpine
+
+CMD [ "npm", "test" ]
+
+COPY ./backend/integration_tests /app
+
+WORKDIR /app
+
+RUN npm install

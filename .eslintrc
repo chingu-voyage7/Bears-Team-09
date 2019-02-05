@@ -1,0 +1,35 @@
+{
+  "extends": ["react-app", "airbnb", "prettier"],
+  "globals": {
+    "window": false,
+    "document": false,
+    "fetch": false
+  },
+  "rules": {
+    "dot-notation": 0,
+    "no-plusplus": 0,
+    "no-use-before-define": 0,
+    "no-console": 0,
+    "no-underscore-dangle": 0,
+    "func-names": ["off", "as-needed"],
+    "semi": "error",
+    "linebreak-style": "off",
+    "no-param-reassign": ["error", { "props": false }],
+    "react/prefer-stateless-function": 0,
+    "react/jsx-filename-extension": 0,
+    "react/jsx-one-expression-per-line": 0,
+    "import/no-unresolved": 0,
+    "quotes": ["warn", "double"]
+  },
+  "plugins": ["prettier", "json", "markdown", "html"],
+  "env": {
+    "jest": true
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  }
+}

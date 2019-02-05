@@ -1,0 +1,5 @@
+node_modules
+uploads
+*.txt
+backend/src/config/default.json
+db_backups/

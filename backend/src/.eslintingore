@@ -1,0 +1,7 @@
+*.txt
+*.css
+*.svg
+*.ico
+yarn.lock
+node_modules
+uploads

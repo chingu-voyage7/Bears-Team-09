@@ -1,0 +1,38 @@
+services:
+  - docker
+jobs:
+  include:
+    - stage: Lint
+      language: node_js
+      node_js:
+        - '8'
+      cache:
+        directories:
+          - node_modules
+      script: eslint .
+    - stage: Test and release the app
+      language: minimal
+      before_install:
+        - sudo rm /usr/local/bin/docker-compose
+        - sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        - sudo chmod +x /usr/local/bin/docker-compose
+      script:
+        - |
+          make test && \
+          make release && \
+          make tag latest `git rev-parse --short HEAD` `git tag --points-at HEAD` && \
+          make buildtag master `git tag --points-at HEAD` && \
+          make login && \
+          make publish && \
+          echo To plan manual deploy run: terraform plan -var-file=main.tfvars -var image_tag=`git rev-parse --short HEAD` -out tfplan
+      after_script:
+        - make clean
+        - make logout
+    # - stage: Deploy
+    #   language: minimal
+    #   deploy:
+    #     provider: script
+    #     skip_cleanup: true
+    #     script: bash -c "make deploy"
+    #     on:
+    #       branch: master
