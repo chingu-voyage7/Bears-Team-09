@@ -17,8 +17,19 @@ function applyEventsFilter(events, filters) {
             everyFilterMatching = false;
           }
         }
-      } else if (filter === "activity" || filter === "city") {
+      } else if (filter === "activity") {
         if (filters[filter] !== null) {
+          console.log(event);
+          // normalization before comparison
+          const filterValue = filters[filter].toLowerCase();
+          const eventValue = event[filter].toLowerCase();
+          if (filterValue !== eventValue) {
+            everyFilterMatching = false;
+          }
+        }
+      } else if (filter === "city") {
+        if (filters[filter] !== null && event[filter] !== null) {
+          console.log(event);
           // normalization before comparison
           const filterValue = filters[filter].toLowerCase();
           const eventValue = event[filter].toLowerCase();

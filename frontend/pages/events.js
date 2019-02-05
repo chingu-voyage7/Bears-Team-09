@@ -48,6 +48,22 @@ class Dashboard extends Component {
     this.setState({ eventFilters: oldFilters });
   };
 
+  updateActivity = data => {
+    console.log(data);
+    const oldState = Object.assign({}, this.state);
+    const oldFilters = oldState.eventFilters;
+    oldFilters["activity"] = data.name;
+    this.setState({ eventFilters: oldFilters });
+  };
+
+  updateLocation = data => {
+    console.log(data);
+    const oldState = Object.assign({}, this.state);
+    const oldFilters = oldState.eventFilters;
+    oldFilters["city"] = data.city;
+    this.setState({ eventFilters: oldFilters });
+  };
+
   clearFilters = () => {
     this.setState({ eventFilters: { date_from: null, city: null, activity: null } });
   };
@@ -95,18 +111,16 @@ class Dashboard extends Component {
           </h4>
         </Divider>
         <FilterControlPanel>
-          <DynamicActivitySearch placeholder="Activity" allowNew={false} />
-          <DynamicLocationSearch placeholder="City" updateLocation={this.updateFilter} allowNew={false} />
-          {/* <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} /> */}
+          <DynamicActivitySearch placeholder="Activity" allowNew={false} updateActivity={this.updateActivity} />
+          <DynamicLocationSearch placeholder="City" updateLocation={this.updateLocation} allowNew={false} />
           <DateSelectorDynamic placeholder="date" updateSelection={this.updateDate} />
-          {/* <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} /> */}
           <ClearButton type="button" onClick={this.clearFilters}>
             Clear
           </ClearButton>
         </FilterControlPanel>
         {events && events.length !== 0 && (
           <EventContainer>
-            <EventList events={events} filters={eventFilters} />{" "}
+            <EventList events={events} filters={eventFilters} />
             <NeutralButton onClick={this.loadMoreEvents}>Load More</NeutralButton>
           </EventContainer>
         )}
