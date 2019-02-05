@@ -48,7 +48,14 @@ router.get('/:id', (req, res) => {
 
 router.get('/:id/attendees', (req, res) => {
     const attendees = new Attendee({event_id: req.params.id});
-    attendees.getAllAttendees()
+    (new Event({id: req.params.id}))
+    .read()
+    .then(([data]) => {
+        if (data === undefined) {
+            throw new APIError(`event #${req.params.id} not found`, 404);
+        }
+        return attendees.getAllAttendees();
+    })
     .then((data) => {
         res.json(data);
     })
@@ -60,8 +67,10 @@ router.delete('/:id', authenticate("jwt"), (req, res) => {
     const newEvent = new Event({id: req.params.id});
     newEvent.read()
     .then(([data]) => {
-        if (data.author_id !== req.user.data.id) {
-            throw new APIError("permission denied", 403);
+        if (data === undefined) {
+            throw new APIError(`event #${req.params.id} not found`, 404);
+        } else if (data.author_id !== req.user.data.id) {
+            throw new APIError(`you are not the author of event #${req.params.id}`, 403);
         }
         return newEvent.delete();
     })
@@ -73,7 +82,16 @@ router.delete('/:id', authenticate("jwt"), (req, res) => {
 router.put('/:id', authenticate("jwt"), (req, res) => {
     const {id, ...newData} = req.body;
     const newEvent = new Event({id: req.params.id, ...newData});
-    newEvent.update()
+    (new Event({id: req.params.id}))
+    .read()
+    .then(([data]) => {
+        if (data === undefined) {
+            throw new APIError(`event #${req.params.id} not found`, 404);
+        } else if (data.author_id !== req.user.data.id) {
+            throw new APIError(`you are not the author of event #${req.params.id}`, 403);
+        }
+        return newEvent.update();
+    })
     .then(() => {res.json();})
     .catch(err => {res.status(err.statusCode || 400).json({message: err.message});});
 });
@@ -116,6 +134,8 @@ router.post('/:id/images', authenticate("jwt"), (req, res) => {
     .then(([data]) => {
         if (data === undefined) {
             throw new APIError(`event #${req.params.id} not found`, 404);
+        } else if (data.author_id !== req.user.data.id) {
+            throw new APIError(`you are not the author of event #${req.params.id}`, 403);
         }
     })
     .then(() => {
