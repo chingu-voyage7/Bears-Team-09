@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import axios from "axios";
-import { format } from "date-fns";
 import MainLayout from "../components/MainLayout";
 import EventList from "../components/EventList";
 import ActivityPicker from "../components/ActivityPicker";
@@ -12,6 +11,8 @@ import { UserContext } from "../components/UserProvider";
 import device from "../styles/device";
 import config from "../config.json";
 import { NeutralButton } from "../components/shared/Buttons";
+import DynamicLocationSearch from "../components/DynamicLocationSearch";
+import DynamicActivitySearch from "../components/DynamicActivitySearch";
 
 const backendUrl = config.BACKEND_URL;
 
@@ -30,18 +31,17 @@ class Dashboard extends Component {
   };
 
   async componentDidMount() {
-    const { tokenCtx } = this.context;
     // getting token from context, falling back to localStorage if no context exists (happens when page is refreshed)
-    const token = tokenCtx || localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
 
-    const today = format(new Date(), "YYYY-MM-DD");
-    const isoDate = `${today}T00:00:000Z`;
+    // const today = format(new Date(), "YYYY-MM-DD");
+    // const isoDate = `${today}T00:00:000Z`;
 
     // Default fetch is any event from today with a limit of 5
     const eventsPromise = axios({
       method: "get",
-      url: `${backendUrl}/events?compare=gt&date_from=${isoDate}&limit=5`,
+      url: `${backendUrl}/events?&limit=5`,
       headers: {
         Authorization: AuthStr
       }
@@ -86,15 +86,12 @@ class Dashboard extends Component {
   loadMoreEvents = async () => {
     const { offset } = this.state;
     const newOffset = offset + 5;
-    const { tokenCtx } = this.context;
-    const token = tokenCtx || localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-    const today = format(new Date(), "YYYY-MM-DD");
-    const isoDate = `${today}T00:00:000Z`;
 
     const newEvents = await axios({
       method: "get",
-      url: `${backendUrl}/events?compare=gt&date_from=${isoDate}&limit=5&offset=${newOffset}`,
+      url: `${backendUrl}/events?&limit=5&offset=${newOffset}`,
       headers: {
         Authorization: AuthStr
       }
@@ -129,9 +126,11 @@ class Dashboard extends Component {
           </h4>
         </Divider>
         <FilterControlPanel>
-          <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} />
+          <DynamicActivitySearch placeholder="Activity" allowNew={false} />
+          <DynamicLocationSearch placeholder="City" allowNew={false} />
+          {/* <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} /> */}
           <DateSelectorDynamic placeholder="date" updateSelection={this.updateFilter} />
-          <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} />
+          {/* <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} /> */}
           <ClearButton type="button" onClick={this.clearFilters}>
             Clear
           </ClearButton>
@@ -142,7 +141,6 @@ class Dashboard extends Component {
             <NeutralButton onClick={this.loadMoreEvents}>Load More</NeutralButton>
           </EventContainer>
         )}
-        {/* {events.length === 0 && <StyledErrorMsg>No events found</StyledErrorMsg>} */}
       </MainLayout>
     );
   }
@@ -224,13 +222,12 @@ const Divider = styled.div`
 `;
 
 const FilterControlPanel = styled.div`
-  margin: 0 auto;
   justify-content: center;
   padding: 10px;
   background-color: #8bc6ec;
   background-image: linear-gradient(135deg, #8bc6ec 0%, #9599e2 100%);
   display: grid;
-  grid-template-columns: 100px 100px 150px 50px;
+  grid-template-columns: 160px 160px 150px 50px;
   width: auto;
   grid-gap: 10px;
   border-radius: 4px;

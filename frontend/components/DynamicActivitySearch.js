@@ -151,8 +151,8 @@ class DynamicActivitySearch extends React.Component {
               Add
             </AddButton>
           )}
+          {showSuggestions && <Suggestions ref={this.setPopupRef}>{suggestionsList}</Suggestions>}
         </SearchBarWrapper>
-        {showSuggestions && <Suggestions ref={this.setPopupRef}>{suggestionsList}</Suggestions>}
       </>
     );
   }
