@@ -26,7 +26,6 @@ class ImageUploader extends Component {
       .then(res => {
         // At this point, image is already uploaded to the cloud and inserted into DB
         const newImageUrl = res.data.url;
-        this.context.updateImage(newImageUrl);
         this.props.onCompletion(newImageUrl);
       })
       .catch(err => {
