@@ -1,4 +1,4 @@
-const { Client } = require("pg");
+const { Pool } = require("pg");
 const APIError = require("../utils/APIError");
 
 const DB_DATA = {
@@ -8,17 +8,16 @@ const DB_DATA = {
   password: process.env.PGPASSWORD || '123456',
   port: process.env.PGPORT || 5432
 };
+const pool = new Pool(DB_DATA);
 
 module.exports = {
-  query: async (text, params) => {
-    const client = new Client(DB_DATA);
-    return client.connect()
-                 .catch(() => { throw new APIError('DB connection error', 500);})
-                 .then(() => client.query(text, params))
-                 .then(res => res.rows)
-                 .catch(err => {throw err;})
-                 .finally(() => client.end());
-  }
+  query: (text, params) => pool.connect()
+    .catch(() => { throw new APIError('DB connection error', 500);})
+    .then(client => client.query(text, params)
+      .then(res => res.rows)
+      .catch(err => {throw err;})
+      .finally(() => client.release())
+    )
 };
 
 // run migrations with
