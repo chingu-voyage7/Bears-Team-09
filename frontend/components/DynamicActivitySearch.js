@@ -13,11 +13,30 @@ class DynamicActivitySearch extends React.Component {
     this.state = {
       inputVal: "",
       suggestions: [],
+      matchingSuggestions: [],
       selectionID: null,
       selectionName: null,
       showSuggestions: false,
       showAddButton: true
     };
+  }
+
+  async componentDidMount() {
+    const token = localStorage.getItem("token");
+    const AuthStr = `Bearer ${token}`;
+    const suggestions = await axios({
+      method: "get",
+      url: `${backendUrl}/activities`,
+      headers: {
+        Authorization: AuthStr
+      }
+    });
+    const suggestionArray = suggestions.data["activities"];
+    if (suggestionArray.length === 0) {
+      this.setState({ suggestions: [], showSuggestions: false });
+    } else {
+      this.setState({ suggestions: suggestionArray, matchingSuggestions: suggestionArray, showSuggestions: false });
+    }
   }
 
   componentDidUpdate() {
@@ -52,30 +71,20 @@ class DynamicActivitySearch extends React.Component {
     updateActivity(payload, false);
   };
 
-  // Fetch suggestions based on the input
+  // Filter suggestions based on the input
   getSuggestions = async input => {
-    const token = localStorage.getItem("token");
-    const AuthStr = `Bearer ${token}`;
-    const suggestions = await axios({
-      method: "get",
-      url: `${backendUrl}/activities?limit=5&name=${input}&compare=in`,
-      headers: {
-        Authorization: AuthStr
-      }
-    });
-    const suggestionArray = suggestions.data["activities"];
-    if (suggestionArray.length === 0) {
-      // no results found
-      this.setState({ suggestions: [], showSuggestions: false });
+    const { suggestions } = this.state;
+    const regex = new RegExp(input, "gmi");
+    const matchingSuggestions = suggestions.filter(activity => activity.name.match(regex));
+    if (matchingSuggestions.length === 0) {
+      this.setState({ showSuggestions: false, matchingSuggestions: [] });
     } else {
-      this.setState({ suggestions: suggestionArray, showSuggestions: true });
+      this.setState({ showSuggestions: true, matchingSuggestions });
     }
   };
 
   handleChange = e => {
-    if (e.target.value.length > 2) {
-      // trigger API call to fetch latest suggestions
-      // FIXME: I think we need to throtthle these calls to api
+    if (e.target.value.length >= 0) {
       this.getSuggestions(e.target.value);
       this.setState({ inputVal: e.target.value, showAddButton: true });
     } else {
@@ -113,16 +122,21 @@ class DynamicActivitySearch extends React.Component {
       this.setState({ showSuggestions: false });
     }
     if (e.keyCode === 13) {
+      // FIXME: if enter is pressed on random input, it tried to sends that over
       // Select item if ENTER key is pressed
       this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
       updateActivity(payload, true);
     }
   };
 
+  handleInputClick = () => {
+    this.setState({ showSuggestions: true });
+  };
+
   render() {
-    const { showSuggestions, inputVal, suggestions, showAddButton } = this.state;
+    const { showSuggestions, inputVal, matchingSuggestions, suggestions, showAddButton } = this.state;
     const { placeholder, allowNew } = this.props;
-    const suggestionsList = suggestions.map(suggestion => (
+    const suggestionsList = matchingSuggestions.map(suggestion => (
       <SuggestionItem
         tabIndex={0}
         onClick={() => this.handleClickSelect(suggestion.id, suggestion.name)}
@@ -136,8 +150,9 @@ class DynamicActivitySearch extends React.Component {
     return (
       <>
         <SearchBarWrapper>
-          <Label htmlFor={placeholder}>
+          <Label htmlFor={placeholder} ref={this.setPopupRef}>
             <input
+              onClick={this.handleInputClick}
               onChange={this.handleChange}
               type="text"
               placeholder={placeholder}
@@ -151,7 +166,7 @@ class DynamicActivitySearch extends React.Component {
               Add
             </AddButton>
           )}
-          {showSuggestions && <Suggestions ref={this.setPopupRef}>{suggestionsList}</Suggestions>}
+          {showSuggestions && <Suggestions>{suggestionsList}</Suggestions>}
         </SearchBarWrapper>
       </>
     );
