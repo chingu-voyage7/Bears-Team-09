@@ -160,7 +160,7 @@ class DynamicActivitySearch extends React.Component {
               onKeyDown={e => this.handleKeyDown(e)}
             />
           </Label>
-          {allowNew && inputVal && showAddButton && suggestions.length === 0 && (
+          {allowNew && inputVal && showAddButton && matchingSuggestions.length === 0 && (
             <AddButton onClick={this.handleAdd} tabIndex={0}>
               <span>+</span>
               Add
