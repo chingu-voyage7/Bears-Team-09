@@ -12,6 +12,7 @@ class Event extends Component {
     const dateToFormatted = dateToRaw ? format(dateToRaw, "MMM Do, YYYY") : "";
     const dateToFormattedCheck = isEqual(dateFromRaw, dateToRaw) ? null : dateToFormatted;
 
+    const Separator = dateToFormattedCheck ? "- " : null;
     return (
       <EventCard>
         <EventImage src={image} />
@@ -20,7 +21,11 @@ class Event extends Component {
         </Link>
         <EventSubtitle>{activity} </EventSubtitle>
         <EventDate>
-          {dateFromFormatted} - {dateToFormattedCheck}
+          <>
+            {dateFromFormatted}
+            {Separator}
+            {dateToFormattedCheck}
+          </>
         </EventDate>
         <p>{description}</p>
       </EventCard>
