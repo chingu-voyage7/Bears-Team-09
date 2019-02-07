@@ -127,11 +127,12 @@ class DynamicLocationSearch extends React.Component {
     }
   };
 
-  handleKeyDown = (e, id, name) => {
+  handleKeyDown = (e, id, city, country) => {
     const { updateLocation } = this.props;
     const payload = {
       id,
-      name
+      city,
+      country
     };
     // close popup is ESC key is pressed
     if (e.keyCode === 27) {
@@ -139,7 +140,13 @@ class DynamicLocationSearch extends React.Component {
     }
     if (e.keyCode === 13) {
       // Select item if ENTER key is pressed
-      this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
+      this.setState({
+        showSuggestions: false,
+        inputVal: city,
+        selectionID: id,
+        selectionCity: city,
+        selectionCountry: country
+      });
       updateLocation(payload, true);
     }
   };
@@ -158,7 +165,7 @@ class DynamicLocationSearch extends React.Component {
       <SuggestionItem
         tabIndex={0}
         onClick={e => this.handleClickSelect(e, suggestion.id, suggestion.city, suggestion.country)}
-        onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.city)}
+        onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.city, suggestion.country)}
         key={suggestion.id}
       >
         {suggestion.city}, {suggestion.country}

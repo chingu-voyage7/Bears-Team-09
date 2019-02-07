@@ -100,7 +100,6 @@ class DynamicActivitySearch extends React.Component {
       name
     };
     this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
-
     updateActivity(payload, true);
   };
 
@@ -122,7 +121,6 @@ class DynamicActivitySearch extends React.Component {
       this.setState({ showSuggestions: false });
     }
     if (e.keyCode === 13) {
-      // FIXME: if enter is pressed on random input, it tried to sends that over
       // Select item if ENTER key is pressed
       this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
       updateActivity(payload, true);
@@ -134,7 +132,7 @@ class DynamicActivitySearch extends React.Component {
   };
 
   render() {
-    const { showSuggestions, inputVal, matchingSuggestions, suggestions, showAddButton } = this.state;
+    const { showSuggestions, inputVal, matchingSuggestions, showAddButton } = this.state;
     const { placeholder, allowNew } = this.props;
     const suggestionsList = matchingSuggestions.map(suggestion => (
       <SuggestionItem
