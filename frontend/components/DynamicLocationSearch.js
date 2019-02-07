@@ -14,6 +14,7 @@ class DynamicLocationSearch extends React.Component {
       inputVal: "",
       inputCountryVal: "",
       suggestions: [],
+      matchingSuggestions: [],
       selectionID: null,
       selectionCity: null,
       selectionCountry: null,
@@ -21,6 +22,26 @@ class DynamicLocationSearch extends React.Component {
       showAddButton: true,
       showCountryInput: false
     };
+  }
+
+  async componentDidMount() {
+    const token = localStorage.getItem("token");
+    const AuthStr = `Bearer ${token}`;
+    const suggestions = await axios({
+      method: "get",
+      url: `${backendUrl}/places`,
+      headers: {
+        Authorization: AuthStr
+      }
+    });
+
+    const suggestionArray = suggestions.data["places"];
+    if (suggestionArray.length === 0) {
+      // no results found
+      this.setState({ showSuggestions: false, suggestions: suggestionArray, matchingSuggestions: [] });
+    } else {
+      this.setState({ matchingSuggestions: suggestionArray, suggestions: suggestionArray, showSuggestions: false });
+    }
   }
 
   componentDidUpdate() {
@@ -54,35 +75,22 @@ class DynamicLocationSearch extends React.Component {
       this.setState({ showAddButton: false });
       this.props.updateLocation(payload, false);
     }
-    // send the info to the parent component indicating new addition to db
-    // we need to promp user here and ask for City, Country combo
   };
 
-  // Fetch suggestions based on the input
-  getSuggestions = async input => {
-    const capitalizedInput = input.charAt(0).toUpperCase() + input.slice(1);
-    const token = localStorage.getItem("token");
-    const AuthStr = `Bearer ${token}`;
-    const suggestions = await axios({
-      method: "get",
-      url: `${backendUrl}/places?limit=5&city=${capitalizedInput}&compare=in`,
-      headers: {
-        Authorization: AuthStr
-      }
-    });
-
-    const suggestionArray = suggestions.data["places"];
-    if (suggestionArray.length === 0) {
-      // no results found
-      this.setState({ showSuggestions: false });
+  // Match suggestions based on the input
+  getSuggestions = input => {
+    const { suggestions } = this.state;
+    const regex = new RegExp(input, "gmi");
+    const matchingSuggestions = suggestions.filter(activity => activity.city.match(regex));
+    if (matchingSuggestions.length === 0) {
+      this.setState({ showSuggestions: false, matchingSuggestions: [] });
     } else {
-      this.setState({ suggestions: suggestionArray, showSuggestions: true });
+      this.setState({ showSuggestions: true, matchingSuggestions });
     }
   };
 
   handleChange = e => {
     if (e.target.value.length > 2) {
-      // FIXME: I think we need to throtthle these calls to api
       this.getSuggestions(e.target.value);
       this.setState({ inputVal: e.target.value, showAddButton: true });
     } else {
@@ -137,9 +145,16 @@ class DynamicLocationSearch extends React.Component {
   };
 
   render() {
-    const { showSuggestions, showCountryInput, inputVal, inputCountryVal, suggestions, showAddButton } = this.state;
+    const {
+      showSuggestions,
+      showCountryInput,
+      inputVal,
+      inputCountryVal,
+      matchingSuggestions,
+      showAddButton
+    } = this.state;
     const { placeholder, allowNew } = this.props;
-    const suggestionsList = suggestions.map(suggestion => (
+    const suggestionsList = matchingSuggestions.map(suggestion => (
       <SuggestionItem
         tabIndex={0}
         onClick={e => this.handleClickSelect(e, suggestion.id, suggestion.city, suggestion.country)}
@@ -172,7 +187,7 @@ class DynamicLocationSearch extends React.Component {
               />
             </Label>
           )}
-          {inputVal && allowNew && showAddButton && suggestions.length === 0 && (
+          {inputVal && allowNew && showAddButton && matchingSuggestions.length === 0 && (
             <AddButton onClick={this.handleAdd} tabIndex={0}>
               <span>+</span>
               Add
