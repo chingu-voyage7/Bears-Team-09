@@ -90,7 +90,7 @@ class DynamicLocationSearch extends React.Component {
   };
 
   handleChange = e => {
-    if (e.target.value.length > 2) {
+    if (e.target.value.length > 1) {
       this.getSuggestions(e.target.value);
       this.setState({ inputVal: e.target.value, showAddButton: true });
     } else {
