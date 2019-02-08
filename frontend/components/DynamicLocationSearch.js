@@ -20,7 +20,8 @@ class DynamicLocationSearch extends React.Component {
       selectionCountry: null,
       showSuggestions: false,
       showAddButton: true,
-      showCountryInput: false
+      showCountryInput: false,
+      focusedItem: 0
     };
   }
 
@@ -81,7 +82,7 @@ class DynamicLocationSearch extends React.Component {
   getSuggestions = input => {
     const { suggestions } = this.state;
     const regex = new RegExp(input, "gmi");
-    const matchingSuggestions = suggestions.filter(activity => activity.city.match(regex));
+    const matchingSuggestions = suggestions.filter(activity => activity.city.match(regex)).slice(0, 10);
     if (matchingSuggestions.length === 0) {
       this.setState({ showSuggestions: false, matchingSuggestions: [] });
     } else {
@@ -89,12 +90,24 @@ class DynamicLocationSearch extends React.Component {
     }
   };
 
+  resetSearch = e => {
+    const { updateLocation } = this.props;
+    const { suggestions } = this.state;
+    this.setState({
+      inputVal: e.target.value,
+      showSuggestions: true,
+      focusedItem: 0,
+      matchingSuggestions: suggestions.slice(0, 10)
+    });
+    updateLocation({ id: null, city: null, country: null }, false);
+  };
+
   handleChange = e => {
     if (e.target.value.length > 0) {
       this.getSuggestions(e.target.value);
       this.setState({ inputVal: e.target.value, showAddButton: true });
     } else {
-      this.setState({ inputVal: e.target.value, showSuggestions: false });
+      this.resetSearch(e);
     }
   };
 
@@ -129,26 +142,70 @@ class DynamicLocationSearch extends React.Component {
 
   handleKeyDown = (e, id, city, country) => {
     const { updateLocation } = this.props;
-    const payload = {
+    const { focusedItem, matchingSuggestions } = this.state;
+    let payload = {
       id,
       city,
       country
     };
     // close popup is ESC key is pressed
-    if (e.keyCode === 27) {
-      this.setState({ showSuggestions: false });
+    if (e.key === "Escape") {
+      this.setState({ inputVal: focusedItem.city, showSuggestions: false });
     }
-    if (e.keyCode === 13) {
-      // Select item if ENTER key is pressed
-      this.setState({
-        showSuggestions: false,
-        inputVal: city,
-        selectionID: id,
-        selectionCity: city,
-        selectionCountry: country
-      });
-      updateLocation(payload, true);
+    if (e.key === "Tab") {
+      if (matchingSuggestions.length !== 0) {
+        this.setState({
+          showSuggestions: false,
+          inputVal: matchingSuggestions[focusedItem].city,
+          selectionID: matchingSuggestions[focusedItem].id,
+          selectionName: matchingSuggestions[focusedItem].city,
+          selectionCountry: matchingSuggestions[focusedItem].country
+        });
+        payload = {
+          id: matchingSuggestions[focusedItem].id,
+          city: matchingSuggestions[focusedItem].city,
+          country: matchingSuggestions[focusedItem].country
+        };
+        updateLocation(payload, true);
+      }
     }
+    if (e.key === "ArrowDown") {
+      if (focusedItem < matchingSuggestions.length - 1) {
+        this.setState(prevState => ({
+          focusedItem: prevState.focusedItem + 1
+        }));
+      }
+    }
+    if (e.key === "ArrowUp") {
+      if (focusedItem > 0) {
+        this.setState(prevState => ({
+          focusedItem: prevState.focusedItem - 1
+        }));
+      }
+    }
+    if (e.key === "Enter") {
+      if (matchingSuggestions.length !== 0) {
+        this.setState({
+          showSuggestions: false,
+          inputVal: matchingSuggestions[focusedItem].name,
+          selectionID: matchingSuggestions[focusedItem].id,
+          selectionName: matchingSuggestions[focusedItem].name
+        });
+        payload = {
+          id: matchingSuggestions[focusedItem].id,
+          city: matchingSuggestions[focusedItem].city,
+          country: matchingSuggestions[focusedItem].country
+        };
+        updateLocation(payload, true);
+      }
+    }
+  };
+
+  hoverFocus = suggestion => {
+    const { matchingSuggestions } = this.state;
+    // find index of the dropdown that is being hovered on
+    const index = matchingSuggestions.findIndex(value => value.id === suggestion.id);
+    this.setState({ focusedItem: index });
   };
 
   render() {
@@ -158,12 +215,15 @@ class DynamicLocationSearch extends React.Component {
       inputVal,
       inputCountryVal,
       matchingSuggestions,
-      showAddButton
+      showAddButton,
+      focusedItem
     } = this.state;
     const { placeholder, allowNew } = this.props;
-    const suggestionsList = matchingSuggestions.map(suggestion => (
+    const suggestionsList = matchingSuggestions.map((suggestion, idx) => (
       <SuggestionItem
-        tabIndex={0}
+        tabIndex={-1}
+        focused={idx === focusedItem}
+        onMouseOver={() => this.hoverFocus(suggestion)}
         onClick={e => this.handleClickSelect(e, suggestion.id, suggestion.city, suggestion.country)}
         onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.city, suggestion.country)}
         key={suggestion.id}
@@ -175,7 +235,7 @@ class DynamicLocationSearch extends React.Component {
     return (
       <>
         <SearchBarWrapper>
-          <Label htmlFor={placeholder}>
+          <Label htmlFor={placeholder} ref={this.setPopupRef}>
             <input
               onChange={this.handleChange}
               type="text"
@@ -200,7 +260,7 @@ class DynamicLocationSearch extends React.Component {
               Add
             </AddButton>
           )}
-          {showSuggestions && <Suggestions ref={this.setPopupRef}>{suggestionsList}</Suggestions>}
+          {showSuggestions && <Suggestions>{suggestionsList}</Suggestions>}
         </SearchBarWrapper>
       </>
     );
@@ -267,12 +327,11 @@ const SuggestionItem = styled.li`
   padding: 3px;
   font-size: 1rem;
   text-transform: capitalize;
+  border-top: 1px dotted #ccc;
+  background: ${props => (props.focused ? "purple" : "white")};
+  color: ${props => (props.focused ? "white" : "inherit")};
   &:hover {
-    background: purple;
-    color: white;
-  }
-  &:focus {
-    background: purple;
-    color: white;
+    background: ${props => (props.focused ? "purple" : "white")};
+    color: ${props => (props.focused ? "white" : "inherit")};
   }
 `;

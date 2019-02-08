@@ -296,6 +296,7 @@ const SuggestionItem = styled.li`
   padding: 3px;
   font-size: 1rem;
   text-transform: capitalize;
+  border-top: 1px dotted #ccc;
   background: ${props => (props.focused ? "purple" : "white")};
   color: ${props => (props.focused ? "white" : "inherit")};
   &:hover {
