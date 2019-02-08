@@ -18,7 +18,7 @@ class DynamicActivitySearch extends React.Component {
       selectionName: null,
       showSuggestions: false,
       showAddButton: true,
-      focusedItem: 0
+      focusedItem: null
     };
   }
 
@@ -90,8 +90,8 @@ class DynamicActivitySearch extends React.Component {
     this.setState({
       inputVal: e.target.value,
       showSuggestions: true,
-      focusedItem: 0,
-      matchingSuggestions: suggestions
+      matchingSuggestions: suggestions,
+      focusedItem: null
     });
     updateActivity({ id: null, name: null }, false);
   };
@@ -137,7 +137,7 @@ class DynamicActivitySearch extends React.Component {
       this.setState({ inputVal: focusedItem.name, showSuggestions: false });
     }
     if (e.key === "Tab") {
-      if (matchingSuggestions.length !== 0) {
+      if (matchingSuggestions.length !== 0 && focusedItem !== null) {
         this.setState({
           showSuggestions: false,
           inputVal: matchingSuggestions[focusedItem].name,
@@ -152,7 +152,9 @@ class DynamicActivitySearch extends React.Component {
       }
     }
     if (e.key === "ArrowDown") {
-      if (focusedItem < matchingSuggestions.length - 1) {
+      if (focusedItem < matchingSuggestions.length - 1 && focusedItem === null) {
+        this.setState({ focusedItem: 0 });
+      } else if (focusedItem < matchingSuggestions.length - 1 && focusedItem !== null) {
         this.setState(prevState => ({
           focusedItem: prevState.focusedItem + 1
         }));
@@ -200,6 +202,7 @@ class DynamicActivitySearch extends React.Component {
       <SuggestionItem
         focused={idx === focusedItem}
         tabIndex={-1}
+        onFocus={() => this.hoverFocus(suggestion)}
         onMouseOver={() => this.hoverFocus(suggestion)}
         onClick={() => this.handleClickSelect(suggestion.id, suggestion.name)}
         onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.name)}
@@ -214,6 +217,7 @@ class DynamicActivitySearch extends React.Component {
         <SearchBarWrapper>
           <Label htmlFor={placeholder} ref={this.setPopupRef}>
             <input
+              onFocus={this.handleInputClick}
               onClick={this.handleInputClick}
               onChange={this.handleChange}
               type="text"
