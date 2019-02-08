@@ -17,7 +17,8 @@ class DynamicActivitySearch extends React.Component {
       selectionID: null,
       selectionName: null,
       showSuggestions: false,
-      showAddButton: true
+      showAddButton: true,
+      focusedItem: 0
     };
   }
 
@@ -83,12 +84,24 @@ class DynamicActivitySearch extends React.Component {
     }
   };
 
+  resetSearch = e => {
+    const { updateActivity } = this.props;
+    const { suggestions } = this.state;
+    this.setState({
+      inputVal: e.target.value,
+      showSuggestions: true,
+      focusedItem: 0,
+      matchingSuggestions: suggestions
+    });
+    updateActivity({ id: null, name: null }, false);
+  };
+
   handleChange = e => {
-    if (e.target.value.length >= 0) {
+    if (e.target.value.length > 0) {
       this.getSuggestions(e.target.value);
       this.setState({ inputVal: e.target.value, showAddButton: true });
     } else {
-      this.setState({ inputVal: e.target.value, showSuggestions: false });
+      this.resetSearch(e);
     }
   };
 
@@ -99,6 +112,8 @@ class DynamicActivitySearch extends React.Component {
       id,
       name
     };
+    console.log(payload);
+
     this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
     updateActivity(payload, true);
   };
@@ -112,18 +127,58 @@ class DynamicActivitySearch extends React.Component {
 
   handleKeyDown = (e, id, name) => {
     const { updateActivity } = this.props;
-    const payload = {
+    const { focusedItem, matchingSuggestions } = this.state;
+    let payload = {
       id,
       name
     };
     // close popup is ESC key is pressed
-    if (e.keyCode === 27) {
-      this.setState({ showSuggestions: false });
+    if (e.key === "Escape") {
+      this.setState({ inputVal: focusedItem.name, showSuggestions: false });
     }
-    if (e.keyCode === 13) {
-      // Select item if ENTER key is pressed
-      this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
-      updateActivity(payload, true);
+    if (e.key === "Tab") {
+      if (matchingSuggestions.length !== 0) {
+        this.setState({
+          showSuggestions: false,
+          inputVal: matchingSuggestions[focusedItem].name,
+          selectionID: matchingSuggestions[focusedItem].id,
+          selectionName: matchingSuggestions[focusedItem].name
+        });
+        payload = {
+          id: matchingSuggestions[focusedItem].id,
+          name: matchingSuggestions[focusedItem].name
+        };
+        updateActivity(payload, true);
+      }
+    }
+    if (e.key === "ArrowDown") {
+      if (focusedItem < matchingSuggestions.length - 1) {
+        this.setState(prevState => ({
+          focusedItem: prevState.focusedItem + 1
+        }));
+      }
+    }
+    if (e.key === "ArrowUp") {
+      if (focusedItem > 0) {
+        this.setState(prevState => ({
+          focusedItem: prevState.focusedItem - 1
+        }));
+      }
+    }
+    if (e.key === "Enter") {
+      if (matchingSuggestions.length !== 0) {
+        this.setState({
+          showSuggestions: false,
+          inputVal: matchingSuggestions[focusedItem].name,
+          selectionID: matchingSuggestions[focusedItem].id,
+          selectionName: matchingSuggestions[focusedItem].name
+        });
+        payload = {
+          id: matchingSuggestions[focusedItem].id,
+          name: matchingSuggestions[focusedItem].name
+        };
+        updateActivity(payload, true);
+      }
     }
   };
 
@@ -131,12 +186,21 @@ class DynamicActivitySearch extends React.Component {
     this.setState({ showSuggestions: true });
   };
 
+  hoverFocus = suggestion => {
+    const { matchingSuggestions } = this.state;
+    // find index of the dropdown that is being hovered on
+    const index = matchingSuggestions.findIndex(value => value.id === suggestion.id);
+    this.setState({ focusedItem: index });
+  };
+
   render() {
-    const { showSuggestions, inputVal, matchingSuggestions, showAddButton } = this.state;
+    const { showSuggestions, inputVal, matchingSuggestions, showAddButton, focusedItem } = this.state;
     const { placeholder, allowNew } = this.props;
-    const suggestionsList = matchingSuggestions.map(suggestion => (
+    const suggestionsList = matchingSuggestions.map((suggestion, idx) => (
       <SuggestionItem
-        tabIndex={0}
+        focused={idx === focusedItem}
+        tabIndex={-1}
+        onMouseOver={() => this.hoverFocus(suggestion)}
         onClick={() => this.handleClickSelect(suggestion.id, suggestion.name)}
         onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.name)}
         key={suggestion.id}
@@ -232,12 +296,10 @@ const SuggestionItem = styled.li`
   padding: 3px;
   font-size: 1rem;
   text-transform: capitalize;
+  background: ${props => (props.focused ? "purple" : "white")};
+  color: ${props => (props.focused ? "white" : "inherit")};
   &:hover {
-    background: purple;
-    color: white;
-  }
-  &:focus {
-    background: purple;
-    color: white;
+    background: ${props => (props.focused ? "purple" : "white")};
+    color: ${props => (props.focused ? "white" : "inherit")};
   }
 `;

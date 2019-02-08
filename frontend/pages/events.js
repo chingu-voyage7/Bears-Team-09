@@ -49,7 +49,6 @@ class Dashboard extends Component {
   };
 
   updateActivity = data => {
-    console.log(data);
     const oldState = Object.assign({}, this.state);
     const oldFilters = oldState.eventFilters;
     oldFilters["activity"] = data.name;
@@ -57,7 +56,6 @@ class Dashboard extends Component {
   };
 
   updateLocation = data => {
-    console.log(data);
     const oldState = Object.assign({}, this.state);
     const oldFilters = oldState.eventFilters;
     oldFilters["city"] = data.city;
