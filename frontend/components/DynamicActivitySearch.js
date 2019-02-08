@@ -149,6 +149,8 @@ class DynamicActivitySearch extends React.Component {
           name: matchingSuggestions[focusedItem].name
         };
         updateActivity(payload, true);
+      } else {
+        this.setState({ showSuggestions: false });
       }
     }
     if (e.key === "ArrowDown") {

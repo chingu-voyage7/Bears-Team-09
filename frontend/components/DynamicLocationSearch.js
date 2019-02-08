@@ -21,7 +21,7 @@ class DynamicLocationSearch extends React.Component {
       showSuggestions: false,
       showAddButton: true,
       showCountryInput: false,
-      focusedItem: 0
+      focusedItem: null
     };
   }
 
@@ -41,7 +41,11 @@ class DynamicLocationSearch extends React.Component {
       // no results found
       this.setState({ showSuggestions: false, suggestions: suggestionArray, matchingSuggestions: [] });
     } else {
-      this.setState({ matchingSuggestions: suggestionArray, suggestions: suggestionArray, showSuggestions: false });
+      this.setState({
+        matchingSuggestions: suggestionArray.slice(0, 10),
+        suggestions: suggestionArray,
+        showSuggestions: false
+      });
     }
   }
 
@@ -96,7 +100,7 @@ class DynamicLocationSearch extends React.Component {
     this.setState({
       inputVal: e.target.value,
       showSuggestions: true,
-      focusedItem: 0,
+      focusedItem: null,
       matchingSuggestions: suggestions.slice(0, 10)
     });
     updateLocation({ id: null, city: null, country: null }, false);
@@ -153,7 +157,7 @@ class DynamicLocationSearch extends React.Component {
       this.setState({ inputVal: focusedItem.city, showSuggestions: false });
     }
     if (e.key === "Tab") {
-      if (matchingSuggestions.length !== 0) {
+      if (matchingSuggestions.length !== 0 && focusedItem !== null) {
         this.setState({
           showSuggestions: false,
           inputVal: matchingSuggestions[focusedItem].city,
@@ -167,10 +171,14 @@ class DynamicLocationSearch extends React.Component {
           country: matchingSuggestions[focusedItem].country
         };
         updateLocation(payload, true);
+      } else {
+        this.setState({ showSuggestions: false });
       }
     }
     if (e.key === "ArrowDown") {
-      if (focusedItem < matchingSuggestions.length - 1) {
+      if (focusedItem < matchingSuggestions.length - 1 && focusedItem === null) {
+        this.setState({ focusedItem: 0 });
+      } else if (focusedItem < matchingSuggestions.length - 1 && focusedItem !== null) {
         this.setState(prevState => ({
           focusedItem: prevState.focusedItem + 1
         }));
@@ -185,17 +193,18 @@ class DynamicLocationSearch extends React.Component {
     }
     if (e.key === "Enter") {
       if (matchingSuggestions.length !== 0) {
-        this.setState({
-          showSuggestions: false,
-          inputVal: matchingSuggestions[focusedItem].name,
-          selectionID: matchingSuggestions[focusedItem].id,
-          selectionName: matchingSuggestions[focusedItem].name
-        });
         payload = {
           id: matchingSuggestions[focusedItem].id,
           city: matchingSuggestions[focusedItem].city,
           country: matchingSuggestions[focusedItem].country
         };
+        this.setState({
+          showSuggestions: false,
+          inputVal: matchingSuggestions[focusedItem].city,
+          selectionID: matchingSuggestions[focusedItem].id,
+          selectionCity: matchingSuggestions[focusedItem].city,
+          selectionCountry: matchingSuggestions[focusedItem].country
+        });
         updateLocation(payload, true);
       }
     }
@@ -206,6 +215,10 @@ class DynamicLocationSearch extends React.Component {
     // find index of the dropdown that is being hovered on
     const index = matchingSuggestions.findIndex(value => value.id === suggestion.id);
     this.setState({ focusedItem: index });
+  };
+
+  handleInputClick = () => {
+    this.setState({ showSuggestions: true });
   };
 
   render() {
@@ -223,6 +236,7 @@ class DynamicLocationSearch extends React.Component {
       <SuggestionItem
         tabIndex={-1}
         focused={idx === focusedItem}
+        onFocus={() => this.hoverFocus(suggestion)}
         onMouseOver={() => this.hoverFocus(suggestion)}
         onClick={e => this.handleClickSelect(e, suggestion.id, suggestion.city, suggestion.country)}
         onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.city, suggestion.country)}
@@ -237,6 +251,8 @@ class DynamicLocationSearch extends React.Component {
         <SearchBarWrapper>
           <Label htmlFor={placeholder} ref={this.setPopupRef}>
             <input
+              onFocus={this.handleInputClick}
+              onClick={this.handleInputClick}
               onChange={this.handleChange}
               type="text"
               placeholder={placeholder}
