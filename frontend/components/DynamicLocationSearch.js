@@ -154,7 +154,11 @@ class DynamicLocationSearch extends React.Component {
     };
     // close popup is ESC key is pressed
     if (e.key === "Escape") {
-      this.setState({ inputVal: focusedItem.city, showSuggestions: false });
+      if (focusedItem === null) {
+        this.setState({ showSuggestions: false });
+      } else {
+        this.setState({ inputVal: focusedItem.city, showSuggestions: false });
+      }
     }
     if (e.key === "Tab") {
       if (matchingSuggestions.length !== 0 && focusedItem !== null) {
