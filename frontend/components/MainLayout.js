@@ -12,6 +12,7 @@ const MainLayout = props => {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta charSet="utf-8" />
+        <link rel="icon" type="image/x-icon" href="../static/favicon.ico" />
         <title>PairUp: find people to do things together</title>
       </Head>
       <GlobalStyle />
