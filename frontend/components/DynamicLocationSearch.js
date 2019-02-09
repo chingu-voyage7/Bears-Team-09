@@ -49,12 +49,15 @@ class DynamicLocationSearch extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     // adding click handlers based on suggestion box
     if (this.state.showSuggestions) {
       window.addEventListener("click", this.handleClick);
     } else {
       window.removeEventListener("click", this.handleClick);
+    }
+    if (prevProps.cleared === false && this.props.cleared === true) {
+      this.resetSearch();
     }
   }
 
@@ -97,8 +100,9 @@ class DynamicLocationSearch extends React.Component {
   resetSearch = e => {
     const { updateLocation } = this.props;
     const { suggestions } = this.state;
+    const inputVal = e ? e.target.value : "";
     this.setState({
-      inputVal: e.target.value,
+      inputVal,
       showSuggestions: true,
       focusedItem: null,
       matchingSuggestions: suggestions.slice(0, 10)
@@ -293,7 +297,8 @@ class DynamicLocationSearch extends React.Component {
 DynamicLocationSearch.propTypes = {
   placeholder: PropTypes.string.isRequired,
   allowNew: PropTypes.bool.isRequired,
-  updateLocation: PropTypes.func
+  updateLocation: PropTypes.func,
+  cleared: PropTypes.bool
 };
 
 export default DynamicLocationSearch;

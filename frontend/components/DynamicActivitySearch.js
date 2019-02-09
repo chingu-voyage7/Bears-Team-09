@@ -40,12 +40,16 @@ class DynamicActivitySearch extends React.Component {
     }
   }
 
-  componentDidUpdate() {
-    // adding click handlers based on suggestion box
+  componentDidUpdate(prevProps) {
+    // adding click handlers for click outside div to hide functionality
     if (this.state.showSuggestions) {
       window.addEventListener("click", this.handleClick);
     } else {
       window.removeEventListener("click", this.handleClick);
+    }
+    // control clear button from parent component
+    if (prevProps.cleared === false && this.props.cleared === true) {
+      this.resetSearch();
     }
   }
 
@@ -87,8 +91,9 @@ class DynamicActivitySearch extends React.Component {
   resetSearch = e => {
     const { updateActivity } = this.props;
     const { suggestions } = this.state;
+    const inputVal = e ? e.target.value : "";
     this.setState({
-      inputVal: e.target.value,
+      inputVal,
       showSuggestions: true,
       matchingSuggestions: suggestions,
       focusedItem: null
@@ -252,7 +257,8 @@ class DynamicActivitySearch extends React.Component {
 DynamicActivitySearch.propTypes = {
   placeholder: PropTypes.string.isRequired,
   allowNew: PropTypes.bool.isRequired,
-  updateActivity: PropTypes.func
+  updateActivity: PropTypes.func,
+  cleared: PropTypes.bool
 };
 
 export default DynamicActivitySearch;

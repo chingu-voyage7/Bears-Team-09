@@ -21,7 +21,8 @@ class Dashboard extends Component {
   state = {
     eventFilters: { date_from: null, city: null, activity: null },
     events: [],
-    offset: 0
+    offset: 0,
+    cleared: null
   };
 
   async componentDidMount() {
@@ -45,25 +46,26 @@ class Dashboard extends Component {
     const oldState = Object.assign({}, this.state);
     const oldFilters = oldState.eventFilters;
     oldFilters["date_from"] = date;
-    this.setState({ eventFilters: oldFilters });
+    this.setState({ eventFilters: oldFilters, cleared: false });
   };
 
   updateActivity = data => {
     const oldState = Object.assign({}, this.state);
     const oldFilters = oldState.eventFilters;
     oldFilters["activity"] = data.name;
-    this.setState({ eventFilters: oldFilters });
+    // updated the cleared state and filters
+    this.setState({ eventFilters: oldFilters, cleared: false });
   };
 
   updateLocation = data => {
     const oldState = Object.assign({}, this.state);
     const oldFilters = oldState.eventFilters;
     oldFilters["city"] = data.city;
-    this.setState({ eventFilters: oldFilters });
+    this.setState({ eventFilters: oldFilters, cleared: false });
   };
 
   clearFilters = () => {
-    this.setState({ eventFilters: { date_from: null, city: null, activity: null } });
+    this.setState({ eventFilters: { date_from: null, city: null, activity: null }, cleared: true });
   };
 
   loadMoreEvents = async () => {
@@ -87,7 +89,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { events, eventFilters } = this.state;
+    const { events, eventFilters, cleared } = this.state;
     return (
       <MainLayout>
         <TopPanel>
@@ -109,9 +111,19 @@ class Dashboard extends Component {
           </h4>
         </Divider>
         <FilterControlPanel>
-          <DynamicActivitySearch placeholder="Activity" allowNew={false} updateActivity={this.updateActivity} />
-          <DynamicLocationSearch placeholder="City" updateLocation={this.updateLocation} allowNew={false} />
-          <DateSelectorDynamic placeholder="date" updateSelection={this.updateDate} />
+          <DynamicActivitySearch
+            placeholder="Activity"
+            allowNew={false}
+            updateActivity={this.updateActivity}
+            cleared={cleared}
+          />
+          <DynamicLocationSearch
+            placeholder="City"
+            updateLocation={this.updateLocation}
+            allowNew={false}
+            cleared={cleared}
+          />
+          <DateSelectorDynamic placeholder="date" updateSelection={this.updateDate} cleared={cleared} />
           <ClearButton type="button" onClick={this.clearFilters}>
             Clear
           </ClearButton>
