@@ -126,6 +126,7 @@ class DynamicActivitySearch extends React.Component {
   };
 
   handleKeyDown = (e, id, name) => {
+    // e.stopPropagation();
     const { updateActivity } = this.props;
     const { focusedItem, matchingSuggestions } = this.state;
     let payload = {
@@ -158,6 +159,8 @@ class DynamicActivitySearch extends React.Component {
       }
     }
     if (e.key === "ArrowDown") {
+      e.preventDefault();
+      e.stopPropagation();
       if (focusedItem < matchingSuggestions.length - 1 && focusedItem === null) {
         this.setState({ focusedItem: 0 });
       } else if (focusedItem < matchingSuggestions.length - 1 && focusedItem !== null) {
@@ -167,6 +170,8 @@ class DynamicActivitySearch extends React.Component {
       }
     }
     if (e.key === "ArrowUp") {
+      e.preventDefault();
+      e.stopPropagation();
       if (focusedItem > 0) {
         this.setState(prevState => ({
           focusedItem: prevState.focusedItem - 1
@@ -211,7 +216,7 @@ class DynamicActivitySearch extends React.Component {
         onFocus={() => this.hoverFocus(suggestion)}
         onMouseOver={() => this.hoverFocus(suggestion)}
         onClick={() => this.handleClickSelect(suggestion.id, suggestion.name)}
-        onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.name)}
+        onKeyPress={e => this.handleKeyDown(e, suggestion.id, suggestion.name)}
         key={suggestion.id}
       >
         {suggestion.name}

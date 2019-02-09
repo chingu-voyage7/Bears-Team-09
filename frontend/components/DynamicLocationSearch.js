@@ -180,6 +180,8 @@ class DynamicLocationSearch extends React.Component {
       }
     }
     if (e.key === "ArrowDown") {
+      e.preventDefault();
+      e.stopPropagation();
       if (focusedItem < matchingSuggestions.length - 1 && focusedItem === null) {
         this.setState({ focusedItem: 0 });
       } else if (focusedItem < matchingSuggestions.length - 1 && focusedItem !== null) {
@@ -189,6 +191,8 @@ class DynamicLocationSearch extends React.Component {
       }
     }
     if (e.key === "ArrowUp") {
+      e.preventDefault();
+      e.stopPropagation();
       if (focusedItem > 0) {
         this.setState(prevState => ({
           focusedItem: prevState.focusedItem - 1
