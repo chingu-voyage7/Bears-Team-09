@@ -184,7 +184,7 @@ class DynamicActivitySearch extends React.Component {
       }
     }
     if (e.key === "Enter") {
-      if (matchingSuggestions.length !== 0) {
+      if (matchingSuggestions.length !== 0 && focusedItem !== null) {
         this.setState({
           showSuggestions: false,
           inputVal: matchingSuggestions[focusedItem].name,
@@ -196,6 +196,8 @@ class DynamicActivitySearch extends React.Component {
           name: matchingSuggestions[focusedItem].name
         };
         updateActivity(payload, true);
+      } else {
+        this.setState({ showSuggestions: false });
       }
     }
   };

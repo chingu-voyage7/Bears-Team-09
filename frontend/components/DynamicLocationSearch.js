@@ -204,7 +204,7 @@ class DynamicLocationSearch extends React.Component {
       }
     }
     if (e.key === "Enter") {
-      if (matchingSuggestions.length !== 0) {
+      if (matchingSuggestions.length !== 0 && focusedItem !== null) {
         payload = {
           id: matchingSuggestions[focusedItem].id,
           city: matchingSuggestions[focusedItem].city,
@@ -218,6 +218,8 @@ class DynamicLocationSearch extends React.Component {
           selectionCountry: matchingSuggestions[focusedItem].country
         });
         updateLocation(payload, true);
+      } else {
+        this.setState({ showSuggestions: false });
       }
     }
   };
