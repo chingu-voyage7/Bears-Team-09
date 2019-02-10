@@ -186,7 +186,7 @@ class DynamicLocationSearch extends React.Component {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       e.stopPropagation();
-      if (focusedItem < matchingSuggestions.length - 1 && focusedItem === null) {
+      if (focusedItem <= matchingSuggestions.length - 1 && focusedItem === null) {
         this.setState({ focusedItem: 0 });
       } else if (focusedItem < matchingSuggestions.length - 1 && focusedItem !== null) {
         this.setState(prevState => ({
