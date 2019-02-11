@@ -3,98 +3,80 @@ import styled from "styled-components";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import axios from "axios";
-import { format } from "date-fns";
 import MainLayout from "../components/MainLayout";
 import EventList from "../components/EventList";
-import ActivityPicker from "../components/ActivityPicker";
-import LocationSearch from "../components/LocationSearch";
-import { UserContext } from "../components/UserProvider";
 import device from "../styles/device";
 import config from "../config.json";
 import { NeutralButton } from "../components/shared/Buttons";
+import DynamicLocationSearch from "../components/DynamicLocationSearch";
+import DynamicActivitySearch from "../components/DynamicActivitySearch";
 
 const backendUrl = config.BACKEND_URL;
 
-// using dynamic import here as date-picker lib in DateSelector component was not working correctly in NextJS. There may be a cleaner solution that I am not aware of
 const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), {
   ssr: false
 });
 
 class Dashboard extends Component {
   state = {
-    eventFilters: { datefrom: null, city: null, activity: null },
+    eventFilters: { date_from: null, city: null, activity: null },
     events: [],
-    places: [],
-    activities: [],
-    offset: 0
+    offset: 0,
+    cleared: null
   };
 
   async componentDidMount() {
-    const { tokenCtx } = this.context;
-    // getting token from context, falling back to localStorage if no context exists (happens when page is refreshed)
-    const token = tokenCtx || localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-
-    const today = format(new Date(), "YYYY-MM-DD");
-    const isoDate = `${today}T00:00:000Z`;
 
     // Default fetch is any event from today with a limit of 5
     const eventsPromise = axios({
       method: "get",
-      url: `${backendUrl}/events?compare=gt&date_from=${isoDate}&limit=5`,
+      url: `${backendUrl}/events?&limit=5`,
       headers: {
         Authorization: AuthStr
       }
     }).catch(err => console.error(err.response));
 
-    const placesPromise = axios({
-      method: "get",
-      url: `${backendUrl}/places`,
-      headers: {
-        Authorization: AuthStr
-      }
-    }).catch(err => console.error(err.response));
-
-    const activitiesPromise = axios({
-      method: "get",
-      url: `${backendUrl}/activities`,
-      headers: {
-        Authorization: AuthStr
-      }
-    }).catch(err => console.error(err.response));
-    const [events, places, activities] = await Promise.all([eventsPromise, placesPromise, activitiesPromise]);
-
-    if (!events || !places || !activities) {
-      console.log("One of the following is empty: ", { events, places, activities });
-      return;
-    }
-
-    this.setState({ events: events.data.events, places: places.data.places, activities: activities.data.activities });
+    const events = await eventsPromise;
+    this.setState({ events: events.data.events });
   }
 
-  updateFilter = (type, data) => {
+  updateDate = date => {
     const oldState = Object.assign({}, this.state);
     const oldFilters = oldState.eventFilters;
-    oldFilters[type] = data;
-    this.setState({ eventFilters: oldFilters });
+    oldFilters["date_from"] = date;
+    this.setState({ eventFilters: oldFilters, cleared: false });
+  };
+
+  updateActivity = data => {
+    const oldState = Object.assign({}, this.state);
+    const oldFilters = oldState.eventFilters;
+    oldFilters["activity"] = data.name;
+    // updated the cleared state and filters
+    this.setState({ eventFilters: oldFilters, cleared: false });
+  };
+
+  updateLocation = data => {
+    const oldState = Object.assign({}, this.state);
+    const oldFilters = oldState.eventFilters;
+    oldFilters["city"] = data.city;
+    this.setState({ eventFilters: oldFilters, cleared: false });
   };
 
   clearFilters = () => {
-    this.setState({ eventFilters: { datefrom: null, city: null, activity: null } });
+    this.setState({ eventFilters: { date_from: null, city: null, activity: null }, cleared: true });
   };
 
   loadMoreEvents = async () => {
     const { offset } = this.state;
     const newOffset = offset + 5;
-    const { tokenCtx } = this.context;
-    const token = tokenCtx || localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const AuthStr = `Bearer ${token}`;
-    const today = format(new Date(), "YYYY-MM-DD");
-    const isoDate = `${today}T00:00:000Z`;
 
     const newEvents = await axios({
       method: "get",
-      url: `${backendUrl}/events?compare=gt&date_from=${isoDate}&limit=5&offset=${newOffset}`,
+      url: `${backendUrl}/events?&limit=5&offset=${newOffset}`,
       headers: {
         Authorization: AuthStr
       }
@@ -107,7 +89,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { events, places, activities, eventFilters } = this.state;
+    const { events, eventFilters, cleared } = this.state;
     return (
       <MainLayout>
         <TopPanel>
@@ -129,26 +111,33 @@ class Dashboard extends Component {
           </h4>
         </Divider>
         <FilterControlPanel>
-          <ActivityPicker type="filter" activities={activities} updateSelection={this.updateFilter} />
-          <DateSelectorDynamic placeholder="date" updateSelection={this.updateFilter} />
-          <LocationSearch type="filter" locations={places} updateSelection={this.updateFilter} />
+          <DynamicActivitySearch
+            placeholder="Activity"
+            allowNew={false}
+            updateActivity={this.updateActivity}
+            cleared={cleared}
+          />
+          <DynamicLocationSearch
+            placeholder="City"
+            updateLocation={this.updateLocation}
+            allowNew={false}
+            cleared={cleared}
+          />
+          <DateSelectorDynamic placeholder="date" updateSelection={this.updateDate} cleared={cleared} />
           <ClearButton type="button" onClick={this.clearFilters}>
             Clear
           </ClearButton>
         </FilterControlPanel>
         {events && events.length !== 0 && (
           <EventContainer>
-            <EventList events={events} filters={eventFilters} />{" "}
+            <EventList events={events} filters={eventFilters} />
             <NeutralButton onClick={this.loadMoreEvents}>Load More</NeutralButton>
           </EventContainer>
         )}
-        {/* {events.length === 0 && <StyledErrorMsg>No events found</StyledErrorMsg>} */}
       </MainLayout>
     );
   }
 }
-
-Dashboard.contextType = UserContext;
 
 export default Dashboard;
 
@@ -224,13 +213,12 @@ const Divider = styled.div`
 `;
 
 const FilterControlPanel = styled.div`
-  margin: 0 auto;
   justify-content: center;
   padding: 10px;
   background-color: #8bc6ec;
   background-image: linear-gradient(135deg, #8bc6ec 0%, #9599e2 100%);
   display: grid;
-  grid-template-columns: 100px 100px 150px 50px;
+  grid-template-columns: 160px 160px 150px 50px;
   width: auto;
   grid-gap: 10px;
   border-radius: 4px;

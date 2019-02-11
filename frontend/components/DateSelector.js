@@ -9,18 +9,28 @@ class DateSelector extends React.Component {
     startDate: null
   };
 
+  componentDidUpdate(prevProps) {
+    // control clear button from parent component
+    if (prevProps.cleared === false && this.props.cleared === true) {
+      this.clearDate();
+    }
+  }
+
+  clearDate = () => {
+    this.setState({ startDate: null });
+  };
+
   handleChange = date => {
     const { updateSelection } = this.props;
     if (date === null) {
-      this.setState({ startDate: null }, updateSelection("datefrom", null));
+      this.setState({ startDate: null }, updateSelection(null));
     } else {
-      this.setState({ startDate: date }, updateSelection("datefrom", date));
+      this.setState({ startDate: date }, updateSelection(date));
     }
   };
 
   render() {
     const { placeholder } = this.props;
-    // let { minDate, maxDate } = this.props
     const { startDate } = this.state;
     return (
       <DatePickerStylingWrapper type="form">
@@ -48,7 +58,8 @@ export default DateSelector;
 
 DateSelector.propTypes = {
   updateSelection: PropTypes.func.isRequired,
-  placeholder: PropTypes.string.isRequired
+  placeholder: PropTypes.string.isRequired,
+  cleared: PropTypes.bool
 };
 
 const DatePickerStylingWrapper = styled.div`

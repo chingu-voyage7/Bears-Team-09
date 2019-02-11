@@ -1,24 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import moment from "moment";
+import { format, isEqual } from "date-fns";
 import Link from "next/link";
 
 class Event extends Component {
   render() {
     const { id, name, activity, description, date_from: dateFromRaw, date_to: dateToRaw, image } = this.props;
-    let dateFormatFrom = "lll";
 
-    const dateFrom = moment(dateFromRaw, "YYYY-MM-DDTHH:mm:ss.sssZ");
-    const dateTo = moment(dateToRaw, "YYYY-MM-DDTHH:mm:ss.sssZ");
+    const dateFromFormatted = dateFromRaw ? format(dateFromRaw, "MMM Do, YYYY ") : "";
+    const dateToFormatted = dateToRaw ? format(dateToRaw, "MMM Do, YYYY") : "";
+    const dateToFormattedCheck = isEqual(dateFromRaw, dateToRaw) ? null : dateToFormatted;
 
-    if (dateFrom.format("YYYY") === moment().format("YYYY") && dateTo.format("YYYY") === moment().format("YYYY"))
-      dateFormatFrom = "MMM Do, LT";
-    const dateFormatTo = dateFrom.day() === dateTo.day() ? "LT" : dateFormatFrom;
-
-    const dateFromFormatted = moment(dateFromRaw, "YYYY-MM-DD HH:mm").format(dateFormatFrom);
-    const dateToFormatted = moment(dateToRaw, "YYYY-MM-DD HH:mm").format(dateFormatTo);
-
+    const Separator = dateToFormattedCheck ? "- " : null;
     return (
       <EventCard>
         <EventImage src={image} />
@@ -27,7 +21,11 @@ class Event extends Component {
         </Link>
         <EventSubtitle>{activity} </EventSubtitle>
         <EventDate>
-          {dateFromFormatted} - {dateToFormatted}
+          <>
+            {dateFromFormatted}
+            {Separator}
+            {dateToFormattedCheck}
+          </>
         </EventDate>
         <p>{description}</p>
       </EventCard>

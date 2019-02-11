@@ -5,13 +5,11 @@ import styled from "styled-components";
 import Event from "./Event";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
 
-// we would use this helper function to filter events, may need to push out //to utils folder for cleaner looking component
 function applyEventsFilter(events, filters) {
   function compareEventAndFilter(event, filtersObject) {
     let everyFilterMatching = true;
     Object.keys(filtersObject).forEach(filter => {
-      if (filter === "datefrom") {
-        // early exit for null dates
+      if (filter === "date_from") {
         if (filters[filter] !== null) {
           const filterDate = format(filters[filter], "YYYY-MM-DD");
           const eventDate = format(event[filter], "YYYY-MM-DD");
@@ -19,9 +17,16 @@ function applyEventsFilter(events, filters) {
             everyFilterMatching = false;
           }
         }
-      } else if (filter === "activity" || filter === "city") {
+      } else if (filter === "activity") {
         if (filters[filter] !== null) {
-          // normalization before comparison
+          const filterValue = filters[filter].toLowerCase();
+          const eventValue = event[filter].toLowerCase();
+          if (filterValue !== eventValue) {
+            everyFilterMatching = false;
+          }
+        }
+      } else if (filter === "city") {
+        if (filters[filter] !== null && event[filter] !== null) {
           const filterValue = filters[filter].toLowerCase();
           const eventValue = event[filter].toLowerCase();
           if (filterValue !== eventValue) {
@@ -51,7 +56,7 @@ export default EventList;
 EventList.propTypes = {
   events: PropTypes.arrayOf(PropTypes.object).isRequired,
   filters: PropTypes.shape({
-    datefrom: PropTypes.string,
+    date_from: PropTypes.string,
     city: PropTypes.string,
     activity: PropTypes.string
   }).isRequired

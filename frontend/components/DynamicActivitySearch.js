@@ -13,19 +13,43 @@ class DynamicActivitySearch extends React.Component {
     this.state = {
       inputVal: "",
       suggestions: [],
+      matchingSuggestions: [],
       selectionID: null,
       selectionName: null,
       showSuggestions: false,
-      showAddButton: true
+      showAddButton: true,
+      focusedItem: null
     };
   }
 
-  componentDidUpdate() {
-    // adding click handlers based on suggestion box
+  async componentDidMount() {
+    const token = localStorage.getItem("token");
+    const AuthStr = `Bearer ${token}`;
+    const suggestions = await axios({
+      method: "get",
+      url: `${backendUrl}/activities`,
+      headers: {
+        Authorization: AuthStr
+      }
+    });
+    const suggestionArray = suggestions.data["activities"];
+    if (suggestionArray.length === 0) {
+      this.setState({ suggestions: [], showSuggestions: false });
+    } else {
+      this.setState({ suggestions: suggestionArray, matchingSuggestions: suggestionArray, showSuggestions: false });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    // adding click handlers for click outside div to hide functionality
     if (this.state.showSuggestions) {
       window.addEventListener("click", this.handleClick);
     } else {
       window.removeEventListener("click", this.handleClick);
+    }
+    // control clear button from parent component
+    if (prevProps.cleared === false && this.props.cleared === true) {
+      this.resetSearch();
     }
   }
 
@@ -52,34 +76,37 @@ class DynamicActivitySearch extends React.Component {
     updateActivity(payload, false);
   };
 
-  // Fetch suggestions based on the input
+  // Filter suggestions based on the input
   getSuggestions = async input => {
-    const token = localStorage.getItem("token");
-    const AuthStr = `Bearer ${token}`;
-    const suggestions = await axios({
-      method: "get",
-      url: `${backendUrl}/activities?limit=5&name=${input}&compare=in`,
-      headers: {
-        Authorization: AuthStr
-      }
-    });
-    const suggestionArray = suggestions.data["activities"];
-    if (suggestionArray.length === 0) {
-      // no results found
-      this.setState({ suggestions: [], showSuggestions: false });
+    const { suggestions } = this.state;
+    const regex = new RegExp(input, "gmi");
+    const matchingSuggestions = suggestions.filter(activity => activity.name.match(regex));
+    if (matchingSuggestions.length === 0) {
+      this.setState({ showSuggestions: false, matchingSuggestions: [] });
     } else {
-      this.setState({ suggestions: suggestionArray, showSuggestions: true });
+      this.setState({ showSuggestions: true, matchingSuggestions });
     }
   };
 
+  resetSearch = e => {
+    const { updateActivity } = this.props;
+    const { suggestions } = this.state;
+    const inputVal = e ? e.target.value : "";
+    this.setState({
+      inputVal,
+      showSuggestions: true,
+      matchingSuggestions: suggestions,
+      focusedItem: null
+    });
+    updateActivity({ id: null, name: null }, false);
+  };
+
   handleChange = e => {
-    if (e.target.value.length > 2) {
-      // trigger API call to fetch latest suggestions
-      // FIXME: I think we need to throtthle these calls to api
+    if (e.target.value.length > 0) {
       this.getSuggestions(e.target.value);
       this.setState({ inputVal: e.target.value, showAddButton: true });
     } else {
-      this.setState({ inputVal: e.target.value, showSuggestions: false });
+      this.resetSearch(e);
     }
   };
 
@@ -90,8 +117,9 @@ class DynamicActivitySearch extends React.Component {
       id,
       name
     };
-    this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
+    console.log(payload);
 
+    this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
     updateActivity(payload, true);
   };
 
@@ -103,30 +131,101 @@ class DynamicActivitySearch extends React.Component {
   };
 
   handleKeyDown = (e, id, name) => {
+    // e.stopPropagation();
     const { updateActivity } = this.props;
-    const payload = {
+    const { focusedItem, matchingSuggestions } = this.state;
+    let payload = {
       id,
       name
     };
     // close popup is ESC key is pressed
-    if (e.keyCode === 27) {
-      this.setState({ showSuggestions: false });
+    if (e.key === "Escape") {
+      if (focusedItem === null) {
+        this.setState({ showSuggestions: false });
+      } else {
+        this.setState({ inputVal: focusedItem.name, showSuggestions: false });
+      }
     }
-    if (e.keyCode === 13) {
-      // Select item if ENTER key is pressed
-      this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
-      updateActivity(payload, true);
+    if (e.key === "Tab") {
+      if (matchingSuggestions.length !== 0 && focusedItem !== null) {
+        this.setState({
+          showSuggestions: false,
+          inputVal: matchingSuggestions[focusedItem].name,
+          selectionID: matchingSuggestions[focusedItem].id,
+          selectionName: matchingSuggestions[focusedItem].name
+        });
+        payload = {
+          id: matchingSuggestions[focusedItem].id,
+          name: matchingSuggestions[focusedItem].name
+        };
+        updateActivity(payload, true);
+      } else {
+        this.setState({ showSuggestions: false });
+      }
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (focusedItem <= matchingSuggestions.length - 1 && focusedItem === null) {
+        this.setState({ focusedItem: 0 });
+      } else if (focusedItem < matchingSuggestions.length - 1 && focusedItem !== null) {
+        this.setState(prevState => ({
+          focusedItem: prevState.focusedItem + 1
+        }));
+      }
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (focusedItem > 0) {
+        this.setState(prevState => ({
+          focusedItem: prevState.focusedItem - 1
+        }));
+      }
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (matchingSuggestions.length !== 0 && focusedItem !== null) {
+        this.setState({
+          showSuggestions: false,
+          inputVal: matchingSuggestions[focusedItem].name,
+          selectionID: matchingSuggestions[focusedItem].id,
+          selectionName: matchingSuggestions[focusedItem].name
+        });
+        payload = {
+          id: matchingSuggestions[focusedItem].id,
+          name: matchingSuggestions[focusedItem].name
+        };
+        updateActivity(payload, true);
+      } else {
+        this.setState({ showSuggestions: false });
+      }
     }
   };
 
+  handleInputClick = () => {
+    this.setState({ showSuggestions: true });
+  };
+
+  hoverFocus = suggestion => {
+    const { matchingSuggestions } = this.state;
+    // find index of the dropdown that is being hovered on
+    const index = matchingSuggestions.findIndex(value => value.id === suggestion.id);
+    this.setState({ focusedItem: index });
+  };
+
   render() {
-    const { showSuggestions, inputVal, suggestions, showAddButton } = this.state;
+    const { showSuggestions, inputVal, matchingSuggestions, showAddButton, focusedItem } = this.state;
     const { placeholder, allowNew } = this.props;
-    const suggestionsList = suggestions.map(suggestion => (
+    const suggestionsList = matchingSuggestions.map((suggestion, idx) => (
       <SuggestionItem
-        tabIndex={0}
+        focused={idx === focusedItem}
+        tabIndex={-1}
+        onFocus={() => this.hoverFocus(suggestion)}
+        onMouseOver={() => this.hoverFocus(suggestion)}
         onClick={() => this.handleClickSelect(suggestion.id, suggestion.name)}
-        onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.name)}
+        onKeyPress={e => this.handleKeyDown(e, suggestion.id, suggestion.name)}
         key={suggestion.id}
       >
         {suggestion.name}
@@ -136,8 +235,10 @@ class DynamicActivitySearch extends React.Component {
     return (
       <>
         <SearchBarWrapper>
-          <Label htmlFor={placeholder}>
+          <Label htmlFor={placeholder} ref={this.setPopupRef}>
             <input
+              onFocus={this.handleInputClick}
+              onClick={this.handleInputClick}
               onChange={this.handleChange}
               type="text"
               placeholder={placeholder}
@@ -145,14 +246,14 @@ class DynamicActivitySearch extends React.Component {
               onKeyDown={e => this.handleKeyDown(e)}
             />
           </Label>
-          {allowNew && inputVal && showAddButton && suggestions.length === 0 && (
+          {allowNew && inputVal && showAddButton && matchingSuggestions.length === 0 && (
             <AddButton onClick={this.handleAdd} tabIndex={0}>
               <span>+</span>
               Add
             </AddButton>
           )}
+          {showSuggestions && <Suggestions>{suggestionsList}</Suggestions>}
         </SearchBarWrapper>
-        {showSuggestions && <Suggestions ref={this.setPopupRef}>{suggestionsList}</Suggestions>}
       </>
     );
   }
@@ -160,7 +261,8 @@ class DynamicActivitySearch extends React.Component {
 DynamicActivitySearch.propTypes = {
   placeholder: PropTypes.string.isRequired,
   allowNew: PropTypes.bool.isRequired,
-  updateActivity: PropTypes.func
+  updateActivity: PropTypes.func,
+  cleared: PropTypes.bool
 };
 
 export default DynamicActivitySearch;
@@ -219,12 +321,11 @@ const SuggestionItem = styled.li`
   padding: 3px;
   font-size: 1rem;
   text-transform: capitalize;
+  border-top: 1px dotted #ccc;
+  background: ${props => (props.focused ? "purple" : "white")};
+  color: ${props => (props.focused ? "white" : "inherit")};
   &:hover {
-    background: purple;
-    color: white;
-  }
-  &:focus {
-    background: purple;
-    color: white;
+    background: ${props => (props.focused ? "purple" : "white")};
+    color: ${props => (props.focused ? "white" : "inherit")};
   }
 `;

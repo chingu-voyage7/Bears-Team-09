@@ -14,21 +14,50 @@ class DynamicLocationSearch extends React.Component {
       inputVal: "",
       inputCountryVal: "",
       suggestions: [],
+      matchingSuggestions: [],
       selectionID: null,
       selectionCity: null,
       selectionCountry: null,
       showSuggestions: false,
       showAddButton: true,
-      showCountryInput: false
+      showCountryInput: false,
+      focusedItem: null
     };
   }
 
-  componentDidUpdate() {
+  async componentDidMount() {
+    const token = localStorage.getItem("token");
+    const AuthStr = `Bearer ${token}`;
+    const suggestions = await axios({
+      method: "get",
+      url: `${backendUrl}/places`,
+      headers: {
+        Authorization: AuthStr
+      }
+    });
+
+    const suggestionArray = suggestions.data["places"];
+    if (suggestionArray.length === 0) {
+      // no results found
+      this.setState({ showSuggestions: false, suggestions: suggestionArray, matchingSuggestions: [] });
+    } else {
+      this.setState({
+        matchingSuggestions: suggestionArray.slice(0, 10),
+        suggestions: suggestionArray,
+        showSuggestions: false
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
     // adding click handlers based on suggestion box
     if (this.state.showSuggestions) {
       window.addEventListener("click", this.handleClick);
     } else {
       window.removeEventListener("click", this.handleClick);
+    }
+    if (prevProps.cleared === false && this.props.cleared === true) {
+      this.resetSearch();
     }
   }
 
@@ -54,39 +83,39 @@ class DynamicLocationSearch extends React.Component {
       this.setState({ showAddButton: false });
       this.props.updateLocation(payload, false);
     }
-    // send the info to the parent component indicating new addition to db
-    // we need to promp user here and ask for City, Country combo
   };
 
-  // Fetch suggestions based on the input
-  getSuggestions = async input => {
-    const capitalizedInput = input.charAt(0).toUpperCase() + input.slice(1);
-    const token = localStorage.getItem("token");
-    const AuthStr = `Bearer ${token}`;
-    const suggestions = await axios({
-      method: "get",
-      url: `${backendUrl}/places?limit=5&city=${capitalizedInput}&compare=in`,
-      headers: {
-        Authorization: AuthStr
-      }
-    });
-
-    const suggestionArray = suggestions.data["places"];
-    if (suggestionArray.length === 0) {
-      // no results found
-      this.setState({ showSuggestions: false });
+  // Match suggestions based on the input
+  getSuggestions = input => {
+    const { suggestions } = this.state;
+    const regex = new RegExp(input, "gmi");
+    const matchingSuggestions = suggestions.filter(activity => activity.city.match(regex)).slice(0, 10);
+    if (matchingSuggestions.length === 0) {
+      this.setState({ showSuggestions: false, matchingSuggestions: [] });
     } else {
-      this.setState({ suggestions: suggestionArray, showSuggestions: true });
+      this.setState({ showSuggestions: true, matchingSuggestions });
     }
   };
 
+  resetSearch = e => {
+    const { updateLocation } = this.props;
+    const { suggestions } = this.state;
+    const inputVal = e ? e.target.value : "";
+    this.setState({
+      inputVal,
+      showSuggestions: true,
+      focusedItem: null,
+      matchingSuggestions: suggestions.slice(0, 10)
+    });
+    updateLocation({ id: null, city: null, country: null }, false);
+  };
+
   handleChange = e => {
-    if (e.target.value.length > 2) {
-      // FIXME: I think we need to throtthle these calls to api
+    if (e.target.value.length > 0) {
       this.getSuggestions(e.target.value);
       this.setState({ inputVal: e.target.value, showAddButton: true });
     } else {
-      this.setState({ inputVal: e.target.value, showSuggestions: false });
+      this.resetSearch(e);
     }
   };
 
@@ -119,31 +148,114 @@ class DynamicLocationSearch extends React.Component {
     }
   };
 
-  handleKeyDown = (e, id, name) => {
+  handleKeyDown = (e, id, city, country) => {
     const { updateLocation } = this.props;
-    const payload = {
+    const { focusedItem, matchingSuggestions } = this.state;
+    let payload = {
       id,
-      name
+      city,
+      country
     };
     // close popup is ESC key is pressed
-    if (e.keyCode === 27) {
-      this.setState({ showSuggestions: false });
+    if (e.key === "Escape") {
+      if (focusedItem === null) {
+        this.setState({ showSuggestions: false });
+      } else {
+        this.setState({ inputVal: focusedItem.city, showSuggestions: false });
+      }
     }
-    if (e.keyCode === 13) {
-      // Select item if ENTER key is pressed
-      this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
-      updateLocation(payload, true);
+    if (e.key === "Tab") {
+      if (matchingSuggestions.length !== 0 && focusedItem !== null) {
+        this.setState({
+          showSuggestions: false,
+          inputVal: matchingSuggestions[focusedItem].city,
+          selectionID: matchingSuggestions[focusedItem].id,
+          selectionName: matchingSuggestions[focusedItem].city,
+          selectionCountry: matchingSuggestions[focusedItem].country
+        });
+        payload = {
+          id: matchingSuggestions[focusedItem].id,
+          city: matchingSuggestions[focusedItem].city,
+          country: matchingSuggestions[focusedItem].country
+        };
+        updateLocation(payload, true);
+      } else {
+        this.setState({ showSuggestions: false });
+      }
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (focusedItem <= matchingSuggestions.length - 1 && focusedItem === null) {
+        this.setState({ focusedItem: 0 });
+      } else if (focusedItem < matchingSuggestions.length - 1 && focusedItem !== null) {
+        this.setState(prevState => ({
+          focusedItem: prevState.focusedItem + 1
+        }));
+      }
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (focusedItem > 0) {
+        this.setState(prevState => ({
+          focusedItem: prevState.focusedItem - 1
+        }));
+      }
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (matchingSuggestions.length !== 0 && focusedItem !== null) {
+        payload = {
+          id: matchingSuggestions[focusedItem].id,
+          city: matchingSuggestions[focusedItem].city,
+          country: matchingSuggestions[focusedItem].country
+        };
+        this.setState({
+          showSuggestions: false,
+          inputVal: matchingSuggestions[focusedItem].city,
+          selectionID: matchingSuggestions[focusedItem].id,
+          selectionCity: matchingSuggestions[focusedItem].city,
+          selectionCountry: matchingSuggestions[focusedItem].country
+        });
+        updateLocation(payload, true);
+      } else {
+        this.setState({ showSuggestions: false });
+      }
     }
   };
 
+  hoverFocus = suggestion => {
+    const { matchingSuggestions } = this.state;
+    // find index of the dropdown that is being hovered on
+    const index = matchingSuggestions.findIndex(value => value.id === suggestion.id);
+    this.setState({ focusedItem: index });
+  };
+
+  handleInputClick = () => {
+    this.setState({ showSuggestions: true });
+  };
+
   render() {
-    const { showSuggestions, showCountryInput, inputVal, inputCountryVal, suggestions, showAddButton } = this.state;
+    const {
+      showSuggestions,
+      showCountryInput,
+      inputVal,
+      inputCountryVal,
+      matchingSuggestions,
+      showAddButton,
+      focusedItem
+    } = this.state;
     const { placeholder, allowNew } = this.props;
-    const suggestionsList = suggestions.map(suggestion => (
+    const suggestionsList = matchingSuggestions.map((suggestion, idx) => (
       <SuggestionItem
-        tabIndex={0}
+        tabIndex={-1}
+        focused={idx === focusedItem}
+        onFocus={() => this.hoverFocus(suggestion)}
+        onMouseOver={() => this.hoverFocus(suggestion)}
         onClick={e => this.handleClickSelect(e, suggestion.id, suggestion.city, suggestion.country)}
-        onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.city)}
+        onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.city, suggestion.country)}
         key={suggestion.id}
       >
         {suggestion.city}, {suggestion.country}
@@ -153,8 +265,10 @@ class DynamicLocationSearch extends React.Component {
     return (
       <>
         <SearchBarWrapper>
-          <Label htmlFor={placeholder}>
+          <Label htmlFor={placeholder} ref={this.setPopupRef}>
             <input
+              onFocus={this.handleInputClick}
+              onClick={this.handleInputClick}
               onChange={this.handleChange}
               type="text"
               placeholder={placeholder}
@@ -172,14 +286,14 @@ class DynamicLocationSearch extends React.Component {
               />
             </Label>
           )}
-          {inputVal && allowNew && showAddButton && suggestions.length === 0 && (
+          {inputVal && allowNew && showAddButton && matchingSuggestions.length === 0 && (
             <AddButton onClick={this.handleAdd} tabIndex={0}>
               <span>+</span>
               Add
             </AddButton>
           )}
+          {showSuggestions && <Suggestions>{suggestionsList}</Suggestions>}
         </SearchBarWrapper>
-        {showSuggestions && <Suggestions ref={this.setPopupRef}>{suggestionsList}</Suggestions>}
       </>
     );
   }
@@ -187,7 +301,8 @@ class DynamicLocationSearch extends React.Component {
 DynamicLocationSearch.propTypes = {
   placeholder: PropTypes.string.isRequired,
   allowNew: PropTypes.bool.isRequired,
-  updateLocation: PropTypes.func
+  updateLocation: PropTypes.func,
+  cleared: PropTypes.bool
 };
 
 export default DynamicLocationSearch;
@@ -245,12 +360,11 @@ const SuggestionItem = styled.li`
   padding: 3px;
   font-size: 1rem;
   text-transform: capitalize;
+  border-top: 1px dotted #ccc;
+  background: ${props => (props.focused ? "purple" : "white")};
+  color: ${props => (props.focused ? "white" : "inherit")};
   &:hover {
-    background: purple;
-    color: white;
-  }
-  &:focus {
-    background: purple;
-    color: white;
+    background: ${props => (props.focused ? "purple" : "white")};
+    color: ${props => (props.focused ? "white" : "inherit")};
   }
 `;
