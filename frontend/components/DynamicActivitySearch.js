@@ -184,6 +184,8 @@ class DynamicActivitySearch extends React.Component {
       }
     }
     if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
       if (matchingSuggestions.length !== 0 && focusedItem !== null) {
         this.setState({
           showSuggestions: false,

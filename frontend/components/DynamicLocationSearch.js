@@ -204,6 +204,8 @@ class DynamicLocationSearch extends React.Component {
       }
     }
     if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
       if (matchingSuggestions.length !== 0 && focusedItem !== null) {
         payload = {
           id: matchingSuggestions[focusedItem].id,
