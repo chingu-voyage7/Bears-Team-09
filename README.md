@@ -21,7 +21,7 @@ PairUp is an web application that helps to find like minded people who want to d
 
 ## URL
 
-https://...
+https://pair-up.net/
 
 ## Authors
 
