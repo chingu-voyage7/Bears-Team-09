@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import Router from "next/router";
 import axios from "axios";
 import PropTypes from "prop-types";
 import Input from "./Input";
-import AuthButton from "./AuthButton";
 import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
@@ -12,6 +10,12 @@ import config from "../config.json";
 
 const backendUrl = config.BACKEND_URL;
 
+/* TODO: 
+  [] Fix bug, on first render, displays that registration failed
+  [] remove unused registration buttons
+  [] add bio field
+  [] add validation for the bio field and limits on chars
+*/
 class RegisterForm extends Component {
   state = {
     firstName: "",
@@ -21,11 +25,6 @@ class RegisterForm extends Component {
     email: "",
     passwordsDontMatch: false,
     registrationFailed: false
-  };
-
-  handleAuth = (_, type) => {
-    console.log(`Register with ${type}`);
-    Router.push("/");
   };
 
   handleSubmit = async e => {
@@ -112,15 +111,12 @@ class RegisterForm extends Component {
           {registrationFailed && <StyledErrorMsg>Registration failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>
-          <h4>Or use alternatives:</h4>
           <GoogleRegisterButton
             theme="#ea4335"
             title="Register using Google"
             onCompletion={e => this.handleAuth(e, "gl")}
             onFailure={this.handleFail}
           />
-          <AuthButton theme="#3b5998" title="Register using Facebook" onCompletion={e => this.handleAuth(e, "fb")} />
-          <AuthButton theme="#1da1f2" title="Register using Twitter" onCompletion={e => this.handleAuth(e, "tw")} />
         </AuthButtonWrapper>
       </>
     );
@@ -137,8 +133,7 @@ const AuthButtonWrapper = styled.div`
   display: grid;
   border-top: 1px solid rgba(73, 73, 128, 0.52);
   margin-top: 20px;
-
-  h4 {
-    margin-bottom: 5px;
+  button {
+    margin-top: 20px;
   }
 `;
