@@ -84,14 +84,7 @@ class RegisterForm extends Component {
             handleChange={this.handleInput}
             required
           />
-          <Input
-            id="lastName"
-            name="lastName"
-            type="text"
-            placeholder="Last Name"
-            handleChange={this.handleInput}
-            required
-          />
+          <Input id="lastName" name="lastName" type="text" placeholder="Last Name" handleChange={this.handleInput} />
           <Input id="bio" name="bio" type="text" placeholder="Short Bio" handleChange={this.handleInput} />
           <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
           <Input
