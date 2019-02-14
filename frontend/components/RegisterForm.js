@@ -4,6 +4,7 @@ import Router from "next/router";
 import axios from "axios";
 import PropTypes from "prop-types";
 import Input from "./Input";
+import TextInput from "./TextInput";
 import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
@@ -85,7 +86,7 @@ class RegisterForm extends Component {
             required
           />
           <Input id="lastName" name="lastName" type="text" placeholder="Last Name" handleChange={this.handleInput} />
-          <Input id="bio" name="bio" type="text" placeholder="Short Bio" handleChange={this.handleInput} />
+          <TextInput placeholder="Short Bio" handleChange={this.handleInput} />
           <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
           <Input
             id="password"
