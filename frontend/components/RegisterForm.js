@@ -4,7 +4,7 @@ import Router from "next/router";
 import axios from "axios";
 import PropTypes from "prop-types";
 import Input from "./Input";
-import AuthButton from "./AuthButton";
+import TextInput from "./TextInput";
 import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
@@ -16,6 +16,7 @@ class RegisterForm extends Component {
   state = {
     firstName: "",
     lastName: "",
+    bio: "",
     password: "",
     confirmPassword: "",
     email: "",
@@ -23,14 +24,8 @@ class RegisterForm extends Component {
     registrationFailed: false
   };
 
-  handleAuth = (_, type) => {
-    console.log(`Register with ${type}`);
-    Router.push("/");
-  };
-
   handleSubmit = async e => {
     e.preventDefault();
-
     // Perform password validation
     const { password, confirmPassword } = this.state;
     if (password !== confirmPassword) {
@@ -41,15 +36,19 @@ class RegisterForm extends Component {
 
     // Handle Success register state -> redirect
     axios
-      .post(`${backendUrl}/auth/register`, {
+      .post(
+        `${backendUrl}/auth/register`,
+        {
           email: this.state.email,
           password: this.state.password,
           first_name: this.state.firstName,
-          last_name: this.state.lastName
+          last_name: this.state.lastName,
+          bio: this.state.bio
         },
         {
-          headers: {"Content-Type": "application/json"}
-        })
+          headers: { "Content-Type": "application/json" }
+        }
+      )
       .then(res => {
         this.props.context.logIn({ data: res.data, method: "password" });
         this.handleAuth(null, "email/password");
@@ -61,6 +60,10 @@ class RegisterForm extends Component {
   };
 
   handleFail = () => this.setState({ registrationFailed: true });
+
+  handleAuth = () => {
+    Router.push("/");
+  };
 
   handleInput = e => {
     // Method that syncs current input with state
@@ -82,14 +85,8 @@ class RegisterForm extends Component {
             handleChange={this.handleInput}
             required
           />
-          <Input
-            id="lastName"
-            name="lastName"
-            type="text"
-            placeholder="Last Name"
-            handleChange={this.handleInput}
-            required
-          />
+          <Input id="lastName" name="lastName" type="text" placeholder="Last Name" handleChange={this.handleInput} />
+          <TextInput placeholder="Short Bio" handleChange={this.handleInput} />
           <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
           <Input
             id="password"
@@ -112,15 +109,12 @@ class RegisterForm extends Component {
           {registrationFailed && <StyledErrorMsg>Registration failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>
-          <h4>Or use alternatives:</h4>
           <GoogleRegisterButton
             theme="#ea4335"
             title="Register using Google"
-            onCompletion={e => this.handleAuth(e, "gl")}
+            onCompletion={this.handleAuth}
             onFailure={this.handleFail}
           />
-          <AuthButton theme="#3b5998" title="Register using Facebook" onCompletion={e => this.handleAuth(e, "fb")} />
-          <AuthButton theme="#1da1f2" title="Register using Twitter" onCompletion={e => this.handleAuth(e, "tw")} />
         </AuthButtonWrapper>
       </>
     );
@@ -137,8 +131,7 @@ const AuthButtonWrapper = styled.div`
   display: grid;
   border-top: 1px solid rgba(73, 73, 128, 0.52);
   margin-top: 20px;
-
-  h4 {
-    margin-bottom: 5px;
+  button {
+    margin-top: 20px;
   }
 `;
