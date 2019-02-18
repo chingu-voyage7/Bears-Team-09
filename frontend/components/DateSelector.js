@@ -30,7 +30,7 @@ class DateSelector extends React.Component {
   };
 
   render() {
-    const { placeholder } = this.props;
+    const { placeholder, mobile } = this.props;
     const { startDate } = this.state;
     return (
       <DatePickerStylingWrapper type="form">
@@ -47,7 +47,8 @@ class DateSelector extends React.Component {
           selected={startDate}
           onChange={this.handleChange}
           placeholderText={placeholder}
-          isClearable
+          isClearable={!mobile}
+          withPortal={mobile}
         />
       </DatePickerStylingWrapper>
     );
@@ -59,7 +60,8 @@ export default DateSelector;
 DateSelector.propTypes = {
   updateSelection: PropTypes.func.isRequired,
   placeholder: PropTypes.string.isRequired,
-  cleared: PropTypes.bool
+  cleared: PropTypes.bool,
+  mobile: PropTypes.bool
 };
 
 const DatePickerStylingWrapper = styled.div`

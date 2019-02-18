@@ -22,7 +22,8 @@ class Dashboard extends Component {
     eventFilters: { date_from: null, city: null, activity: null },
     events: [],
     offset: 0,
-    cleared: null
+    cleared: null,
+    screenWidth: null
   };
 
   async componentDidMount() {
@@ -37,9 +38,11 @@ class Dashboard extends Component {
         Authorization: AuthStr
       }
     }).catch(err => console.error(err.response));
-
     const events = await eventsPromise;
     this.setState({ events: events.data.events });
+    // determine if user is on mobile (required for data picker component)
+    const screenWidth = window.innerWidth;
+    this.setState({ screenWidth });
   }
 
   updateDate = date => {
@@ -89,7 +92,8 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { events, eventFilters, cleared } = this.state;
+    const { events, eventFilters, cleared, screenWidth } = this.state;
+    const mobile = screenWidth && screenWidth < 415;
     return (
       <MainLayout>
         <TopPanel>
@@ -123,7 +127,7 @@ class Dashboard extends Component {
             allowNew={false}
             cleared={cleared}
           />
-          <DateSelectorDynamic placeholder="date" updateSelection={this.updateDate} cleared={cleared} />
+          <DateSelectorDynamic placeholder="date" updateSelection={this.updateDate} cleared={cleared} mobile={mobile} />
           <ClearButton type="button" onClick={this.clearFilters}>
             Clear
           </ClearButton>
@@ -226,7 +230,8 @@ const FilterControlPanel = styled.div`
 
   ${device.mobileL`
     grid-gap: 3px;
-    grid-template-columns: 1fr 1fr 2fr 40px;
+    grid-template-columns: 1fr 1fr 80px auto;
+    margin-bottom: 5px;
   `}
 `;
 
@@ -234,6 +239,10 @@ const EventContainer = styled.div`
   width: 60%;
   margin: auto;
   text-align: center;
+
+  ${device.mobileL`
+    width: 90%;
+  `}
 `;
 
 const ClearButton = styled.button`
@@ -247,4 +256,10 @@ const ClearButton = styled.button`
     color: white;
     background: red;
   }
+
+  ${device.mobileL`
+    padding: 1px;
+    margin-top: 1px;
+    margin-bottom: 5px;
+  `}
 `;
