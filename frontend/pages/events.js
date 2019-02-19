@@ -39,7 +39,7 @@ class Dashboard extends Component {
       }
     }).catch(err => console.error(err.response));
     const events = await eventsPromise;
-    this.setState({ events: events.data.events });
+    if (events) this.setState({ events: events.data.events });
     // determine if user is on mobile (required for data picker component)
     const screenWidth = window.innerWidth;
     this.setState({ screenWidth });
