@@ -144,7 +144,8 @@ Profile.propTypes = {
     loggedIn: PropTypes.bool,
     image: PropTypes.string,
     token: PropTypes.string,
-    bio: PropTypes.string
+    bio: PropTypes.string,
+    updateUser: PropTypes.func
   }).isRequired
 };
 
@@ -194,6 +195,6 @@ const PersonalInfo = styled.div`
 
 const GridWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 4fr;
   column-gap: 3%;
 `;
