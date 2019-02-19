@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 import Router from "next/dist/lib/router";
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -8,6 +7,7 @@ import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
 import config from "../config.json";
+import { AuthButtonWrapper } from "./shared/Wrappers";
 
 const backendUrl = config.BACKEND_URL;
 
@@ -32,13 +32,16 @@ class LoginForm extends Component {
 
     // Handle Success register state -> redirect
     axios
-      .post(`${backendUrl}/auth/login`, {
-        email: this.state.email,
-        password: this.state.password
-      },
-      {
-        headers: {"Content-Type": "application/json"}
-      })
+      .post(
+        `${backendUrl}/auth/login`,
+        {
+          email: this.state.email,
+          password: this.state.password
+        },
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      )
       .then(res => {
         Router.push("/");
         this.props.context.logIn({ data: res.data, method: "password" });
@@ -75,7 +78,6 @@ class LoginForm extends Component {
           {this.state.loginFailed && <StyledErrorMsg>Log in failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>
-          <h4>Or use alternatives:</h4>
           <GoogleRegisterButton
             theme="#ea4335"
             title="Log in using Google"
@@ -93,13 +95,3 @@ export default LoginForm;
 LoginForm.propTypes = {
   context: PropTypes.object
 };
-
-const AuthButtonWrapper = styled.div`
-  display: grid;
-  border-top: 1px solid rgba(73, 73, 128, 0.52);
-  margin-top: 20px;
-
-  h4 {
-    margin-bottom: 5px;
-  }
-`;

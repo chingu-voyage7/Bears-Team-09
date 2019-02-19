@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 import Router from "next/router";
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -9,6 +8,7 @@ import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
 import config from "../config.json";
+import { AuthButtonWrapper } from "./shared/Wrappers";
 
 const backendUrl = config.BACKEND_URL;
 
@@ -110,12 +110,3 @@ export default RegisterForm;
 RegisterForm.propTypes = {
   context: PropTypes.object
 };
-
-const AuthButtonWrapper = styled.div`
-  display: grid;
-  border-top: 1px solid rgba(73, 73, 128, 0.52);
-  margin-top: 20px;
-  button {
-    margin-top: 20px;
-  }
-`;
