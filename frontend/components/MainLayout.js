@@ -17,10 +17,8 @@ const MainLayout = props => {
       </Head>
       <GlobalStyle />
       <FlexContainer>
-        <ContentWrapper>
-          <Navbar />
-          {children}
-        </ContentWrapper>
+        <Navbar />
+        {children}
         <Footer />
       </FlexContainer>
     </div>
@@ -50,10 +48,6 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-/* Wrapper for sticky footer */
-const ContentWrapper = styled.div`
-  flex: 1 0 auto;
-`;
 const FlexContainer = styled.div`
   display: flex;
   flex-direction: column;

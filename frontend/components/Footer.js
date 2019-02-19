@@ -6,9 +6,6 @@ const Footer = () => (
   <StyledFooter>
     <p>
       Project developed as part of Chingu Voyage 7 cohort, by&nbsp;
-      <a href="https://github.com/nealthom" rel="noreferrer noopener" target="_blank">
-        @nealthom&nbsp;
-      </a>
       <a href="https://github.com/lkaratun" rel="noreferrer noopener" target="_blank">
         @lkaratun&nbsp;
       </a>
@@ -22,7 +19,7 @@ const Footer = () => (
     </p>
     <div>
       <a rel="noreferrer noopener" target="_blank" href="https://github.com/chingu-voyage7/Bears-Team-09">
-        <img src="./static/gh-logo-32.png" alt="github-logo" />
+        <img src="./static/gh-logo-32.png" alt="github-logo" className="icon" /> Source code
       </a>
     </div>
   </StyledFooter>
@@ -39,6 +36,7 @@ const StyledFooter = styled.footer`
   justify-content: center;
   text-align: center;
   flex-shrink: 0;
+  font-size: 0.7rem;
 
   ${device.mobileL`
     padding: 5px;
@@ -46,7 +44,6 @@ const StyledFooter = styled.footer`
 
   p {
     margin: 5px;
-    font-size: 0.7rem;
 
     ${device.mobileL`
       font-size: 0.5rem;
@@ -58,15 +55,17 @@ const StyledFooter = styled.footer`
     text-decoration: none;
   }
 
-  img {
+  .icon {
+    position: relative;
+    width: 1.5em;
+    top: 0.5em;
+    margin: 0 0.1em;
     background-color: white;
-    width: 20px;
     border: 1px solid white;
     border-radius: 20px;
-
     ${device.mobileL`
       width: 15px;
-    `}
+    `};
   }
 
   div {
