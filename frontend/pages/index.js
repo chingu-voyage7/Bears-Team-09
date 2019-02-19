@@ -46,7 +46,7 @@ const HeroPicture = styled.picture`
 
   img {
     width: 100%;
-    object-fit: contain;
+    object-fit: cover;
   }
 `;
 
