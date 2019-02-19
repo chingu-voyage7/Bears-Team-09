@@ -18,7 +18,6 @@ class RegisterForm extends Component {
     lastName: "",
     bio: "",
     password: "",
-    confirmPassword: "",
     email: "",
     passwordsDontMatch: false,
     registrationFailed: false
@@ -26,13 +25,6 @@ class RegisterForm extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    // Perform password validation
-    const { password, confirmPassword } = this.state;
-    if (password !== confirmPassword) {
-      this.setState({ passwordsDontMatch: true });
-    } else {
-      this.setState({ passwordsDontMatch: false });
-    }
 
     // Handle Success register state -> redirect
     axios
@@ -73,20 +65,10 @@ class RegisterForm extends Component {
   };
 
   render() {
-    const { passwordsDontMatch, registrationFailed } = this.state;
+    const { registrationFailed } = this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
-          <Input
-            id="firstName"
-            name="firstName"
-            type="text"
-            placeholder="First Name"
-            handleChange={this.handleInput}
-            required
-          />
-          <Input id="lastName" name="lastName" type="text" placeholder="Last Name" handleChange={this.handleInput} />
-          <TextInput placeholder="Short Bio" handleChange={this.handleInput} />
           <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
           <Input
             id="password"
@@ -97,21 +79,23 @@ class RegisterForm extends Component {
             required
           />
           <Input
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            placeholder="Confirm Password"
+            id="firstName"
+            name="firstName"
+            type="text"
+            placeholder="First Name"
             handleChange={this.handleInput}
             required
           />
+          <p> Optional fields:</p>
+          <Input id="lastName" name="lastName" type="text" placeholder="Last Name" handleChange={this.handleInput} />
+          <TextInput placeholder="Short Bio" handleChange={this.handleInput} />
           <LoginButton title="Register" />
-          {passwordsDontMatch && <StyledErrorMsg>Make sure that passwords match!</StyledErrorMsg>}
           {registrationFailed && <StyledErrorMsg>Registration failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>
           <GoogleRegisterButton
             theme="#ea4335"
-            title="Register using Google"
+            title="Register with Google"
             onCompletion={this.handleAuth}
             onFailure={this.handleFail}
           />

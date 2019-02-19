@@ -14,14 +14,13 @@ LoginButton.propTypes = {
 export default LoginButton;
 
 const StyledButton = styled.button`
+  border: 0;
+  padding: 10px;
+  margin-top: 5px;
+  cursor: pointer;
+  border-radius: 2px;
   color: white;
   font-size: 1rem;
   background: #3d0e98;
-  border: 0px;
-  border-radius: 5px;
-  padding: 5px;
-  padding-left: 7px;
-  padding-right: 7px;
-  cursor: pointer;
-  font-weight: 600;
+  width: 100%;
 `;

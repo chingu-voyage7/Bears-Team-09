@@ -33,9 +33,11 @@ export default Input;
 const InputField = styled.input`
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 3px;
-  padding: 5px;
+  padding: 10px;
+  margin: 7px 0;
   background-color: #fafafa;
   width: 100%;
   margin-bottom: 5px;
   font-size: 1rem;
+  box-shadow: inset 0 2px 4px 0 hsla(0, 0%, 0%, 0.08);
 `;
