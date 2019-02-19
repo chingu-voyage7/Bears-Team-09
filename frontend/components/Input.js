@@ -11,6 +11,7 @@ const Input = props => {
           id={name}
           name={name}
           type={type}
+          autoComplete={props.autoComplete}
           onChange={handleChange}
           placeholder={placeholder}
           required={required}
@@ -23,6 +24,7 @@ const Input = props => {
 Input.propTypes = {
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
+  autoComplete: PropTypes.string,
   placeholder: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
   required: PropTypes.bool
