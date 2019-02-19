@@ -38,6 +38,7 @@ const HeroSection = styled.div`
 const HeroPicture = styled.picture`
   width: 100%;
   background-size: 100% 100%;
+  text-align: center;
 `;
 
 const CallToAction = styled.div`
@@ -69,6 +70,7 @@ const EventsBtn = styled.a`
   border: 2px solid white;
   padding: 5px;
   cursor: pointer;
+  text-decoration: none;
 
   &:hover {
     border: 2px solid salmon;
