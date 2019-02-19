@@ -28,6 +28,8 @@ const Footer = () => (
 export default Footer;
 
 const StyledFooter = styled.footer`
+  box-sizing: border-box;
+  height: 5rem;
   color: white;
   background: black;
   padding: 20px;

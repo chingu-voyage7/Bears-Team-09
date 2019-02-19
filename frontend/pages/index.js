@@ -7,7 +7,7 @@ export default () => (
     <LandingPage>
       <HeroSection>
         <CallToAction>
-          <h4>Experiences are to be enjoyed with others</h4>
+          <h3>Experiences are to be enjoyed with others</h3>
           <p>Find people to do things together</p>
           <EventsBtn href="/events">Events</EventsBtn>
         </CallToAction>
@@ -23,7 +23,10 @@ export default () => (
 
 const LandingPage = styled.section`
   width: 100%;
+  height: calc(100vh - 8rem);
+  box-sizing: border-box;
   overflow: hidden;
+  background: black;
 `;
 
 const HeroSection = styled.div`
@@ -66,8 +69,9 @@ const CallToAction = styled.div`
     margin-bottom: 30px;
   }
 
-  h4 {
+  h3 {
     margin: 0;
+    font-weight: 400;
   }
 `;
 
@@ -79,6 +83,6 @@ const EventsBtn = styled.a`
   text-decoration: none;
 
   &:hover {
-    border: 2px solid salmon;
+    color: gold;
   }
 `;

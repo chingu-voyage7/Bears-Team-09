@@ -32,13 +32,17 @@ MainLayout.propTypes = {
 };
 
 const GlobalStyle = createGlobalStyle`
+  @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,400i,600,600i,700,700i');
+  
   html,
   body {
     height:100%;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: sans-serif;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
   }
 
   input[type='text'],
