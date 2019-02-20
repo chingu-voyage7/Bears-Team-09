@@ -31,8 +31,8 @@ export default LoginPage;
 
 const LoginWrapper = styled.div`
   background: #fafafa;
-  padding-top: 100px;
-  padding-bottom: 100px;
+  padding-top: 50px;
+  padding-bottom: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -76,4 +76,5 @@ const StyledLink = styled.a`
 
 const Title = styled.h1`
   font-size: 2.5rem;
+  margin-top: 0;
 `;
