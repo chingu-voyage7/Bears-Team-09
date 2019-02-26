@@ -2,15 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-function TextInput(props) {
-  const { placeholder, handleChange } = props;
+function TextArea(props) {
+  const { placeholder, onChange } = props;
   return (
     <label htmlFor="bio">
-      <Text name="bio" id="bio" rows="2" placeholder={placeholder} onChange={handleChange} />
+      <Text rows="2" placeholder={placeholder} onChange={onChange} />
     </label>
   );
 }
-export default TextInput;
+export default TextArea;
 const Text = styled.textarea`
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 3px;
@@ -26,7 +26,7 @@ const Text = styled.textarea`
   box-shadow: inset 0 2px 4px 0 hsla(0, 0%, 0%, 0.08);
 `;
 
-TextInput.propTypes = {
-  placeholder: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired
+TextArea.propTypes = {
+  placeholder: PropTypes.string,
+  onChange: PropTypes.func.isRequired
 };

@@ -3,7 +3,7 @@ import Router from "next/router";
 import axios from "axios";
 import PropTypes from "prop-types";
 import Input from "./Input";
-import TextInput from "./TextInput";
+import TextArea from "./TextArea";
 import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
@@ -75,7 +75,7 @@ class RegisterForm extends Component {
             type="email"
             autoComplete="username"
             placeholder="Email"
-            handleChange={this.handleInput}
+            onChange={this.handleInput}
             required
           />
           <Input
@@ -84,7 +84,7 @@ class RegisterForm extends Component {
             type="password"
             autoComplete="new-password"
             placeholder="Password"
-            handleChange={this.handleInput}
+            onChange={this.handleInput}
             required
           />
           <Input
@@ -92,12 +92,12 @@ class RegisterForm extends Component {
             name="firstName"
             type="text"
             placeholder="First Name"
-            handleChange={this.handleInput}
+            onChange={this.handleInput}
             required
           />
           <p> Optional fields:</p>
-          <Input id="lastName" name="lastName" type="text" placeholder="Last Name" handleChange={this.handleInput} />
-          <TextInput placeholder="Short Bio" handleChange={this.handleInput} />
+          <Input id="lastName" name="lastName" type="text" placeholder="Last Name" onChange={this.handleInput} />
+          <TextArea placeholder="Short Bio" onChange={this.handleInput} />
           <LoginButton title="Register" />
           {registrationFailed && <StyledErrorMsg>Registration failed!</StyledErrorMsg>}
         </form>

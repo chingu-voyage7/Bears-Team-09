@@ -65,14 +65,14 @@ class LoginForm extends Component {
     return (
       <>
         <form onSubmit={this.handleSubmit}>
-          <Input id="email" name="email" type="email" autoComplete="username" placeholder="Email" handleChange={this.handleInput} required />
+          <Input id="email" name="email" type="email" autoComplete="username" placeholder="Email" onChange={this.handleInput} required />
           <Input
             id="password"
             name="password"
             type="password"
             autoComplete="current-password"
             placeholder="Password"
-            handleChange={this.handleInput}
+            onChange={this.handleInput}
             required
           />
           <LoginButton title="Log in" />

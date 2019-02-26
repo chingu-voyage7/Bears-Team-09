@@ -3,6 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import PropTypes from "prop-types";
 import config from "../config.json";
+import Input from "./Input";
 
 const backendUrl = config.BACKEND_URL;
 
@@ -205,6 +206,8 @@ class DynamicActivitySearch extends React.Component {
   };
 
   handleInputClick = () => {
+    console.log("Clicked Input");
+    
     this.setState({ showSuggestions: true });
   };
 
@@ -236,7 +239,7 @@ class DynamicActivitySearch extends React.Component {
       <>
         <SearchBarWrapper>
           <Label htmlFor={placeholder} ref={this.setPopupRef}>
-            <input
+            <Input
               onFocus={this.handleInputClick}
               onClick={this.handleInputClick}
               onChange={this.handleChange}
@@ -275,7 +278,6 @@ const Label = styled.label`
   input {
     border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 3px;
-    padding: 5px;
     background-color: #fafafa;
     width: 100%;
     margin-bottom: 5px;

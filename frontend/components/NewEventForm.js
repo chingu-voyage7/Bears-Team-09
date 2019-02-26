@@ -130,32 +130,25 @@ class EventForm extends Component {
   render() {
     const { valid } = this.state;
     return (
-      <>
-        <form onSubmit={this.handleSubmit}>
-          <Input id="name" name="name" type="text" placeholder="Event Name" handleChange={this.handleInput} required />
-          <Input
-            id="description"
-            name="description"
-            type="text"
-            placeholder="Description"
-            handleChange={this.handleInput}
-          />
-          <DynamicActivitySearch
-            updateActivity={this.updateActivity}
-            type="activities"
-            placeholder="Activity"
-            allowNew
-          />
-          <DynamicLocationSearch updateLocation={this.updateLocation} placeholder="City" allowNew />
-          <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
-          <DateRangePicker updateDateRange={this.updateDateRange} />
-          {!valid && <ErrorMsg>Please make sure you filled name, activity and max people fields to continue!</ErrorMsg>}
-          <ButtonWrapper>
-            <BackButton handleBackButton={this.handleBackButton} />
-            <LoginButton title="Create" />
-          </ButtonWrapper>
-        </form>
-      </>
+      <form onSubmit={this.handleSubmit}>
+        <Input id="name" name="name" type="text" placeholder="Event Name" onChange={this.handleInput} required />
+        <Input
+          id="description"
+          name="description"
+          type="text"
+          placeholder="Description"
+          onChange={this.handleInput}
+        />
+        <DynamicActivitySearch updateActivity={this.updateActivity} type="activities" placeholder="Activity" allowNew />
+        <DynamicLocationSearch updateLocation={this.updateLocation} placeholder="City" allowNew />
+        <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
+        <DateRangePicker updateDateRange={this.updateDateRange} />
+        {!valid && <ErrorMsg>Please make sure you filled name, activity and max people fields to continue!</ErrorMsg>}
+        <ButtonWrapper>
+          <BackButton handleBackButton={this.handleBackButton} />
+          <LoginButton title="Create" />
+        </ButtonWrapper>
+      </form>
     );
   }
 }

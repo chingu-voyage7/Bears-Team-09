@@ -3,6 +3,8 @@ import styled from "styled-components";
 import axios from "axios";
 import PropTypes from "prop-types";
 import config from "../config.json";
+import Input from "./Input";
+
 
 const backendUrl = config.BACKEND_URL;
 
@@ -266,7 +268,7 @@ class DynamicLocationSearch extends React.Component {
       <>
         <SearchBarWrapper>
           <Label htmlFor={placeholder} ref={this.setPopupRef}>
-            <input
+            <Input
               onFocus={this.handleInputClick}
               onClick={this.handleInputClick}
               onChange={this.handleChange}
@@ -278,7 +280,7 @@ class DynamicLocationSearch extends React.Component {
           </Label>
           {showCountryInput && (
             <Label htmlFor="country">
-              <input
+              <Input
                 onChange={this.handleCountryInputChange}
                 type="text"
                 placeholder="Specify Country"
@@ -315,7 +317,6 @@ const Label = styled.label`
   input {
     border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 3px;
-    padding: 5px;
     background-color: #fafafa;
     width: 100%;
     margin-bottom: 5px;

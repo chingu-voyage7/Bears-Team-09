@@ -70,7 +70,6 @@ const ActivityWrapper = styled.div`
 `;
 
 const ActivityBox = styled.div`
-  padding: 5px;
   width: 90%;
   cursor: pointer;
   text-align: left;

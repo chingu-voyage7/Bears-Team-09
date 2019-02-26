@@ -3,7 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 const Input = props => {
-  const { name, type, handleChange, placeholder, required } = props;
+  const { name, type = "text", onChange, onClick, placeholder, required } = props;
   return (
     <div>
       <label htmlFor={name}>
@@ -12,7 +12,8 @@ const Input = props => {
           name={name}
           type={type}
           autoComplete={props.autoComplete}
-          onChange={handleChange}
+          onChange={onChange}
+          onClick={onClick}
           placeholder={placeholder}
           required={required}
         />
@@ -22,11 +23,12 @@ const Input = props => {
 };
 
 Input.propTypes = {
-  name: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  name: PropTypes.string,
+  type: PropTypes.string,
   autoComplete: PropTypes.string,
-  placeholder: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  onChange: PropTypes.func,
+  onClick: PropTypes.func,
   required: PropTypes.bool
 };
 
