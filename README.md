@@ -28,4 +28,3 @@ https://pair-up.net/
 * **Lev Karatun** - [@lkaratun](https://github.com/lkaratun)
 * **Oleksii Troian** - [@trolleksii](https://github.com/trolleksii)
 * **Vaidotas Piekus** - [@vaidotasp](https://github.com/vaidotasp)
-*
