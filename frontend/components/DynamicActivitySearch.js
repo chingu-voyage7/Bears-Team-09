@@ -207,7 +207,7 @@ class DynamicActivitySearch extends React.Component {
 
   handleInputClick = () => {
     console.log("Clicked Input");
-    
+
     this.setState({ showSuggestions: true });
   };
 
@@ -238,7 +238,7 @@ class DynamicActivitySearch extends React.Component {
     return (
       <>
         <SearchBarWrapper>
-          <Label htmlFor={placeholder} ref={this.setPopupRef}>
+          <label htmlFor={placeholder} ref={this.setPopupRef}>
             <Input
               onFocus={this.handleInputClick}
               onClick={this.handleInputClick}
@@ -248,7 +248,7 @@ class DynamicActivitySearch extends React.Component {
               value={inputVal}
               onKeyDown={e => this.handleKeyDown(e)}
             />
-          </Label>
+          </label>
           {allowNew && inputVal && showAddButton && matchingSuggestions.length === 0 && (
             <AddButton onClick={this.handleAdd} tabIndex={0}>
               <span>+</span>
@@ -274,16 +274,7 @@ const SearchBarWrapper = styled.div`
   position: relative;
 `;
 
-const Label = styled.label`
-  input {
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 3px;
-    background-color: #fafafa;
-    width: 100%;
-    margin-bottom: 5px;
-    font-size: 1rem;
-  }
-`;
+
 
 const AddButton = styled.div`
   cursor: pointer;

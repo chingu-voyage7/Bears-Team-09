@@ -3,19 +3,14 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 const Input = props => {
-  const { name, type = "text", onChange, onClick, placeholder, required } = props;
+  const { name, type = "text" } = props;
   return (
     <div>
       <label htmlFor={name}>
         <InputField
+          {...props}
           id={name}
-          name={name}
           type={type}
-          autoComplete={props.autoComplete}
-          onChange={onChange}
-          onClick={onClick}
-          placeholder={placeholder}
-          required={required}
         />
       </label>
     </div>
