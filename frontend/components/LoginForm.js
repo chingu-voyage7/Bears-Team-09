@@ -75,7 +75,7 @@ class LoginForm extends Component {
             onChange={this.handleInput}
             required
           />
-          <LoginButton title="Log in" />
+          <LoginButton text="Log in" />
           {this.state.loginFailed && <StyledErrorMsg>Log in failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>

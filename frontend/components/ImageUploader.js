@@ -3,7 +3,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { UserContext } from "./UserProvider";
 import config from "../config.json";
-import { NeutralButton } from "./shared/Buttons";
+import { WideButton } from "./shared/Buttons";
 
 const backendUrl = config.BACKEND_URL;
 
@@ -47,9 +47,9 @@ class ImageUploader extends Component {
           accept="image/png, image/jpeg"
           style={{ display: "none" }}
         />
-        <NeutralButton type="button" onClick={this.handleClick}>
+        <WideButton type="button" onClick={this.handleClick}>
           Upload new picture
-        </NeutralButton>
+        </WideButton>
       </>
     );
   }

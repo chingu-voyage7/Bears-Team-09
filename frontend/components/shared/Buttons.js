@@ -2,7 +2,8 @@ import styled from "styled-components";
 
 const backgrounds = {
   neutral: "hsla(212, 60%, 29%, 0.8)",
-  purple: "#3d0e98"
+  purple: "#3d0e98",
+  red: "#c20d0d"
 };
 
 const colors = {
@@ -34,6 +35,6 @@ export const WideButton = styled.button`
   border-radius: 2px;
   color: white;
   font-size: 1rem;
-  background: ${props => backgrounds[props.color]};
+  background: ${props => props.color ? backgrounds[props.color] : backgrounds["purple"]};
   width: 100%;
 `;

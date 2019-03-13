@@ -98,7 +98,7 @@ class RegisterForm extends Component {
           <p> Optional fields:</p>
           <Input id="lastName" name="lastName" type="text" placeholder="Last Name" onChange={this.handleInput} />
           <TextArea placeholder="Short Bio" onChange={this.handleInput} />
-          <LoginButton title="Register" />
+          <LoginButton text="Register" />
           {registrationFailed && <StyledErrorMsg>Registration failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>

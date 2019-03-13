@@ -3,16 +3,16 @@ import PropTypes from "prop-types";
 import { WideButton } from "./shared/Buttons";
 
 const LoginButton = props => {
-  const { title } = props;
+  const { text } = props;
   return (
-    <WideButton color="purple" type="submit">
-      {title}
+    <WideButton {...props}>
+      {text || "Log in"}
     </WideButton>
   );
 };
 
 LoginButton.propTypes = {
-  title: PropTypes.string.isRequired
+  text: PropTypes.string.isRequired
 };
 
 export default LoginButton;

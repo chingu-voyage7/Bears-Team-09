@@ -210,7 +210,7 @@ export class event extends Component {
                       </SubTitle>
                     ) : (
                       <SubTitle>not set</SubTitle>
-                    )}
+                      )}
                   </div>
                   <div>
                     <Title>Starts: </Title>
@@ -239,14 +239,14 @@ export class event extends Component {
                 />
               </JoinPanel>
               <ControlButtons>
-                <BackButton onClick={() => router.push("/events")}>Back</BackButton>
+                <BackButton onClick={() => router.push("/events")} />
                 {Number(userID) === Number(authorID) && <DeleteButton onClick={this.showModal}>Delete</DeleteButton>}
               </ControlButtons>
               <Modal showModal={this.state.showModal} hide={this.hideModal} confirm={this.deleteEvent} />
             </EventCard>
           ) : (
             <p>Fetching Event Details...</p>
-          )}
+            )}
         </Container>
       </MainLayout>
     );

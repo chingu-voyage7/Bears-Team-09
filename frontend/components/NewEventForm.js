@@ -4,8 +4,7 @@ import styled from "styled-components";
 import Router from "next/router";
 import axios from "axios";
 import Input from "./Input";
-import LoginButton from "./LoginButton";
-import BackButton from "./BackButton";
+import { WideButton } from "./shared/Buttons";
 import SelectParticipantRange from "./SelectParticipantRange";
 import DateRangePicker from "./DateRangePicker";
 import DynamicActivitySearch from "./DynamicActivitySearch";
@@ -145,8 +144,8 @@ class EventForm extends Component {
         <DateRangePicker updateDateRange={this.updateDateRange} />
         {!valid && <ErrorMsg>Please make sure you filled name, activity and max people fields to continue!</ErrorMsg>}
         <ButtonWrapper>
-          <BackButton handleBackButton={this.handleBackButton} />
-          <LoginButton title="Create" />
+          <WideButton onClick={this.handleBackButton} color="red">Back</WideButton>
+          <WideButton onClick={this.handleBackButton} type="submit" color="purple">Create</WideButton>
         </ButtonWrapper>
       </form>
     );
