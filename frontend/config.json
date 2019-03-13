@@ -1,5 +1,5 @@
 {
-  "GOOGLE_CLIENT_ID": "518450911507-fu0js4mqkdhbsspfqcmtkddn76j7frns.apps.googleusercontent.com",
-  "GOOGLE_CLIENT_SECRET": "vsgI6I-wm_ICXWBhVmkGVa9f",
+  "GOOGLE_CLIENT_ID": "your_client_id",
+  "GOOGLE_CLIENT_SECRET": "your_client_secret",
   "BACKEND_URL": "http://localhost:8000/api"
 }
