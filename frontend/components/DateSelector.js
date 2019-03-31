@@ -65,10 +65,11 @@ DateSelector.propTypes = {
 };
 
 const DatePickerStylingWrapper = styled.div`
+  margin: 7px 0px 5px 0px;
   input {
     cursor: pointer;
     text-transform: capitalize;
-    padding: 5px;
+    padding: 10px;
     border-radius: 3px;
     outline: 0;
     width: ${props => (props.type === "form" ? "100%" : "120px")};
@@ -78,14 +79,9 @@ const DatePickerStylingWrapper = styled.div`
     color: #757575;
     margin-top: 0px;
   }
-
   input:hover {
     background: purple;
     color: white;
-  }
-
-  input:hover {
-    background-color: purple;
   }
 
   input:hover::placeholder {

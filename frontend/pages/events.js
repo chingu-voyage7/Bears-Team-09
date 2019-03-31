@@ -129,9 +129,9 @@ class Dashboard extends Component {
             cleared={cleared}
           />
           <DateSelectorDynamic placeholder="date" updateSelection={this.updateDate} cleared={cleared} mobile={mobile} />
-          <ClearButton type="button" onClick={this.clearFilters}>
+          <ColoredButton type="button" onClick={this.clearFilters} color="gray">
             Clear
-          </ClearButton>
+          </ColoredButton>
         </FilterControlPanel>
         {events && events.length !== 0 && (
           <EventContainer>
@@ -245,24 +245,5 @@ const EventContainer = styled.div`
 
   ${device.mobileL`
     width: 90%;
-  `}
-`;
-
-const ClearButton = styled.button`
-  cursor: pointer;
-  padding: 5px;
-  outline: 0;
-  border: 0;
-  border-radius: 3px;
-
-  &:hover {
-    color: white;
-    background: red;
-  }
-
-  ${device.mobileL`
-    padding: 1px;
-    margin-top: 1px;
-    margin-bottom: 5px;
   `}
 `;

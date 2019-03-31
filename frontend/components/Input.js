@@ -7,11 +7,7 @@ const Input = props => {
   return (
     <div>
       <label htmlFor={name}>
-        <InputField
-          {...props}
-          id={name}
-          type={type}
-        />
+        <InputField {...props} id={name} type={type} />
       </label>
     </div>
   );
@@ -33,7 +29,7 @@ const InputField = styled.input`
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 3px;
   padding: 10px;
-  margin: 7px 0;
+  margin: 7px 0 5px;
   background-color: #fafafa;
   width: 100%;
   margin-bottom: 5px;

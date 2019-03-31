@@ -1,9 +1,12 @@
 import styled from "styled-components";
+import device from "../../styles/device";
 
 const backgrounds = {
-  neutral: "hsla(212, 60%, 29%, 0.8)",
-  purple: "#3d0e98",
-  red: "#c20d0d"
+  neutral: { normal: "hsla(212, 60%, 29%, 0.8)", hover: "hsla(212, 60%, 29%, 1)" },
+  purple: { normal: "hsla(260, 90%, 50%, 0.8)", hover: "hsla(260, 90%, 50%, 1)" },
+  red: { normal: "hsla(0, 93%, 50%, 0.8)", hover: "hsla(0, 93%, 50%, 1)" },
+  gray: { normal: "hsla(260, 16%, 100%, 0.8)", hover: "hsla(260, 16%, 100%, 1)" },
+  inherit: { normal: "inherit", hover: "inherit" }
 };
 
 const colors = {
@@ -11,14 +14,26 @@ const colors = {
 };
 
 export const ColoredButton = styled.button`
+  min-width: 5rem;
   margin: 0.5rem auto;
   display: block;
-  padding: 0.5rem;
-  background: ${props => backgrounds[props.color]};
+  padding: 10px;
+  background: ${props => (props.color ? backgrounds[props.color].normal : backgrounds.neutral.normal)};
   color: ${props => colors[props.color]};
   border: none;
   cursor: pointer;
   border-radius: 0.2rem;
+  font-size: 1rem;
+
+  &:hover {
+    background: ${props => (props.color ? backgrounds[props.color].hover : backgrounds.neutral.hover)};
+  }
+
+  ${device.mobileL`
+    padding: 1px;
+    margin-top: 1px;
+    margin-bottom: 5px;
+  `}
 `;
 
 export const PositiveButton = styled.button`
@@ -35,6 +50,6 @@ export const WideButton = styled.button`
   border-radius: 2px;
   color: white;
   font-size: 1rem;
-  background: ${props => props.color ? backgrounds[props.color] : backgrounds["purple"]};
+  background: ${props => (props.color ? backgrounds[props.color.normal] : backgrounds.purple.normal)};
   width: 100%;
 `;
