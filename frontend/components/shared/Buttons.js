@@ -3,7 +3,7 @@ import device from "../../styles/device";
 
 const backgrounds = {
   neutral: { normal: "hsla(212, 60%, 29%, 0.8)", hover: "hsla(212, 60%, 29%, 1)" },
-  purple: { normal: "hsla(260, 90%, 50%, 0.8)", hover: "hsla(260, 90%, 50%, 1)" },
+  purple: { normal: "hsla(252, 77%, 20%, 0.75)", hover: "hsla(252, 77%, 20%, 0.8)" },
   red: { normal: "hsla(0, 93%, 50%, 0.8)", hover: "hsla(0, 93%, 50%, 1)" },
   gray: { normal: "hsla(260, 16%, 100%, 0.8)", hover: "hsla(260, 16%, 100%, 1)" },
   inherit: { normal: "inherit", hover: "inherit" }
@@ -50,6 +50,9 @@ export const WideButton = styled.button`
   border-radius: 2px;
   color: white;
   font-size: 1rem;
-  background: ${props => (props.color ? backgrounds[props.color.normal] : backgrounds.purple.normal)};
+  background: ${props => (props.color ? backgrounds[props.color].normal : backgrounds.purple.normal)};
   width: 100%;
+  &:hover {
+    background: ${props => (props.color ? backgrounds[props.color].hover : backgrounds.neutral.hover)};
+  }
 `;
