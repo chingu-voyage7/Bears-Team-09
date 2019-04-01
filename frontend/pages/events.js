@@ -7,7 +7,7 @@ import MainLayout from "../components/MainLayout";
 import EventList from "../components/EventList";
 import device from "../styles/device";
 import config from "../config.json";
-import { NeutralButton } from "../components/shared/Buttons";
+import { ColoredButton } from "../components/shared/Buttons";
 import DynamicLocationSearch from "../components/DynamicLocationSearch";
 import DynamicActivitySearch from "../components/DynamicActivitySearch";
 
@@ -39,7 +39,8 @@ class Dashboard extends Component {
       }
     }).catch(err => console.error(err.response));
     const events = await eventsPromise;
-    this.setState({ events: events.data.events });
+    console.log(events);
+    if (events && events.data) this.setState({ events: events.data.events });
     // determine if user is on mobile (required for data picker component)
     const screenWidth = window.innerWidth;
     this.setState({ screenWidth });
@@ -128,14 +129,16 @@ class Dashboard extends Component {
             cleared={cleared}
           />
           <DateSelectorDynamic placeholder="date" updateSelection={this.updateDate} cleared={cleared} mobile={mobile} />
-          <ClearButton type="button" onClick={this.clearFilters}>
+          <ColoredButton type="button" onClick={this.clearFilters} color="gray">
             Clear
-          </ClearButton>
+          </ColoredButton>
         </FilterControlPanel>
         {events && events.length !== 0 && (
           <EventContainer>
             <EventList events={events} filters={eventFilters} />
-            <NeutralButton onClick={this.loadMoreEvents}>Load More</NeutralButton>
+            <ColoredButton color="neutral" onClick={this.loadMoreEvents}>
+              Load More
+            </ColoredButton>
           </EventContainer>
         )}
       </MainLayout>
@@ -242,24 +245,5 @@ const EventContainer = styled.div`
 
   ${device.mobileL`
     width: 90%;
-  `}
-`;
-
-const ClearButton = styled.button`
-  cursor: pointer;
-  padding: 5px;
-  outline: 0;
-  border: 0;
-  border-radius: 3px;
-
-  &:hover {
-    color: white;
-    background: red;
-  }
-
-  ${device.mobileL`
-    padding: 1px;
-    margin-top: 1px;
-    margin-bottom: 5px;
   `}
 `;

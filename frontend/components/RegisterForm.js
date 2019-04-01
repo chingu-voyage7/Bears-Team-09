@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 import Router from "next/router";
 import axios from "axios";
 import PropTypes from "prop-types";
 import Input from "./Input";
-import TextInput from "./TextInput";
+import TextArea from "./TextArea";
 import LoginButton from "./LoginButton";
 import GoogleRegisterButton from "./GoogleRegisterButton";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
 import config from "../config.json";
+import { AuthButtonWrapper } from "./shared/Wrappers";
 
 const backendUrl = config.BACKEND_URL;
 
@@ -18,7 +18,6 @@ class RegisterForm extends Component {
     lastName: "",
     bio: "",
     password: "",
-    confirmPassword: "",
     email: "",
     passwordsDontMatch: false,
     registrationFailed: false
@@ -26,13 +25,6 @@ class RegisterForm extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    // Perform password validation
-    const { password, confirmPassword } = this.state;
-    if (password !== confirmPassword) {
-      this.setState({ passwordsDontMatch: true });
-    } else {
-      this.setState({ passwordsDontMatch: false });
-    }
 
     // Handle Success register state -> redirect
     axios
@@ -73,45 +65,46 @@ class RegisterForm extends Component {
   };
 
   render() {
-    const { passwordsDontMatch, registrationFailed } = this.state;
+    const { registrationFailed } = this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="username"
+            placeholder="Email"
+            onChange={this.handleInput}
+            required
+          />
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            placeholder="Password"
+            onChange={this.handleInput}
+            required
+          />
           <Input
             id="firstName"
             name="firstName"
             type="text"
             placeholder="First Name"
-            handleChange={this.handleInput}
+            onChange={this.handleInput}
             required
           />
-          <Input id="lastName" name="lastName" type="text" placeholder="Last Name" handleChange={this.handleInput} />
-          <TextInput placeholder="Short Bio" handleChange={this.handleInput} />
-          <Input id="email" name="email" type="email" placeholder="Email" handleChange={this.handleInput} required />
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Password"
-            handleChange={this.handleInput}
-            required
-          />
-          <Input
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            placeholder="Confirm Password"
-            handleChange={this.handleInput}
-            required
-          />
-          <LoginButton title="Register" />
-          {passwordsDontMatch && <StyledErrorMsg>Make sure that passwords match!</StyledErrorMsg>}
+          <p> Optional fields:</p>
+          <Input id="lastName" name="lastName" type="text" placeholder="Last Name" onChange={this.handleInput} />
+          <TextArea placeholder="Short Bio" onChange={this.handleInput} />
+          <LoginButton text="Register" />
           {registrationFailed && <StyledErrorMsg>Registration failed!</StyledErrorMsg>}
         </form>
         <AuthButtonWrapper>
           <GoogleRegisterButton
             theme="#ea4335"
-            title="Register using Google"
+            title="Register with Google"
             onCompletion={this.handleAuth}
             onFailure={this.handleFail}
           />
@@ -126,12 +119,3 @@ export default RegisterForm;
 RegisterForm.propTypes = {
   context: PropTypes.object
 };
-
-const AuthButtonWrapper = styled.div`
-  display: grid;
-  border-top: 1px solid rgba(73, 73, 128, 0.52);
-  margin-top: 20px;
-  button {
-    margin-top: 20px;
-  }
-`;

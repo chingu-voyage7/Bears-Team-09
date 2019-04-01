@@ -16,7 +16,7 @@ class Register extends Component {
             <LinkWrapper>
               <p>If you have an account:&nbsp; </p>
               <Link href="/register">
-                <StyledLink>login!</StyledLink>
+                <StyledLink>log in!</StyledLink>
               </Link>
             </LinkWrapper>
             <UserConsumer>{context => <RegisterForm context={context} />}</UserConsumer>
@@ -31,8 +31,8 @@ export default Register;
 
 const RegisterWrapper = styled.div`
   background: #fafafa;
-  padding-top: 100px;
-  padding-bottom: 100px;
+  padding-top: 50px;
+  padding-bottom: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -61,6 +61,7 @@ const InputSection = styled.div`
 
 const Title = styled.h1`
   font-size: 2.5rem;
+  margin-top: 0;
 `;
 
 const LinkWrapper = styled.div`
