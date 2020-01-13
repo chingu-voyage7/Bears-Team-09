@@ -24,7 +24,7 @@
     "build": "next build",
     "export": "next export",
     "start": "next start -p 3100",
-    "start:prod": "forever -a ./node_modules/.bin/next start",
+    "start:prod": "forever -a ./node_modules/.bin/next start -p 3100",
     "stop": "forever stop server.js",
     "restart": "forever restart server.js"
   },
