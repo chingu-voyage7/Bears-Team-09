@@ -22,7 +22,7 @@ services:
     environment:
       - PGUSER=postgres
       - PGHOST=db
-      - PGDB=postgres
+      - PGDB=pairup
       - PGPASSWORD=qwerty123
       - PGPORT=5432
       - DATABASE_URL=postgres://postgres:qwerty123@db:5432/postgres
