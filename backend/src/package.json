@@ -6,8 +6,10 @@
   "scripts": {
     "migrate": "node-pg-migrate",
     "dev": "nodemon app.js",
-    "start": "node app.js",
-    "test": "mocha"
+    "test": "mocha",
+    "start": "forever start app.js",
+    "stop": "forever stop app.js",
+    "restart": "forever restart app.js"
   },
   "keywords": [],
   "author": "",

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const express = require("express");
@@ -23,6 +24,6 @@ app.use("/api/users", authenticate("jwt"), usersRouter);
 app.use("/api/activities", activitiesRouter);
 app.use("/api/places", placesRouter);
 app.use("/api/events", eventsRouter);
-app.use((err, req, res, next) => res.headersSent ? next(err) : res.status(500).json({message: err.message}));
+app.use((err, req, res, next) => res.headersSent ? next(err) : res.status(500).json({ message: err.message }));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
