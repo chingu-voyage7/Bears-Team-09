@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "lint": "eslint pages/**/*.js components/**/*.js",
-    "dev": "next --preserve-log",
+    "dev": "next --preserve-log -p 3100",
     "build": "next build",
     "export": "next export",
     "start": "next start -p 3100",
-    "start:prod": "forever start -a ./node_modules/.bin/next -p 3100",
+    "start:prod": "forever start -a ./node_modules/.bin/next start -p 3100",
     "stop": "forever stop server.js",
     "restart": "forever restart server.js"
   },
@@ -23,7 +23,6 @@
     "react": "^16.6.3",
     "react-datepicker": "^2.0.0",
     "react-dom": "^16.6.3",
-    "react-google-login": "^4.0.0",
     "react-modal": "^3.8.1",
     "react-no-ssr": "^1.1.0",
     "styled-components": "^4.1.1"
