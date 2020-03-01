@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "migrate": "node-pg-migrate",
-    "dev": "nodemon app.js",
+    "dev": "nodemon server.js",
     "test": "mocha",
-    "start": "forever start app.js",
-    "stop": "forever stop app.js",
-    "restart": "forever restart app.js"
+    "start": "forever start server.js",
+    "stop": "forever stop server.js",
+    "restart": "forever restart server.js"
   },
   "keywords": [],
   "author": "",
