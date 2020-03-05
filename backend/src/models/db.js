@@ -9,15 +9,17 @@ const DB_DATA = {
   port: process.env.PGPORT || 5432
 };
 
+console.log("DB_DATA = ", DB_DATA);
+
 module.exports = {
   query: async (text, params) => {
     const client = new Client(DB_DATA);
     return client.connect()
-                 .catch(() => { throw new APIError('DB connection error', 500);})
-                 .then(() => client.query(text, params))
-                 .then(res => res.rows)
-                 .catch(err => {throw err;})
-                 .finally(() => client.end());
+      .catch(() => { throw new APIError('DB connection error', 500); })
+      .then(() => client.query(text, params))
+      .then(res => res.rows)
+      .catch(err => { throw err; })
+      .finally(() => client.end());
   }
 };
 

@@ -35,7 +35,7 @@ class Table {
     };
     const limit = Number(data.limit) || 0;
     const offset = Number(data.offset) || 0;
-    const {orderby, compare, combine} = data;
+    const { orderby, compare, combine } = data;
 
     if (limit && limit > 0) {
       this.opts.limit = limit;
@@ -54,13 +54,13 @@ class Table {
     }
   }
 
-  getSearchCriterias() {
+  getSearchCriteria() {
     let i = 1;
     return Object.keys(this.data).reduce((acc, key) => {
       acc.text.push(`${this.tableName}.${key} ${this.opts.compare} $${i++}`);
       acc.values.push(this.data[key]);
       return acc;
-    }, {text: [], values: []});
+    }, { text: [], values: [] });
   }
 
   getMissingFields() {
@@ -78,18 +78,19 @@ class Table {
       });
     }
     const prepared = Object.keys(this.data).reduce((acc, key) => {
-        acc.keys.push(key);
-        acc.indexes.push(`$${index++}`);
-        acc.values.push(this.data[key]);
-        return acc;
-      },
-      {keys: [], indexes: [], values: []}
+      acc.keys.push(key);
+      acc.indexes.push(`$${index++}`);
+      acc.values.push(this.data[key]);
+      return acc;
+    },
+      { keys: [], indexes: [], values: [] }
     );
     const text = `INSERT INTO ${this.tableName} (${prepared.keys.join(', ')}) VALUES (${prepared.indexes.join(', ')}) RETURNING ${this.ACCEPTED_FIELDS.join(', ')}`;
+    console.log({ text, values: prepared.values });
     return db.query(text, prepared.values);
   }
 
-  read(customText=null) {
+  read(customText = null) {
     let text = customText || `SELECT * FROM ${this.tableName}`;
     const pk = this.data[this.pk];
     let values;
@@ -97,10 +98,10 @@ class Table {
       text += ` WHERE ${this.tableName}.${this.pk} = $1`;
       values = [pk];
     } else if (Object.keys(this.data).length !== 0) {
-        const searchCriterias = this.getSearchCriterias();
-        text += ` WHERE ${searchCriterias.text.join(` ${this.opts.combine} `)}`;
-        ({values} = searchCriterias);
-      };
+      const searchCriteria = this.getSearchCriteria();
+      text += ` WHERE ${searchCriteria.text.join(` ${this.opts.combine} `)}`;
+      ({ values } = searchCriteria);
+    };
     if (this.opts.orderby) {
       text += ` ORDER BY ${this.tableName}.${this.opts.orderby}`;
     }
@@ -110,22 +111,23 @@ class Table {
     if (this.opts.offset) {
       text += ` OFFSET ${this.opts.offset}`;
     }
+    console.log({ text, values });
     return db.query(text, values);
   }
 
   update() {
     // remove pk from this.data before update
-    const {id, ...rest} = this.data;
+    const { id, ...rest } = this.data;
     if (id === undefined || Object.keys(rest).length === 0) {
       throw new Error('Need to have both id and data to update table');
     }
     let index = 1;
     const prepared = Object.keys(rest).reduce((acc, key) => {
-        acc.keys.push(`${key} = $${index++}`);
-        acc.values.push(`${rest[key]}`);
-        return acc;
-      },
-      {keys: [], values: []}
+      acc.keys.push(`${key} = $${index++}`);
+      acc.values.push(`${rest[key]}`);
+      return acc;
+    },
+      { keys: [], values: [] }
     );
     const text = `UPDATE ${this.tableName} SET ${prepared.keys.join(', ')} WHERE ${this.pk} = $${index} RETURNING ${this.ACCEPTED_FIELDS.join(', ')};`;
     prepared.values.push(id);
