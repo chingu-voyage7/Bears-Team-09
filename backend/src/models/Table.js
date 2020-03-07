@@ -1,3 +1,5 @@
+const pick = require('lodash/pick');
+
 const db = require('./db');
 
 class Table {
@@ -65,6 +67,10 @@ class Table {
 
   getMissingFields() {
     return this.REQUIRED_FIELDS.filter(f => Object.keys(this.data).indexOf(f) === -1);
+  }
+
+  set(params) {
+    this.data = { ...this.data, ...pick(params, this.ACCEPTED_FIELDS) };
   }
 
   create() {
