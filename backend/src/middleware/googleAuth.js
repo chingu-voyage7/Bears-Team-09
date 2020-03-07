@@ -9,14 +9,21 @@ passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: '/auth/googleAuthSuccess',
-  // callbackURL: 'http://localhost:3100',
-
 }, async (accessToken, refreshToken, profile, next) => {
   console.log("profile = ", profile);
+  console.log("accessToken = ", accessToken);
+  console.log("refreshToken = ", refreshToken);
   const user = new User({ email: profile._json.email });
   return user.read()
     // user found, return it
-    .then(userData => console.log({ userData }) || next(null, userData[0]))
+    .then(async userData => {
+      console.log({ userData });
+
+      next(null, userData[0]);
+      user.set({ google_access_token: accessToken, google_refresh_token: refreshToken });
+      const updatedUser = await user.update();
+      console.log(updatedUser);
+    })
 
     // if user not found
     .catch(async err => {
@@ -27,7 +34,9 @@ passport.use(new GoogleStrategy({
         email: profile._json.email,
         first_name: profile._json.given_name,
         last_name: profile._json.family_name,
-        image: profile._json.picture
+        image: profile._json.picture,
+        google_refresh_token: refreshToken,
+        google_access_token: accessToken
       }).create();
       console.log({ userData });
       next(null, userData);

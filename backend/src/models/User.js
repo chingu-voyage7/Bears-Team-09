@@ -10,7 +10,7 @@ class User extends Table {
   constructor(rawData = {}) {
     const pk = "id";
     const tableName = "users";
-    const ACCEPTED_FIELDS = ["id", "email", "first_name", "last_name", "password", "bio", "image"];
+    const ACCEPTED_FIELDS = ["id", "email", "first_name", "last_name", "password", "bio", "image", "google_access_token", "google_refresh_token"];
     const cleanData = {};
     Object.keys(rawData).forEach(key => {
       if (ACCEPTED_FIELDS.includes(key)) {
@@ -29,12 +29,12 @@ class User extends Table {
   }
 
   hashPassword() {
-    // if user was creater without password(from auth/google endpoint) there is no need to hash it
+    // if user was created without password(from auth/google endpoint) there is no need to hash it
     return "password" in this.data
       ? bcrypt.hash(this.data.password, 10).then(hash => {
-          this.data.password = hash;
-        })
-      : new Promise(resolve => resolve());
+        this.data.password = hash;
+      })
+      : Promise.resolve();
   }
 
   create() {

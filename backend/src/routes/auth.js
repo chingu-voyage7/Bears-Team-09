@@ -17,17 +17,20 @@ const router = express.Router();
 
 router.get('/google', passport.authenticate('google', {
     scope: ['profile', 'email'],
+    accessType: "offline",
     session: true
 }));
-// router.get('/google', (req, res) => res.send(req.cookies));
 
 router.get('/googleAuthSuccess', passport.authenticate('google'), (req, res) => {
-    res.send(req.user);
+    res.send('Google auth success');
+    // res.redirect('http://localhost:3100');
 });
 
 router.get('/view', (req, res) => {
-    // res.cookie('test', 'testvalue');
-    res.send(req.cookies);
+    console.log('cookies = ', req.cookies);
+    console.log('user = ', req.user);
+    res.header({ 'test-header': 'test-value' });
+    res.send({ cookies: req.cookies, user: req.user });
 });
 
 
