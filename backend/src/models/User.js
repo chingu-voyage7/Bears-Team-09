@@ -3,7 +3,8 @@ const jwt = require("jsonwebtoken");
 const APIError = require("../utils/APIError.js");
 const Table = require("./Table");
 
-const SECRET = process.env.JWT_SECRET || "Default_JWT-Secret";
+if (!process.env.JWT_SECRET) throw new Error("JWT secret missing!");
+const SECRET = process.env.JWT_SECRET;
 const JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || "60d";
 
 class User extends Table {
