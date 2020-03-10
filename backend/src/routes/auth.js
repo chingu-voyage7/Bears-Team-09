@@ -22,7 +22,9 @@ router.get('/google', passport.authenticate('google', {
 }));
 
 router.get('/googleAuthSuccess', passport.authenticate('google'), (req, res) => {
-    res.send('Google auth success');
+    const token = (new User({ id: req.user.id })).refreshToken();
+
+    res.send({ data: req.user, token });
     // res.redirect('http://localhost:3100');
 });
 

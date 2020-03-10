@@ -2,8 +2,8 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 const User = require('../models/User');
 
-passport.serializeUser((user, done) => { done(null, user.id); });
-passport.deserializeUser((id, done) => { done(null, { id }); });
+passport.serializeUser((user, next) => next(null, user.id));
+passport.deserializeUser((id, next) => next(null, { id }));
 
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
@@ -30,14 +30,16 @@ passport.use(new GoogleStrategy({
       // unexpected error
       if (err.statusCode !== 404) throw err;
       // user doesn't exist, so let's create it
-      const userData = await new User({
+      const newUser = new User({
         email: profile._json.email,
         first_name: profile._json.given_name,
         last_name: profile._json.family_name,
         image: profile._json.picture,
         google_refresh_token: refreshToken,
         google_access_token: accessToken
-      }).create();
+      });
+      const userData = await newUser.create().catch(console.error);
+
       console.log({ userData });
       next(null, userData);
     });
