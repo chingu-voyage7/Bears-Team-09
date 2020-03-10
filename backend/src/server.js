@@ -6,7 +6,6 @@ const helmet = require('helmet');
 const logger = require("morgan");
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
-const cookieSession = require('cookie-session');
 const activitiesRouter = require("./routes/activities");
 const authenticate = require("./middleware/localAuth");
 const authRouter = require("./routes/auth");
@@ -22,11 +21,6 @@ app.use(cors({ credentials: true }));
 app.use(logger("combined"));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(bodyParser.json());
-
-app.use(cookieSession({
-  name: 'pairup-session',
-  keys: [process.env.COOKIE_SECRET],
-}));
 
 app.use(passport.initialize());
 app.use(passport.session());
