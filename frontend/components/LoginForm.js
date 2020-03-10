@@ -4,10 +4,8 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import Input from "./Input";
 import LoginButton from "./LoginButton";
-import GoogleRegisterButton from "./GoogleRegisterButton";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
 import config from "../config.json";
-import { AuthButtonWrapper } from "./shared/Wrappers";
 
 const backendUrl = config.BACKEND_URL;
 
@@ -16,15 +14,6 @@ class LoginForm extends Component {
     email: "",
     password: "",
     loginFailed: false
-  };
-
-  handleGoogleAuth = data => {
-    const accessToken = data.accessToken.replace(/['"]+/g, "");
-    axios
-      .get(`${backendUrl}/auth/google?access_token=${accessToken}`)
-      .then(res => this.props.context.logIn({ data: res.data, method: "oauth" }))
-      .catch(console.log);
-    Router.push("/");
   };
 
   handleSubmit = e => {
@@ -65,7 +54,15 @@ class LoginForm extends Component {
     return (
       <>
         <form onSubmit={this.handleSubmit}>
-          <Input id="email" name="email" type="email" autoComplete="username" placeholder="Email" onChange={this.handleInput} required />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="username"
+            placeholder="Email"
+            onChange={this.handleInput}
+            required
+          />
           <Input
             id="password"
             name="password"
@@ -78,14 +75,16 @@ class LoginForm extends Component {
           <LoginButton text="Log in" />
           {this.state.loginFailed && <StyledErrorMsg>Log in failed!</StyledErrorMsg>}
         </form>
-        <AuthButtonWrapper>
-          <GoogleRegisterButton
-            theme="#ea4335"
-            title="Log in using Google"
-            onCompletion={this.handleGoogleAuth}
-            onFailure={err => console.error(err.response)}
-          />
-        </AuthButtonWrapper>
+        <button
+          type="button"
+          onClick={() => Router.push(`${backendUrl}/auth/google`)}
+          onFailure={err => console.error(err.response)}
+        >
+          Log in with Google
+        </button>
+        <button type="button" onClick={() => Router.push(`${backendUrl}/auth/view`)}>
+          View cookies
+        </button>
       </>
     );
   }
