@@ -1,10 +1,10 @@
-const Table = require('./Table');
+const Table = require("./Table");
 
 class EventAttendee extends Table {
-  constructor(rawData={}) {
-    const pk = 'id';
-    const tableName = 'event_attendees';
-    const ACCEPTED_FIELDS = ['id', 'event_id', 'user_id'];
+  constructor(rawData = {}) {
+    const pk = "id";
+    const tableName = "event_attendees";
+    const ACCEPTED_FIELDS = ["id", "event_id", "user_id"];
     const cleanData = {};
     Object.keys(rawData).forEach(key => {
       if (ACCEPTED_FIELDS.includes(key)) {
@@ -13,7 +13,7 @@ class EventAttendee extends Table {
     });
     super(tableName, pk, cleanData);
     this.ACCEPTED_FIELDS = ACCEPTED_FIELDS;
-    this.REQUIRED_FIELDS = ['event_id', 'user_id'];
+    this.REQUIRED_FIELDS = ["event_id", "user_id"];
     this.parseOpts(rawData);
   }
 
@@ -34,7 +34,7 @@ class EventAttendee extends Table {
       INNER JOIN activities ON events.activity_id = activities.id
       INNER JOIN users ON events.author_id = users.id
       LEFT JOIN places ON places.id = events.place_id`;
-      return super.read(text);
+    return super.read(text);
   }
 }
 

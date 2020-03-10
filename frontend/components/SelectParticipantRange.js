@@ -15,11 +15,20 @@ class SelectParticipantRange extends React.Component {
     const { updateParticipantRange } = this.props;
 
     if (minValue < 2 || maxValue < 2) {
-      this.setState({ inputError: true, inputErrorMsg: "Participants cannot be less than 2" });
+      this.setState({
+        inputError: true,
+        inputErrorMsg: "Participants cannot be less than 2"
+      });
     } else if (maxValue > 100 || minValue > 100) {
-      this.setState({ inputError: true, inputErrorMsg: "Participants cannot be higher than 100" });
+      this.setState({
+        inputError: true,
+        inputErrorMsg: "Participants cannot be higher than 100"
+      });
     } else if (maxValue < minValue) {
-      this.setState({ inputError: true, inputErrorMsg: "Max cannot be lower than min" });
+      this.setState({
+        inputError: true,
+        inputErrorMsg: "Max cannot be lower than min"
+      });
     } else {
       this.setState({ inputError: false, inputErrorMsg: null });
       updateParticipantRange(minValue, maxValue);

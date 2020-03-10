@@ -29,7 +29,11 @@ class GoogleRegisterButton extends Component {
           onSuccess={this.props.onCompletion}
           onFailure={this.onFailure}
           render={renderProps => (
-            <StyledAuthBtn onClick={renderProps.onClick} onKeyPress={renderProps.onClick} theme={theme}>
+            <StyledAuthBtn
+              onClick={renderProps.onClick}
+              onKeyPress={renderProps.onClick}
+              theme={theme}
+            >
               {title}
             </StyledAuthBtn>
           )}

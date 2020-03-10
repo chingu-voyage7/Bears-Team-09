@@ -1,16 +1,16 @@
-const pick = require('lodash/pick');
+const pick = require("lodash/pick");
 
-const db = require('./db');
+const db = require("./db");
 
 class Table {
   constructor(tableName, pk, data = {}) {
     if (tableName === undefined) {
-      throw Error('DB table name is not set');
-    };
+      throw Error("DB table name is not set");
+    }
     this.tableName = tableName;
     if (pk === undefined) {
-      throw Error('PK name is not set');
-    };
+      throw Error("PK name is not set");
+    }
     this.pk = pk;
     this.data = data;
     this.REQUIRED_FIELDS = [];
@@ -19,21 +19,21 @@ class Table {
       limit: null,
       offset: null,
       orderby: null,
-      compare: '=',
-      combine: 'AND'
+      compare: "=",
+      combine: "AND"
     };
   }
 
   parseOpts(data) {
     const LOGICAL_OPERATORS = {
-      and: 'AND',
-      or: 'OR'
+      and: "AND",
+      or: "OR"
     };
     const COMPARE_OPERATORS = {
-      eq: '=',
-      in: '~',
-      gt: '>',
-      lt: '<'
+      eq: "=",
+      in: "~",
+      gt: ">",
+      lt: "<"
     };
     const limit = Number(data.limit) || 0;
     const offset = Number(data.offset) || 0;
@@ -41,10 +41,10 @@ class Table {
 
     if (limit && limit > 0) {
       this.opts.limit = limit;
-    };
+    }
     if (offset && offset > 0) {
       this.opts.offset = offset;
-    };
+    }
     if (orderby && this.ACCEPTED_FIELDS.includes(orderby)) {
       this.opts.orderby = orderby;
     }
@@ -58,15 +58,20 @@ class Table {
 
   getSearchCriteria() {
     let i = 1;
-    return Object.keys(this.data).reduce((acc, key) => {
-      acc.text.push(`${this.tableName}.${key} ${this.opts.compare} $${i++}`);
-      acc.values.push(this.data[key]);
-      return acc;
-    }, { text: [], values: [] });
+    return Object.keys(this.data).reduce(
+      (acc, key) => {
+        acc.text.push(`${this.tableName}.${key} ${this.opts.compare} $${i++}`);
+        acc.values.push(this.data[key]);
+        return acc;
+      },
+      { text: [], values: [] }
+    );
   }
 
   getMissingFields() {
-    return this.REQUIRED_FIELDS.filter(f => Object.keys(this.data).indexOf(f) === -1);
+    return this.REQUIRED_FIELDS.filter(
+      f => Object.keys(this.data).indexOf(f) === -1
+    );
   }
 
   set(params) {
@@ -80,18 +85,29 @@ class Table {
     const fieldsMissing = this.getMissingFields();
     if (fieldsMissing.length > 0) {
       return new Promise((resolve, reject) => {
-        reject(new Error(`Field(s) ${fieldsMissing.map(f => `'${f}'`).join(', ')} is(are) missing`));
+        reject(
+          new Error(
+            `Field(s) ${fieldsMissing
+              .map(f => `'${f}'`)
+              .join(", ")} is(are) missing`
+          )
+        );
       });
     }
-    const prepared = Object.keys(this.data).reduce((acc, key) => {
-      acc.keys.push(key);
-      acc.indexes.push(`$${index++}`);
-      acc.values.push(this.data[key]);
-      return acc;
-    },
+    const prepared = Object.keys(this.data).reduce(
+      (acc, key) => {
+        acc.keys.push(key);
+        acc.indexes.push(`$${index++}`);
+        acc.values.push(this.data[key]);
+        return acc;
+      },
       { keys: [], indexes: [], values: [] }
     );
-    const text = `INSERT INTO ${this.tableName} (${prepared.keys.join(', ')}) VALUES (${prepared.indexes.join(', ')}) RETURNING ${this.ACCEPTED_FIELDS.join(', ')}`;
+    const text = `INSERT INTO ${this.tableName} (${prepared.keys.join(
+      ", "
+    )}) VALUES (${prepared.indexes.join(
+      ", "
+    )}) RETURNING ${this.ACCEPTED_FIELDS.join(", ")}`;
     console.log({ text, values: prepared.values });
     return db.query(text, prepared.values);
   }
@@ -107,7 +123,7 @@ class Table {
       const searchCriteria = this.getSearchCriteria();
       text += ` WHERE ${searchCriteria.text.join(` ${this.opts.combine} `)}`;
       ({ values } = searchCriteria);
-    };
+    }
     if (this.opts.orderby) {
       text += ` ORDER BY ${this.tableName}.${this.opts.orderby}`;
     }
@@ -125,17 +141,22 @@ class Table {
     // remove pk from this.data before update
     const { id, ...rest } = this.data;
     if (id === undefined || Object.keys(rest).length === 0) {
-      throw new Error('Need to have both id and data to update table');
+      throw new Error("Need to have both id and data to update table");
     }
     let index = 1;
-    const prepared = Object.keys(rest).reduce((acc, key) => {
-      acc.keys.push(`${key} = $${index++}`);
-      acc.values.push(`${rest[key]}`);
-      return acc;
-    },
+    const prepared = Object.keys(rest).reduce(
+      (acc, key) => {
+        acc.keys.push(`${key} = $${index++}`);
+        acc.values.push(`${rest[key]}`);
+        return acc;
+      },
       { keys: [], values: [] }
     );
-    const text = `UPDATE ${this.tableName} SET ${prepared.keys.join(', ')} WHERE ${this.pk} = $${index} RETURNING ${this.ACCEPTED_FIELDS.join(', ')};`;
+    const text = `UPDATE ${this.tableName} SET ${prepared.keys.join(
+      ", "
+    )} WHERE ${this.pk} = $${index} RETURNING ${this.ACCEPTED_FIELDS.join(
+      ", "
+    )};`;
     prepared.values.push(id);
     return db.query(text, prepared.values);
   }
@@ -145,6 +166,6 @@ class Table {
     const values = [this.data[this.pk]];
     return db.query(text, values);
   }
-};
+}
 
 module.exports = Table;

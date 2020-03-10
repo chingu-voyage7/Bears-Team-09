@@ -73,7 +73,9 @@ class LoginForm extends Component {
             required
           />
           <LoginButton text="Log in" />
-          {this.state.loginFailed && <StyledErrorMsg>Log in failed!</StyledErrorMsg>}
+          {this.state.loginFailed && (
+            <StyledErrorMsg>Log in failed!</StyledErrorMsg>
+          )}
         </form>
         <button
           type="button"
@@ -82,7 +84,10 @@ class LoginForm extends Component {
         >
           Log in with Google
         </button>
-        <button type="button" onClick={() => Router.push(`${backendUrl}/auth/view`)}>
+        <button
+          type="button"
+          onClick={() => Router.push(`${backendUrl}/auth/view`)}
+        >
           View cookies
         </button>
       </>

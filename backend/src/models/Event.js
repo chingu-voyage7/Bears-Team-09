@@ -1,10 +1,22 @@
-const Table = require('./Table');
+const Table = require("./Table");
 
 class Event extends Table {
-  constructor(rawData={}) {
-    const pk = 'id';
-    const tableName = 'events';
-    const ACCEPTED_FIELDS = ['id', 'name', 'author_id', 'image', 'description', 'activity_id', 'place_id', 'date_from', 'date_to', 'min_people', 'max_people'];
+  constructor(rawData = {}) {
+    const pk = "id";
+    const tableName = "events";
+    const ACCEPTED_FIELDS = [
+      "id",
+      "name",
+      "author_id",
+      "image",
+      "description",
+      "activity_id",
+      "place_id",
+      "date_from",
+      "date_to",
+      "min_people",
+      "max_people"
+    ];
     const cleanData = {};
     Object.keys(rawData).forEach(key => {
       if (ACCEPTED_FIELDS.includes(key)) {
@@ -13,7 +25,7 @@ class Event extends Table {
     });
     super(tableName, pk, cleanData);
     this.ACCEPTED_FIELDS = ACCEPTED_FIELDS;
-    this.REQUIRED_FIELDS = ['name', 'activity_id', 'author_id'];
+    this.REQUIRED_FIELDS = ["name", "activity_id", "author_id"];
     this.parseOpts(rawData);
   }
 

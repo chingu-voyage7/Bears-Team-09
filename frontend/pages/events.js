@@ -13,9 +13,12 @@ import DynamicActivitySearch from "../components/DynamicActivitySearch";
 
 const backendUrl = config.BACKEND_URL;
 
-const DateSelectorDynamic = dynamic(() => import("../components/DateSelector"), {
-  ssr: false
-});
+const DateSelectorDynamic = dynamic(
+  () => import("../components/DateSelector"),
+  {
+    ssr: false
+  }
+);
 
 class Dashboard extends Component {
   state = {
@@ -69,7 +72,10 @@ class Dashboard extends Component {
   };
 
   clearFilters = () => {
-    this.setState({ eventFilters: { date_from: null, city: null, activity: null }, cleared: true });
+    this.setState({
+      eventFilters: { date_from: null, city: null, activity: null },
+      cleared: true
+    });
   };
 
   loadMoreEvents = async () => {
@@ -107,7 +113,10 @@ class Dashboard extends Component {
               <br />
               or check out existing events below
             </h4>
-            <DownArrow src=".././static/down-arrow.svg" alt="arrow-pointing-down" />
+            <DownArrow
+              src=".././static/down-arrow.svg"
+              alt="arrow-pointing-down"
+            />
           </div>
         </TopPanel>
         <Divider>
@@ -128,7 +137,12 @@ class Dashboard extends Component {
             allowNew={false}
             cleared={cleared}
           />
-          <DateSelectorDynamic placeholder="date" updateSelection={this.updateDate} cleared={cleared} mobile={mobile} />
+          <DateSelectorDynamic
+            placeholder="date"
+            updateSelection={this.updateDate}
+            cleared={cleared}
+            mobile={mobile}
+          />
           <ColoredButton type="button" onClick={this.clearFilters} color="gray">
             Clear
           </ColoredButton>
@@ -154,7 +168,11 @@ const TopPanel = styled.div`
   padding-top: 50px;
   padding-bottom: 50px;
   background: rgb(22, 67, 75);
-  background: linear-gradient(90deg, rgba(22, 67, 75, 1) 0%, rgba(28, 12, 91, 1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(22, 67, 75, 1) 0%,
+    rgba(28, 12, 91, 1) 100%
+  );
   color: white;
   display: grid;
   grid-template-columns: 1fr;

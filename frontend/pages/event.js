@@ -77,7 +77,9 @@ export class event extends Component {
       min_people: minPeople,
       author_id: authorID
     } = currentEvent.data;
-    const dateFromFormat = dateFrom ? format(dateFrom, "MMMM DD YYYY") : "not set";
+    const dateFromFormat = dateFrom
+      ? format(dateFrom, "MMMM DD YYYY")
+      : "not set";
     const dateToFormat = dateTo ? format(dateTo, "MMMM DD YYYY") : "not set";
 
     this.setState({
@@ -210,7 +212,7 @@ export class event extends Component {
                       </SubTitle>
                     ) : (
                       <SubTitle>not set</SubTitle>
-                      )}
+                    )}
                   </div>
                   <div>
                     <Title>Starts: </Title>
@@ -223,12 +225,18 @@ export class event extends Component {
                 </InfoPanel>
                 <div>
                   <EventImage src={eventImage} alt="people in a group" />
-                  <ImageUploader url={`/events/${this.props.router.query.id}/images`} onCompletion={this.updateImage} />
+                  <ImageUploader
+                    url={`/events/${this.props.router.query.id}/images`}
+                    onCompletion={this.updateImage}
+                  />
                 </div>
               </InfoWrapper>
               <Attendees attendees={eventAttendees} />
               <JoinPanel>
-                <AvailableSpotsLeftNotice spotsLeft={spotsLeft} maxPeople={maxPeople} />
+                <AvailableSpotsLeftNotice
+                  spotsLeft={spotsLeft}
+                  maxPeople={maxPeople}
+                />
                 <ControlledAttendenceButtons
                   userID={userID}
                   authorID={authorID}
@@ -240,13 +248,19 @@ export class event extends Component {
               </JoinPanel>
               <ControlButtons>
                 <BackButton onClick={() => router.push("/events")} />
-                {Number(userID) === Number(authorID) && <DeleteButton onClick={this.showModal}>Delete</DeleteButton>}
+                {Number(userID) === Number(authorID) && (
+                  <DeleteButton onClick={this.showModal}>Delete</DeleteButton>
+                )}
               </ControlButtons>
-              <Modal showModal={this.state.showModal} hide={this.hideModal} confirm={this.deleteEvent} />
+              <Modal
+                showModal={this.state.showModal}
+                hide={this.hideModal}
+                confirm={this.deleteEvent}
+              />
             </EventCard>
           ) : (
             <p>Fetching Event Details...</p>
-            )}
+          )}
         </Container>
       </MainLayout>
     );
@@ -263,7 +277,14 @@ function AvailableSpotsLeftNotice({ spotsLeft, maxPeople }) {
   return <h4>{spotsLeft} spot(s) left</h4>;
 }
 
-function ControlledAttendenceButtons({ userID, authorID, userIsAttending, leaveEvent, joinEvent, eventIsFull }) {
+function ControlledAttendenceButtons({
+  userID,
+  authorID,
+  userIsAttending,
+  leaveEvent,
+  joinEvent,
+  eventIsFull
+}) {
   const userIsOwner = Number(userID) === Number(authorID);
   if (userIsOwner) {
     return null;

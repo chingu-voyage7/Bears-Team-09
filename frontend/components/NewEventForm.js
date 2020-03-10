@@ -43,7 +43,10 @@ class EventForm extends Component {
     // validate new object
     const REQUIRED_FIELDS = ["name", "activity_id", "max_people"];
     for (let i = 0; i < REQUIRED_FIELDS.length; i++) {
-      if (newEvent[REQUIRED_FIELDS[i]] === null || newEvent[REQUIRED_FIELDS[i]] === "") {
+      if (
+        newEvent[REQUIRED_FIELDS[i]] === null ||
+        newEvent[REQUIRED_FIELDS[i]] === ""
+      ) {
         this.setState({ valid: false });
         return;
       }
@@ -130,7 +133,14 @@ class EventForm extends Component {
     const { valid } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
-        <Input id="name" name="name" type="text" placeholder="Event Name" onChange={this.handleInput} required />
+        <Input
+          id="name"
+          name="name"
+          type="text"
+          placeholder="Event Name"
+          onChange={this.handleInput}
+          required
+        />
         <Input
           id="description"
           name="description"
@@ -138,14 +148,38 @@ class EventForm extends Component {
           placeholder="Description"
           onChange={this.handleInput}
         />
-        <DynamicActivitySearch updateActivity={this.updateActivity} type="activities" placeholder="Activity" allowNew />
-        <DynamicLocationSearch updateLocation={this.updateLocation} placeholder="City" allowNew />
-        <SelectParticipantRange updateParticipantRange={this.updateParticipantRange} />
+        <DynamicActivitySearch
+          updateActivity={this.updateActivity}
+          type="activities"
+          placeholder="Activity"
+          allowNew
+        />
+        <DynamicLocationSearch
+          updateLocation={this.updateLocation}
+          placeholder="City"
+          allowNew
+        />
+        <SelectParticipantRange
+          updateParticipantRange={this.updateParticipantRange}
+        />
         <DateRangePicker updateDateRange={this.updateDateRange} />
-        {!valid && <ErrorMsg>Please make sure you filled name, activity and max people fields to continue!</ErrorMsg>}
+        {!valid && (
+          <ErrorMsg>
+            Please make sure you filled name, activity and max people fields to
+            continue!
+          </ErrorMsg>
+        )}
         <ButtonWrapper>
-          <WideButton onClick={this.handleBackButton} color="red">Back</WideButton>
-          <WideButton onClick={this.handleBackButton} type="submit" color="purple">Create</WideButton>
+          <WideButton onClick={this.handleBackButton} color="red">
+            Back
+          </WideButton>
+          <WideButton
+            onClick={this.handleBackButton}
+            type="submit"
+            color="purple"
+          >
+            Create
+          </WideButton>
         </ButtonWrapper>
       </form>
     );

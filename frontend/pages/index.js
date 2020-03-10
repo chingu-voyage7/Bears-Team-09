@@ -12,9 +12,19 @@ export default () => (
           <EventsBtn href="/events">Events</EventsBtn>
         </CallToAction>
         <HeroPicture>
-          <source media="(max-width: 450px)" srcSet=".././static/hero-mobile.jpg" />
-          <source media="(max-width: 1600px)" srcSet=".././static/hero-base.jpg" />
-          <img src=".././static/hero-base.jpg" alt="person-kayaking-in-river" width="inherit" />
+          <source
+            media="(max-width: 450px)"
+            srcSet=".././static/hero-mobile.jpg"
+          />
+          <source
+            media="(max-width: 1600px)"
+            srcSet=".././static/hero-base.jpg"
+          />
+          <img
+            src=".././static/hero-base.jpg"
+            alt="person-kayaking-in-river"
+            width="inherit"
+          />
         </HeroPicture>
       </HeroSection>
     </LandingPage>

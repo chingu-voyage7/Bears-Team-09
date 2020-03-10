@@ -37,7 +37,11 @@ class DynamicActivitySearch extends React.Component {
     if (suggestionArray.length === 0) {
       this.setState({ suggestions: [], showSuggestions: false });
     } else {
-      this.setState({ suggestions: suggestionArray, matchingSuggestions: suggestionArray, showSuggestions: false });
+      this.setState({
+        suggestions: suggestionArray,
+        matchingSuggestions: suggestionArray,
+        showSuggestions: false
+      });
     }
   }
 
@@ -81,7 +85,9 @@ class DynamicActivitySearch extends React.Component {
   getSuggestions = async input => {
     const { suggestions } = this.state;
     const regex = new RegExp(input, "gmi");
-    const matchingSuggestions = suggestions.filter(activity => activity.name.match(regex));
+    const matchingSuggestions = suggestions.filter(activity =>
+      activity.name.match(regex)
+    );
     if (matchingSuggestions.length === 0) {
       this.setState({ showSuggestions: false, matchingSuggestions: [] });
     } else {
@@ -120,7 +126,12 @@ class DynamicActivitySearch extends React.Component {
     };
     console.log(payload);
 
-    this.setState({ showSuggestions: false, inputVal: name, selectionID: id, selectionName: name });
+    this.setState({
+      showSuggestions: false,
+      inputVal: name,
+      selectionID: id,
+      selectionName: name
+    });
     updateActivity(payload, true);
   };
 
@@ -167,9 +178,15 @@ class DynamicActivitySearch extends React.Component {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       e.stopPropagation();
-      if (focusedItem <= matchingSuggestions.length - 1 && focusedItem === null) {
+      if (
+        focusedItem <= matchingSuggestions.length - 1 &&
+        focusedItem === null
+      ) {
         this.setState({ focusedItem: 0 });
-      } else if (focusedItem < matchingSuggestions.length - 1 && focusedItem !== null) {
+      } else if (
+        focusedItem < matchingSuggestions.length - 1 &&
+        focusedItem !== null
+      ) {
         this.setState(prevState => ({
           focusedItem: prevState.focusedItem + 1
         }));
@@ -214,12 +231,20 @@ class DynamicActivitySearch extends React.Component {
   hoverFocus = suggestion => {
     const { matchingSuggestions } = this.state;
     // find index of the dropdown that is being hovered on
-    const index = matchingSuggestions.findIndex(value => value.id === suggestion.id);
+    const index = matchingSuggestions.findIndex(
+      value => value.id === suggestion.id
+    );
     this.setState({ focusedItem: index });
   };
 
   render() {
-    const { showSuggestions, inputVal, matchingSuggestions, showAddButton, focusedItem } = this.state;
+    const {
+      showSuggestions,
+      inputVal,
+      matchingSuggestions,
+      showAddButton,
+      focusedItem
+    } = this.state;
     const { placeholder, allowNew } = this.props;
     const suggestionsList = matchingSuggestions.map((suggestion, idx) => (
       <SuggestionItem
@@ -249,12 +274,15 @@ class DynamicActivitySearch extends React.Component {
               onKeyDown={e => this.handleKeyDown(e)}
             />
           </label>
-          {allowNew && inputVal && showAddButton && matchingSuggestions.length === 0 && (
-            <AddButton onClick={this.handleAdd} tabIndex={0}>
-              <span>+</span>
-              Add
-            </AddButton>
-          )}
+          {allowNew &&
+            inputVal &&
+            showAddButton &&
+            matchingSuggestions.length === 0 && (
+              <AddButton onClick={this.handleAdd} tabIndex={0}>
+                <span>+</span>
+                Add
+              </AddButton>
+            )}
           {showSuggestions && <Suggestions>{suggestionsList}</Suggestions>}
         </SearchBarWrapper>
       </>
@@ -273,8 +301,6 @@ export default DynamicActivitySearch;
 const SearchBarWrapper = styled.div`
   position: relative;
 `;
-
-
 
 const AddButton = styled.div`
   cursor: pointer;

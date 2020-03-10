@@ -2,10 +2,19 @@ import styled from "styled-components";
 import device from "../../styles/device";
 
 const backgrounds = {
-  neutral: { normal: "hsla(212, 60%, 29%, 0.8)", hover: "hsla(212, 60%, 29%, 1)" },
-  purple: { normal: "hsla(252, 77%, 20%, 0.75)", hover: "hsla(252, 77%, 20%, 0.8)" },
+  neutral: {
+    normal: "hsla(212, 60%, 29%, 0.8)",
+    hover: "hsla(212, 60%, 29%, 1)"
+  },
+  purple: {
+    normal: "hsla(252, 77%, 20%, 0.75)",
+    hover: "hsla(252, 77%, 20%, 0.8)"
+  },
   red: { normal: "hsla(0, 93%, 50%, 0.8)", hover: "hsla(0, 93%, 50%, 1)" },
-  gray: { normal: "hsla(260, 16%, 100%, 0.8)", hover: "hsla(260, 16%, 100%, 1)" },
+  gray: {
+    normal: "hsla(260, 16%, 100%, 0.8)",
+    hover: "hsla(260, 16%, 100%, 1)"
+  },
   inherit: { normal: "inherit", hover: "inherit" }
 };
 
@@ -18,7 +27,8 @@ export const ColoredButton = styled.button`
   margin: 0.5rem auto;
   display: block;
   padding: 10px;
-  background: ${props => (props.color ? backgrounds[props.color].normal : backgrounds.neutral.normal)};
+  background: ${props =>
+    props.color ? backgrounds[props.color].normal : backgrounds.neutral.normal};
   color: ${props => colors[props.color]};
   border: none;
   cursor: pointer;
@@ -26,7 +36,8 @@ export const ColoredButton = styled.button`
   font-size: 1rem;
 
   &:hover {
-    background: ${props => (props.color ? backgrounds[props.color].hover : backgrounds.neutral.hover)};
+    background: ${props =>
+      props.color ? backgrounds[props.color].hover : backgrounds.neutral.hover};
   }
 
   ${device.mobileL`
@@ -50,9 +61,11 @@ export const WideButton = styled.button`
   border-radius: 2px;
   color: white;
   font-size: 1rem;
-  background: ${props => (props.color ? backgrounds[props.color].normal : backgrounds.purple.normal)};
+  background: ${props =>
+    props.color ? backgrounds[props.color].normal : backgrounds.purple.normal};
   width: 100%;
   &:hover {
-    background: ${props => (props.color ? backgrounds[props.color].hover : backgrounds.neutral.hover)};
+    background: ${props =>
+      props.color ? backgrounds[props.color].hover : backgrounds.neutral.hover};
   }
 `;

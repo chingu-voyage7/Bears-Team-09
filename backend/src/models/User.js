@@ -11,7 +11,17 @@ class User extends Table {
   constructor(rawData = {}) {
     const pk = "id";
     const tableName = "users";
-    const ACCEPTED_FIELDS = ["id", "email", "first_name", "last_name", "password", "bio", "image", "google_access_token", "google_refresh_token"];
+    const ACCEPTED_FIELDS = [
+      "id",
+      "email",
+      "first_name",
+      "last_name",
+      "password",
+      "bio",
+      "image",
+      "google_access_token",
+      "google_refresh_token"
+    ];
     const cleanData = {};
     Object.keys(rawData).forEach(key => {
       if (ACCEPTED_FIELDS.includes(key)) {
@@ -26,15 +36,17 @@ class User extends Table {
 
   refreshToken() {
     console.log(JWT_EXP_THRESHOLD);
-    return jwt.sign({ id: this.data[this.pk] }, SECRET, { expiresIn: JWT_EXP_THRESHOLD });
+    return jwt.sign({ id: this.data[this.pk] }, SECRET, {
+      expiresIn: JWT_EXP_THRESHOLD
+    });
   }
 
   hashPassword() {
     // if user was created without password(from auth/google endpoint) there is no need to hash it
     return "password" in this.data
       ? bcrypt.hash(this.data.password, 10).then(hash => {
-        this.data.password = hash;
-      })
+          this.data.password = hash;
+        })
       : Promise.resolve();
   }
 
@@ -62,7 +74,9 @@ class User extends Table {
   }
 
   update() {
-    return "password" in this.data ? this.hashPassword().then(() => super.update()) : super.update();
+    return "password" in this.data
+      ? this.hashPassword().then(() => super.update())
+      : super.update();
   }
 }
 

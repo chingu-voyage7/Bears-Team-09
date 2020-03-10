@@ -8,7 +8,9 @@ class ProfilePage extends Component {
     return (
       <MainLayout>
         <div>
-          <UserConsumer>{context => <Profile context={context} />}</UserConsumer>
+          <UserConsumer>
+            {context => <Profile context={context} />}
+          </UserConsumer>
         </div>
       </MainLayout>
     );

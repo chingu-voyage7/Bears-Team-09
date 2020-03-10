@@ -38,7 +38,11 @@ class EditModal extends React.Component {
       >
         <Close onClick={hide}>X</Close>
         <h3>Your bio</h3>
-        <TextArea ref={el => (this.textArea = el)} value={this.state.bio} onChange={this.handleInput} />
+        <TextArea
+          ref={el => (this.textArea = el)}
+          value={this.state.bio}
+          onChange={this.handleInput}
+        />
         <CancelButton onClick={hide}>Cancel</CancelButton>
         <ConfirmButton
           onClick={() => {

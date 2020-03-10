@@ -24,17 +24,20 @@ class Profile extends Component {
   async getEventsFromBackend() {
     if (this.token == null) return [];
     try {
-      return (await axios
-        .get(`${backendUrl}/users/events`, {
-          headers: { Authorization: `Bearer ${this.token}` }
-        })
-        .catch(res => console.error(res.response))).data.events;
+      return (
+        await axios
+          .get(`${backendUrl}/users/events`, {
+            headers: { Authorization: `Bearer ${this.token}` }
+          })
+          .catch(res => console.error(res.response))
+      ).data.events;
     } catch (err) {
       return [];
     }
   }
 
-  makeEventsDomElements = events => events.map(event => <Event {...event} key={event.id} />);
+  makeEventsDomElements = events =>
+    events.map(event => <Event {...event} key={event.id} />);
 
   showBioEditor = () => this.setState({ bioEditorOpened: true });
 
@@ -106,16 +109,26 @@ class Profile extends Component {
                 <br />
                 {bio !== null && bio !== "null" && bio !== "" ? (
                   <p>
-                    <strong>Bio</strong> <EditButton onClick={this.showBioEditor}>(edit)</EditButton>
+                    <strong>Bio</strong>{" "}
+                    <EditButton onClick={this.showBioEditor}>(edit)</EditButton>
                     <br /> {bio}
                   </p>
                 ) : (
                   <p>
-                    No bio <EditButton onClick={this.showBioEditor}>(add)</EditButton>
+                    No bio{" "}
+                    <EditButton onClick={this.showBioEditor}>(add)</EditButton>
                   </p>
                 )}
-                <BioModal showModal={this.state.bioEditorOpened} hide={this.hideBioEditor} confirm={this.setBio} />
-                <NameModal showModal={this.state.nameEditorOpened} hide={this.hideNameEditor} confirm={this.setName} />
+                <BioModal
+                  showModal={this.state.bioEditorOpened}
+                  hide={this.hideBioEditor}
+                  confirm={this.setBio}
+                />
+                <NameModal
+                  showModal={this.state.nameEditorOpened}
+                  hide={this.hideNameEditor}
+                  confirm={this.setName}
+                />
               </PersonalInfo>
             </SideBar>
 

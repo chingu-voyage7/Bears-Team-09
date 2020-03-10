@@ -6,11 +6,23 @@ import Link from "next/link";
 
 class Event extends Component {
   render() {
-    const { id, name, activity, description, date_from: dateFromRaw, date_to: dateToRaw, image } = this.props;
+    const {
+      id,
+      name,
+      activity,
+      description,
+      date_from: dateFromRaw,
+      date_to: dateToRaw,
+      image
+    } = this.props;
 
-    const dateFromFormatted = dateFromRaw ? format(dateFromRaw, "MMM Do, YYYY ") : "";
+    const dateFromFormatted = dateFromRaw
+      ? format(dateFromRaw, "MMM Do, YYYY ")
+      : "";
     const dateToFormatted = dateToRaw ? format(dateToRaw, "MMM Do, YYYY") : "";
-    const dateToFormattedCheck = isEqual(dateFromRaw, dateToRaw) ? null : dateToFormatted;
+    const dateToFormattedCheck = isEqual(dateFromRaw, dateToRaw)
+      ? null
+      : dateToFormatted;
 
     const Separator = dateToFormattedCheck ? "- " : null;
     return (

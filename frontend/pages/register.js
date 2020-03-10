@@ -19,7 +19,9 @@ class Register extends Component {
                 <StyledLink>log in!</StyledLink>
               </Link>
             </LinkWrapper>
-            <UserConsumer>{context => <RegisterForm context={context} />}</UserConsumer>
+            <UserConsumer>
+              {context => <RegisterForm context={context} />}
+            </UserConsumer>
           </InputSection>
         </RegisterWrapper>
       </MainLayout>

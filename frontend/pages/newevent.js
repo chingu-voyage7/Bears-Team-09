@@ -44,7 +44,9 @@ class NewEvent extends React.Component {
           <InputSection>
             <Title>Create New Event</Title>
             <NewEventForm createEvent={this.createEvent} />
-            {serverPostFail && <p style={{ color: "red" }}>Event creation failed, try again</p>}
+            {serverPostFail && (
+              <p style={{ color: "red" }}>Event creation failed, try again</p>
+            )}
           </InputSection>
         </EventWrapper>
       </MainLayout>

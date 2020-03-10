@@ -4,11 +4,7 @@ import { WideButton } from "./shared/Buttons";
 
 const LoginButton = props => {
   const { text } = props;
-  return (
-    <WideButton {...props}>
-      {text || "Log in"}
-    </WideButton>
-  );
+  return <WideButton {...props}>{text || "Log in"}</WideButton>;
 };
 
 LoginButton.propTypes = {

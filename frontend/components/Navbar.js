@@ -59,7 +59,11 @@ const StyledNav = styled.nav`
   box-sizing: border-box;
   height: 3rem;
   background: rgb(22, 67, 75);
-  background: linear-gradient(90deg, rgba(22, 67, 75, 1) 0%, rgba(28, 12, 91, 1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(22, 67, 75, 1) 0%,
+    rgba(28, 12, 91, 1) 100%
+  );
   color: white;
   padding: 8px;
 

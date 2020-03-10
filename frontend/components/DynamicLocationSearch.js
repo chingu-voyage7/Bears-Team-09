@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import config from "../config.json";
 import Input from "./Input";
 
-
 const backendUrl = config.BACKEND_URL;
 
 class DynamicLocationSearch extends React.Component {
@@ -41,7 +40,11 @@ class DynamicLocationSearch extends React.Component {
     const suggestionArray = suggestions.data["places"];
     if (suggestionArray.length === 0) {
       // no results found
-      this.setState({ showSuggestions: false, suggestions: suggestionArray, matchingSuggestions: [] });
+      this.setState({
+        showSuggestions: false,
+        suggestions: suggestionArray,
+        matchingSuggestions: []
+      });
     } else {
       this.setState({
         matchingSuggestions: suggestionArray.slice(0, 10),
@@ -91,7 +94,9 @@ class DynamicLocationSearch extends React.Component {
   getSuggestions = input => {
     const { suggestions } = this.state;
     const regex = new RegExp(input, "gmi");
-    const matchingSuggestions = suggestions.filter(activity => activity.city.match(regex)).slice(0, 10);
+    const matchingSuggestions = suggestions
+      .filter(activity => activity.city.match(regex))
+      .slice(0, 10);
     if (matchingSuggestions.length === 0) {
       this.setState({ showSuggestions: false, matchingSuggestions: [] });
     } else {
@@ -188,9 +193,15 @@ class DynamicLocationSearch extends React.Component {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       e.stopPropagation();
-      if (focusedItem <= matchingSuggestions.length - 1 && focusedItem === null) {
+      if (
+        focusedItem <= matchingSuggestions.length - 1 &&
+        focusedItem === null
+      ) {
         this.setState({ focusedItem: 0 });
-      } else if (focusedItem < matchingSuggestions.length - 1 && focusedItem !== null) {
+      } else if (
+        focusedItem < matchingSuggestions.length - 1 &&
+        focusedItem !== null
+      ) {
         this.setState(prevState => ({
           focusedItem: prevState.focusedItem + 1
         }));
@@ -231,7 +242,9 @@ class DynamicLocationSearch extends React.Component {
   hoverFocus = suggestion => {
     const { matchingSuggestions } = this.state;
     // find index of the dropdown that is being hovered on
-    const index = matchingSuggestions.findIndex(value => value.id === suggestion.id);
+    const index = matchingSuggestions.findIndex(
+      value => value.id === suggestion.id
+    );
     this.setState({ focusedItem: index });
   };
 
@@ -256,8 +269,22 @@ class DynamicLocationSearch extends React.Component {
         focused={idx === focusedItem}
         onFocus={() => this.hoverFocus(suggestion)}
         onMouseOver={() => this.hoverFocus(suggestion)}
-        onClick={e => this.handleClickSelect(e, suggestion.id, suggestion.city, suggestion.country)}
-        onKeyDown={e => this.handleKeyDown(e, suggestion.id, suggestion.city, suggestion.country)}
+        onClick={e =>
+          this.handleClickSelect(
+            e,
+            suggestion.id,
+            suggestion.city,
+            suggestion.country
+          )
+        }
+        onKeyDown={e =>
+          this.handleKeyDown(
+            e,
+            suggestion.id,
+            suggestion.city,
+            suggestion.country
+          )
+        }
         key={suggestion.id}
       >
         {suggestion.city}, {suggestion.country}
@@ -288,12 +315,15 @@ class DynamicLocationSearch extends React.Component {
               />
             </Label>
           )}
-          {inputVal && allowNew && showAddButton && matchingSuggestions.length === 0 && (
-            <AddButton onClick={this.handleAdd} tabIndex={0}>
-              <span>+</span>
-              Add
-            </AddButton>
-          )}
+          {inputVal &&
+            allowNew &&
+            showAddButton &&
+            matchingSuggestions.length === 0 && (
+              <AddButton onClick={this.handleAdd} tabIndex={0}>
+                <span>+</span>
+                Add
+              </AddButton>
+            )}
           {showSuggestions && <Suggestions>{suggestionsList}</Suggestions>}
         </SearchBarWrapper>
       </>

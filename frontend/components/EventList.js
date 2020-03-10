@@ -38,16 +38,22 @@ function applyEventsFilter(events, filters) {
     return everyFilterMatching;
   }
 
-  const filteredEvents = events.filter(event => compareEventAndFilter(event, filters));
+  const filteredEvents = events.filter(event =>
+    compareEventAndFilter(event, filters)
+  );
   return filteredEvents;
 }
 
-const makeEventsDomElements = events => events.map(event => <Event {...event} key={event.id} />);
+const makeEventsDomElements = events =>
+  events.map(event => <Event {...event} key={event.id} />);
 
 const EventList = props => {
   const { filters, events } = props;
-  const eventsToShow = makeEventsDomElements(applyEventsFilter(events, filters));
-  if (eventsToShow.length === 0) return <StyledErrorMsg>No events found</StyledErrorMsg>;
+  const eventsToShow = makeEventsDomElements(
+    applyEventsFilter(events, filters)
+  );
+  if (eventsToShow.length === 0)
+    return <StyledErrorMsg>No events found</StyledErrorMsg>;
   return <StyledList>{eventsToShow}</StyledList>;
 };
 

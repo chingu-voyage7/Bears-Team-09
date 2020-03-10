@@ -16,4 +16,5 @@ const getStorage = (folder, transformation) =>
     allowedFormats: ["jpg", "jpeg", "png"]
   });
 
-module.exports = (folder, transformation) => multer({ storage: getStorage(folder, transformation) });
+module.exports = (folder, transformation) =>
+  multer({ storage: getStorage(folder, transformation) });

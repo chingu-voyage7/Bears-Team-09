@@ -19,7 +19,9 @@ class LoginPage extends Component {
                 <StyledLink>register!</StyledLink>
               </Link>
             </LinkWrapper>
-            <UserConsumer>{context => <LoginForm context={context} />}</UserConsumer>
+            <UserConsumer>
+              {context => <LoginForm context={context} />}
+            </UserConsumer>
           </InputSection>
         </LoginWrapper>
       </MainLayout>

@@ -19,7 +19,10 @@ class LocationSearch extends Component {
 
     // Filter locations based on user current input
     const regex = new RegExp(currentValue, "gmi");
-    const filterSuggestions = currentValue.length !== 0 ? locations.filter(location => location.city.match(regex)) : [];
+    const filterSuggestions =
+      currentValue.length !== 0
+        ? locations.filter(location => location.city.match(regex))
+        : [];
     this.setState({ suggestions: filterSuggestions });
 
     // Check if suggestion popup needs to hide or show
@@ -32,7 +35,10 @@ class LocationSearch extends Component {
 
   clearInput = () => {
     const { updateSelection } = this.props;
-    this.setState({ currentInput: "", suggestions: [], suggestionPopup: false }, updateSelection("city", null));
+    this.setState(
+      { currentInput: "", suggestions: [], suggestionPopup: false },
+      updateSelection("city", null)
+    );
   };
 
   selectLocation = (e, location) => {
@@ -44,18 +50,35 @@ class LocationSearch extends Component {
   };
 
   render() {
-    const { currentInput, suggestions, suggestionPopup, placeholder } = this.state;
+    const {
+      currentInput,
+      suggestions,
+      suggestionPopup,
+      placeholder
+    } = this.state;
     const suggestionList = suggestions.map(location => (
-      <SuggestionListItem key={location.id} onClick={e => this.selectLocation(e, location)}>
+      <SuggestionListItem
+        key={location.id}
+        onClick={e => this.selectLocation(e, location)}
+      >
         {location.city}
       </SuggestionListItem>
     ));
     return (
       <>
         <SearchBarWrapper>
-          <StyledSearchBar type="form" placeholder={placeholder} onChange={this.handleChange} value={currentInput} />
-          {currentInput && currentInput.length !== 0 && <ClearButton onClick={this.clearInput}>x</ClearButton>}
-          {suggestionPopup && <Suggestions type="form">{suggestionList}</Suggestions>}
+          <StyledSearchBar
+            type="form"
+            placeholder={placeholder}
+            onChange={this.handleChange}
+            value={currentInput}
+          />
+          {currentInput && currentInput.length !== 0 && (
+            <ClearButton onClick={this.clearInput}>x</ClearButton>
+          )}
+          {suggestionPopup && (
+            <Suggestions type="form">{suggestionList}</Suggestions>
+          )}
         </SearchBarWrapper>
       </>
     );

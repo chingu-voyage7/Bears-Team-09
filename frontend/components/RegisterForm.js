@@ -96,10 +96,18 @@ class RegisterForm extends Component {
             required
           />
           <p> Optional fields:</p>
-          <Input id="lastName" name="lastName" type="text" placeholder="Last Name" onChange={this.handleInput} />
+          <Input
+            id="lastName"
+            name="lastName"
+            type="text"
+            placeholder="Last Name"
+            onChange={this.handleInput}
+          />
           <TextArea placeholder="Short Bio" onChange={this.handleInput} />
           <LoginButton text="Register" />
-          {registrationFailed && <StyledErrorMsg>Registration failed!</StyledErrorMsg>}
+          {registrationFailed && (
+            <StyledErrorMsg>Registration failed!</StyledErrorMsg>
+          )}
         </form>
         <AuthButtonWrapper>
           <GoogleRegisterButton

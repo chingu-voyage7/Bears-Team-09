@@ -19,7 +19,10 @@ class ActivityPicker extends Component {
     const { popupOpen, selectedActivity } = this.state;
     const { activities, type } = this.props;
     const categoryList = activities.map(activityObject => (
-      <ActivityListItem key={activityObject.id} onClick={e => this.handleActivitySelection(activityObject, e)}>
+      <ActivityListItem
+        key={activityObject.id}
+        onClick={e => this.handleActivitySelection(activityObject, e)}
+      >
         {activityObject.name}
       </ActivityListItem>
     ));
