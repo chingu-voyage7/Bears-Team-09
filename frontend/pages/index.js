@@ -2,34 +2,26 @@ import React from "react";
 import styled from "styled-components";
 import MainLayout from "../components/MainLayout";
 
-export default () => (
-  <MainLayout>
-    <LandingPage>
-      <HeroSection>
-        <CallToAction>
-          <h3>Experiences are to be enjoyed with others</h3>
-          <p>Find people to do things together</p>
-          <EventsBtn href="/events">Events</EventsBtn>
-        </CallToAction>
-        <HeroPicture>
-          <source
-            media="(max-width: 450px)"
-            srcSet=".././static/hero-mobile.jpg"
-          />
-          <source
-            media="(max-width: 1600px)"
-            srcSet=".././static/hero-base.jpg"
-          />
-          <img
-            src=".././static/hero-base.jpg"
-            alt="person-kayaking-in-river"
-            width="inherit"
-          />
-        </HeroPicture>
-      </HeroSection>
-    </LandingPage>
-  </MainLayout>
-);
+export default () => {
+  return (
+    <MainLayout>
+      <LandingPage>
+        <HeroSection>
+          <CallToAction>
+            <h3>Experiences are to be enjoyed with others</h3>
+            <p>Find people to do things together</p>
+            <EventsBtn href="/events">Events</EventsBtn>
+          </CallToAction>
+          <HeroPicture>
+            <source media="(max-width: 450px)" srcSet=".././static/hero-mobile.jpg" />
+            <source media="(max-width: 1600px)" srcSet=".././static/hero-base.jpg" />
+            <img src=".././static/hero-base.jpg" alt="person-kayaking-in-river" width="inherit" />
+          </HeroPicture>
+        </HeroSection>
+      </LandingPage>
+    </MainLayout>
+  );
+};
 
 const LandingPage = styled.section`
   width: 100%;

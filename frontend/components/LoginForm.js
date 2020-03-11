@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import Router from "next/router";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
 import axios from "axios";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import Input from "./Input";
 import LoginButton from "./LoginButton";
 import StyledErrorMsg from "../styles/StyledErrorMsg";
@@ -9,14 +9,13 @@ import config from "../config.json";
 
 const backendUrl = config.BACKEND_URL;
 
-class LoginForm extends Component {
-  state = {
-    email: "",
-    password: "",
-    loginFailed: false
-  };
+export default props => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginFailed, setLoginFailed] = useState(false);
+  const router = useRouter();
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
 
     // Handle Success register state -> redirect
@@ -24,74 +23,61 @@ class LoginForm extends Component {
       .post(
         `${backendUrl}/auth/login`,
         {
-          email: this.state.email,
-          password: this.state.password
+          email,
+          password
         },
         {
           headers: { "Content-Type": "application/json" }
         }
       )
       .then(res => {
-        Router.push("/");
-        this.props.context.logIn({ data: res.data, method: "password" });
+        router.push("/");
+        // props.context.logIn({ data: res.data, method: "password" });
       })
       .catch(err => {
         console.error(err.response);
-        this.handleFail();
+        setLoginFailed(true);
       });
   };
 
-  handleFail = () => this.setState({ loginFailed: true });
-
-  // Method that syncs current input with state
-  handleInput = e => {
-    const { name, value } = e.target;
-    const inputValue = { ...this.state, [name]: value };
-    this.setState(inputValue);
-  };
-
-  render() {
-    return (
-      <>
-        <form onSubmit={this.handleSubmit}>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="username"
-            placeholder="Email"
-            onChange={this.handleInput}
-            required
-          />
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            placeholder="Password"
-            onChange={this.handleInput}
-            required
-          />
-          <LoginButton text="Log in" />
-          {this.state.loginFailed && <StyledErrorMsg>Log in failed!</StyledErrorMsg>}
-        </form>
-        <button
-          type="button"
-          onClick={() => Router.push(`${backendUrl}/auth/google`)}
-          onFailure={err => console.error(err.response)}
-        >
-          Log in with Google
-        </button>
-        <button type="button" onClick={() => Router.push(`${backendUrl}/auth/view`)}>
-          View cookies
-        </button>
-      </>
-    );
-  }
-}
-
-export default LoginForm;
-
-LoginForm.propTypes = {
-  context: PropTypes.object
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="username"
+          placeholder="Email"
+          onChange={e => setEmail(e.target.value)}
+          required
+        />
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          placeholder="Password"
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
+        <LoginButton text="Log in" />
+        {loginFailed && <StyledErrorMsg>Log in failed!</StyledErrorMsg>}
+      </form>
+      <button
+        type="button"
+        onClick={() => router.push(`${backendUrl}/auth/google`)}
+        onFailure={err => console.error(err.response)}
+      >
+        Log in with Google
+      </button>
+      <button type="button" onClick={() => router.push(`${backendUrl}/auth/view`)}>
+        View cookies
+      </button>
+    </>
+  );
 };
+
+// LoginForm.propTypes = {
+//   context: PropTypes.object
+// };
