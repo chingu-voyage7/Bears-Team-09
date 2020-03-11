@@ -1,29 +1,32 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Head from "next/head";
+import PropTypes from "prop-types";
 import styled, { createGlobalStyle } from "styled-components";
-import Navbar from "./Navbar";
+import TokenReader from "./TokenReader";
 import Footer from "./Footer";
+import Navbar from "./Navbar";
 
 const MainLayout = props => {
   const { children } = props;
   return (
-    <div>
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta charSet="utf-8" />
-        <link rel="icon" type="image/x-icon" href="../static/favicon.ico" />
-        <title>PairUp: find people to do things together</title>
-      </Head>
-      <GlobalStyle />
-      <FlexContainer>
-        <ContentWrapper>
-          <Navbar />
-          {children}
-        </ContentWrapper>
-        <Footer />
-      </FlexContainer>
-    </div>
+    <TokenReader>
+      <div>
+        <Head>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta charSet="utf-8" />
+          <link rel="icon" type="image/x-icon" href="../static/favicon.ico" />
+          <title>PairUp: find people to do things together</title>
+        </Head>
+        <GlobalStyle />
+        <FlexContainer>
+          <ContentWrapper>
+            <Navbar />
+            {children}
+          </ContentWrapper>
+          <Footer />
+        </FlexContainer>
+      </div>
+    </TokenReader>
   );
 };
 
