@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Router from "next/dist/lib/router";
+import Router from "next/router";
 import axios from "axios";
 import PropTypes from "prop-types";
 import Input from "./Input";
@@ -73,9 +73,7 @@ class LoginForm extends Component {
             required
           />
           <LoginButton text="Log in" />
-          {this.state.loginFailed && (
-            <StyledErrorMsg>Log in failed!</StyledErrorMsg>
-          )}
+          {this.state.loginFailed && <StyledErrorMsg>Log in failed!</StyledErrorMsg>}
         </form>
         <button
           type="button"
@@ -84,10 +82,7 @@ class LoginForm extends Component {
         >
           Log in with Google
         </button>
-        <button
-          type="button"
-          onClick={() => Router.push(`${backendUrl}/auth/view`)}
-        >
+        <button type="button" onClick={() => Router.push(`${backendUrl}/auth/view`)}>
           View cookies
         </button>
       </>
