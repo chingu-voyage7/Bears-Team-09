@@ -1,6 +1,17 @@
 import React from "react";
 import styled from "styled-components";
+import { useRouter } from "next/router";
 import MainLayout from "../components/MainLayout";
+
+export async function getServerSideProps(ctx) {
+  console.log("query = ", ctx.query);
+  // const cookies = context.req.getHeader("Cookie");
+  console.log("cookies = ", ctx.req.headers.cookie);
+
+  // const router = useRouter();
+  // router.replace({ pathname: router.pathname, query: {} });
+  return { props: {} };
+}
 
 export default () => {
   return (

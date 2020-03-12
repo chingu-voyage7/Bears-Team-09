@@ -9,7 +9,7 @@ import config from "../config.json";
 
 const backendUrl = config.BACKEND_URL;
 
-export default props => {
+export default () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginFailed, setLoginFailed] = useState(false);
@@ -17,7 +17,6 @@ export default props => {
 
   const handleSubmit = e => {
     e.preventDefault();
-
     // Handle Success register state -> redirect
     axios
       .post(
@@ -64,11 +63,7 @@ export default props => {
         <LoginButton text="Log in" />
         {loginFailed && <StyledErrorMsg>Log in failed!</StyledErrorMsg>}
       </form>
-      <button
-        type="button"
-        onClick={() => router.push(`${backendUrl}/auth/google`)}
-        onFailure={err => console.error(err.response)}
-      >
+      <button type="button" onClick={() => router.push(`${backendUrl}/auth/google`)}>
         Log in with Google
       </button>
       <button type="button" onClick={() => router.push(`${backendUrl}/auth/view`)}>
