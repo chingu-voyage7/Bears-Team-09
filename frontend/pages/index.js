@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
+
 import MainLayout from "../components/MainLayout";
 
 export async function getServerSideProps(ctx) {
