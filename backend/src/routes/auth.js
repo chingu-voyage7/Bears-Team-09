@@ -26,7 +26,7 @@ router.get(
 
 router.get("/googleAuthSuccess", passport.authenticate("google"), (req, res) => {
   const token = new User({ id: req.user.id }).refreshToken();
-  res.redirect(`http://localhost:3100?token=${token}`);
+  res.redirect(`http://localhost:3100?jwt=${token}`);
 });
 
 router.get("/view", passport.authenticate("jwt"), (req, res) => {
