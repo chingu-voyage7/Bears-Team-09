@@ -13,24 +13,18 @@ passport.use(
       callbackURL: "/auth/googleAuthSuccess"
     },
     async (accessToken, refreshToken, profile, next) => {
-      console.log("profile = ", profile);
-      console.log("accessToken = ", accessToken);
-      console.log("refreshToken = ", refreshToken);
       const user = new User({ email: profile._json.email });
       return (
         user
           .read()
           // user found, return it
           .then(async userData => {
-            console.log({ userData });
-
             next(null, userData[0]);
             user.set({
               google_access_token: accessToken,
               google_refresh_token: refreshToken
             });
             const updatedUser = await user.update();
-            console.log(updatedUser);
           })
 
           // if user not found
@@ -48,7 +42,6 @@ passport.use(
             });
             const userData = await newUser.create().catch(console.error);
 
-            console.log({ userData });
             next(null, userData);
           })
       );

@@ -9,8 +9,6 @@ const DB_DATA = {
   port: process.env.PGPORT || 5432
 };
 
-console.log("DB_DATA = ", DB_DATA);
-
 module.exports = {
   query: async (text, params) => {
     const client = new Client(DB_DATA);

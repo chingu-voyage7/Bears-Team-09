@@ -69,9 +69,7 @@ class Table {
   }
 
   getMissingFields() {
-    return this.REQUIRED_FIELDS.filter(
-      f => Object.keys(this.data).indexOf(f) === -1
-    );
+    return this.REQUIRED_FIELDS.filter(f => Object.keys(this.data).indexOf(f) === -1);
   }
 
   set(params) {
@@ -85,13 +83,7 @@ class Table {
     const fieldsMissing = this.getMissingFields();
     if (fieldsMissing.length > 0) {
       return new Promise((resolve, reject) => {
-        reject(
-          new Error(
-            `Field(s) ${fieldsMissing
-              .map(f => `'${f}'`)
-              .join(", ")} is(are) missing`
-          )
-        );
+        reject(new Error(`Field(s) ${fieldsMissing.map(f => `'${f}'`).join(", ")} is(are) missing`));
       });
     }
     const prepared = Object.keys(this.data).reduce(
@@ -103,12 +95,10 @@ class Table {
       },
       { keys: [], indexes: [], values: [] }
     );
-    const text = `INSERT INTO ${this.tableName} (${prepared.keys.join(
-      ", "
-    )}) VALUES (${prepared.indexes.join(
+    const text = `INSERT INTO ${this.tableName} (${prepared.keys.join(", ")}) VALUES (${prepared.indexes.join(
       ", "
     )}) RETURNING ${this.ACCEPTED_FIELDS.join(", ")}`;
-    console.log({ text, values: prepared.values });
+
     return db.query(text, prepared.values);
   }
 
@@ -133,7 +123,7 @@ class Table {
     if (this.opts.offset) {
       text += ` OFFSET ${this.opts.offset}`;
     }
-    console.log({ text, values });
+
     return db.query(text, values);
   }
 
@@ -152,11 +142,9 @@ class Table {
       },
       { keys: [], values: [] }
     );
-    const text = `UPDATE ${this.tableName} SET ${prepared.keys.join(
-      ", "
-    )} WHERE ${this.pk} = $${index} RETURNING ${this.ACCEPTED_FIELDS.join(
-      ", "
-    )};`;
+    const text = `UPDATE ${this.tableName} SET ${prepared.keys.join(", ")} WHERE ${
+      this.pk
+    } = $${index} RETURNING ${this.ACCEPTED_FIELDS.join(", ")};`;
     prepared.values.push(id);
     return db.query(text, prepared.values);
   }

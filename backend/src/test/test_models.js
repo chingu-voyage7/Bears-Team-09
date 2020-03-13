@@ -28,10 +28,7 @@ describe("DB has all tables", () => {
   let result;
   let error;
   before(done => {
-    db.query(
-      "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = $1;",
-      ["public"]
-    )
+    db.query("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = $1;", ["public"])
       .then(res => {
         result = res.reduce((acc, val) => {
           acc.push(val.tablename);
@@ -51,11 +48,9 @@ describe("DB has all tables", () => {
 
   it("Should contain places", () => expect(result).to.contain("places"));
 
-  it("Should contain activities", () =>
-    expect(result).to.contain("activities"));
+  it("Should contain activities", () => expect(result).to.contain("activities"));
 
-  it("Should contain event_attendees", () =>
-    expect(result).to.contain("event_attendees"));
+  it("Should contain event_attendees", () => expect(result).to.contain("event_attendees"));
 });
 
 describe("Test User Model", () => {
@@ -117,23 +112,17 @@ describe("Test User Model", () => {
 
     it("Should return 1 element", () => expect(result).to.length(1));
 
-    it("Should return id", () =>
-      expect(result[0]).to.have.nested.property("id"));
+    it("Should return id", () => expect(result[0]).to.have.nested.property("id"));
 
-    it("Should return email", () =>
-      expect(result[0]).to.have.nested.property("email"));
+    it("Should return email", () => expect(result[0]).to.have.nested.property("email"));
 
-    it("Should return password", () =>
-      expect(result[0]).to.have.nested.property("password"));
+    it("Should return password", () => expect(result[0]).to.have.nested.property("password"));
 
-    it("Should return first name", () =>
-      expect(result[0]).to.have.nested.property("first_name"));
+    it("Should return first name", () => expect(result[0]).to.have.nested.property("first_name"));
 
-    it("Should return last name", () =>
-      expect(result[0]).to.have.nested.property("last_name"));
+    it("Should return last name", () => expect(result[0]).to.have.nested.property("last_name"));
 
-    it("Should return bio", () =>
-      expect(result[0]).to.have.nested.property("bio"));
+    it("Should return bio", () => expect(result[0]).to.have.nested.property("bio"));
   });
 
   describe("Update user", () => {
@@ -156,17 +145,13 @@ describe("Test User Model", () => {
 
     it("Pass without error", () => expect(error).to.be.undefined);
 
-    it("Return new password", () =>
-      expect(result.password).to.not.equal(firstPassword));
+    it("Return new password", () => expect(result.password).to.not.equal(firstPassword));
 
-    it("Should return new first name", () =>
-      expect(result.first_name).to.equal(updatedUserData.first_name));
+    it("Should return new first name", () => expect(result.first_name).to.equal(updatedUserData.first_name));
 
-    it("Should return new last name", () =>
-      expect(result.last_name).to.equal(updatedUserData.last_name));
+    it("Should return new last name", () => expect(result.last_name).to.equal(updatedUserData.last_name));
 
-    it("Should return new bio", () =>
-      expect(result.bio).to.equal(updatedUserData.bio));
+    it("Should return new bio", () => expect(result.bio).to.equal(updatedUserData.bio));
   });
 
   describe("Delete user", () => {
@@ -183,8 +168,7 @@ describe("Test User Model", () => {
         .finally(() => done());
     });
 
-    it("Should contain statusCode", () =>
-      expect(error).to.have.nested.property("statusCode"));
+    it("Should contain statusCode", () => expect(error).to.have.nested.property("statusCode"));
   });
 });
 
@@ -214,8 +198,7 @@ describe("Test Place Model", () => {
 
       it("Should pass without errors", () => expect(error).to.be.undefined);
 
-      it("Should have an id", () =>
-        expect(result).to.have.nested.property("id"));
+      it("Should have an id", () => expect(result).to.have.nested.property("id"));
     });
   });
 
@@ -239,17 +222,13 @@ describe("Test Place Model", () => {
     });
     it("Should pass without errors", () => expect(error).to.be.undefined);
 
-    it("Should return same amount of places", () =>
-      expect(result.length).to.equal(placeData.length));
+    it("Should return same amount of places", () => expect(result.length).to.equal(placeData.length));
 
-    it("Should return id of the place", () =>
-      expect(result[0]).to.have.nested.property("id"));
+    it("Should return id of the place", () => expect(result[0]).to.have.nested.property("id"));
 
-    it("Should return country of the place", () =>
-      expect(result[0]).to.have.nested.property("country"));
+    it("Should return country of the place", () => expect(result[0]).to.have.nested.property("country"));
 
-    it("Should return city of the place", () =>
-      expect(result[0]).to.have.nested.property("city"));
+    it("Should return city of the place", () => expect(result[0]).to.have.nested.property("city"));
   });
 
   describe("Find place by country", () => {
@@ -320,11 +299,7 @@ describe("Test Place Model", () => {
 });
 
 describe("Test Activity Model", () => {
-  const activitiesData = [
-    { name: "Sport Activities" },
-    { name: "Sport Events" },
-    { name: "Fishing" }
-  ];
+  const activitiesData = [{ name: "Sport Activities" }, { name: "Sport Events" }, { name: "Fishing" }];
 
   activitiesData.forEach((data, pos) => {
     describe(`Create an activity #${pos + 1}`, () => {
@@ -345,8 +320,7 @@ describe("Test Activity Model", () => {
 
       it("Should pass without errors", () => expect(error).to.be.undefined);
 
-      it("Should have an id", () =>
-        expect(result).to.have.nested.property("id"));
+      it("Should have an id", () => expect(result).to.have.nested.property("id"));
     });
   });
 
@@ -370,14 +344,11 @@ describe("Test Activity Model", () => {
     });
     it("Should pass without errors", () => expect(error).to.be.undefined);
 
-    it("Should return same amount of activitys", () =>
-      expect(result.length).to.equal(activitiesData.length));
+    it("Should return same amount of activitys", () => expect(result.length).to.equal(activitiesData.length));
 
-    it("Should return id of the activity", () =>
-      expect(result[0]).to.have.nested.property("id"));
+    it("Should return id of the activity", () => expect(result[0]).to.have.nested.property("id"));
 
-    it("Should return country of the activity", () =>
-      expect(result[0]).to.have.nested.property("name"));
+    it("Should return country of the activity", () => expect(result[0]).to.have.nested.property("name"));
   });
 
   describe("Find activity by name", () => {
@@ -504,8 +475,7 @@ describe("Test Event Model", () => {
 
       it("Should pass without errors", () => expect(error).to.be.undefined);
 
-      it("Should have an id", () =>
-        expect(result).to.have.nested.property("id"));
+      it("Should have an id", () => expect(result).to.have.nested.property("id"));
     });
   });
 
@@ -525,38 +495,27 @@ describe("Test Event Model", () => {
     });
     it("Should pass without errors", () => expect(error).to.be.undefined);
 
-    it("Should return same amount of events", () =>
-      expect(result.length).to.equal(eventsData.length));
+    it("Should return same amount of events", () => expect(result.length).to.equal(eventsData.length));
 
-    it("Should return id of the event", () =>
-      expect(result[0]).to.have.nested.property("id"));
+    it("Should return id of the event", () => expect(result[0]).to.have.nested.property("id"));
 
-    it("Should return name of the event", () =>
-      expect(result[0]).to.have.nested.property("name"));
+    it("Should return name of the event", () => expect(result[0]).to.have.nested.property("name"));
 
-    it("Should return description of the event", () =>
-      expect(result[0]).to.have.nested.property("description"));
+    it("Should return description of the event", () => expect(result[0]).to.have.nested.property("description"));
 
-    it("Should return activity of the event", () =>
-      expect(result[0]).to.have.nested.property("activity"));
+    it("Should return activity of the event", () => expect(result[0]).to.have.nested.property("activity"));
 
-    it("Should return place of the event", () =>
-      expect(result[0]).to.have.nested.property("country"));
+    it("Should return place of the event", () => expect(result[0]).to.have.nested.property("country"));
 
-    it("Should return place of the event", () =>
-      expect(result[0]).to.have.nested.property("city"));
+    it("Should return place of the event", () => expect(result[0]).to.have.nested.property("city"));
 
-    it("Should return date_from of the event", () =>
-      expect(result[0]).to.have.nested.property("date_from"));
+    it("Should return date_from of the event", () => expect(result[0]).to.have.nested.property("date_from"));
 
-    it("Should return date_to of the event", () =>
-      expect(result[0]).to.have.nested.property("date_to"));
+    it("Should return date_to of the event", () => expect(result[0]).to.have.nested.property("date_to"));
 
-    it("Should return min_people of the event", () =>
-      expect(result[0]).to.have.nested.property("min_people"));
+    it("Should return min_people of the event", () => expect(result[0]).to.have.nested.property("min_people"));
 
-    it("Should return max_people of the event", () =>
-      expect(result[0]).to.have.nested.property("max_people"));
+    it("Should return max_people of the event", () => expect(result[0]).to.have.nested.property("max_people"));
   });
 
   describe("Find event by name", () => {
@@ -671,21 +630,11 @@ describe("Test EventAttendee Model", () => {
         .then(data => {
           [event1, event2, event3] = data.slice(-3);
         })
-        .then(() =>
-          new Attendee({ user_id: user1.data.id, event_id: event1.id }).create()
-        )
-        .then(() =>
-          new Attendee({ user_id: user1.data.id, event_id: event2.id }).create()
-        )
-        .then(() =>
-          new Attendee({ user_id: user1.data.id, event_id: event3.id }).create()
-        )
-        .then(() =>
-          new Attendee({ user_id: user2.data.id, event_id: event1.id }).create()
-        )
-        .then(() =>
-          new Attendee({ user_id: user2.data.id, event_id: event3.id }).create()
-        )
+        .then(() => new Attendee({ user_id: user1.data.id, event_id: event1.id }).create())
+        .then(() => new Attendee({ user_id: user1.data.id, event_id: event2.id }).create())
+        .then(() => new Attendee({ user_id: user1.data.id, event_id: event3.id }).create())
+        .then(() => new Attendee({ user_id: user2.data.id, event_id: event1.id }).create())
+        .then(() => new Attendee({ user_id: user2.data.id, event_id: event3.id }).create())
         .catch(err => {
           error = err;
         })

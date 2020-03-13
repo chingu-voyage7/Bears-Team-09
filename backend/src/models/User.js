@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const APIError = require("../utils/APIError.js");
 const Table = require("./Table");
 
-if (!process.env.JWT_SECRET) throw new Error("JWT secret missing!");
+if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET env.var missing!");
 const SECRET = process.env.JWT_SECRET;
 const JWT_EXP_THRESHOLD = process.env.JWT_EXP_THRESHOLD || "60d";
 
@@ -35,7 +35,6 @@ class User extends Table {
   }
 
   refreshToken() {
-    console.log(JWT_EXP_THRESHOLD);
     return jwt.sign({ id: this.data[this.pk] }, SECRET, {
       expiresIn: JWT_EXP_THRESHOLD
     });
@@ -74,9 +73,7 @@ class User extends Table {
   }
 
   update() {
-    return "password" in this.data
-      ? this.hashPassword().then(() => super.update())
-      : super.update();
+    return "password" in this.data ? this.hashPassword().then(() => super.update()) : super.update();
   }
 }
 
