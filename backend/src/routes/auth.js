@@ -5,10 +5,10 @@ require("../middleware/googleAuth");
 
 const router = express.Router();
 
-// router.get('/', authenticate('jwt'), (req, res) => {
-//     const token = req.user.refreshToken();
-//     return res.json({ token });
-// });
+router.get("/", passport.authenticate("jwt"), (req, res) => {
+  const token = req.user.refreshToken();
+  return res.json({ token });
+});
 
 // router.post('/login', authenticate('local'), (req, res) => {
 //     const token = req.user.refreshToken();
@@ -29,10 +29,8 @@ router.get("/googleAuthSuccess", passport.authenticate("google"), (req, res) => 
   res.redirect(`http://localhost:3100?token=${token}`);
 });
 
-router.get("/view", (req, res) => {
-  console.log("cookies = ", req.cookies);
-  console.log("user = ", req.user);
-  res.header({ "test-header": "test-value" });
+router.get("/view", passport.authenticate("jwt"), (req, res) => {
+  // res.header({ "test-header": "test-value" });
   res.send({ cookies: req.cookies, user: req.user });
 });
 

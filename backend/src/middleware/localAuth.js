@@ -7,7 +7,8 @@ const ApiError = require("../utils/APIError");
 
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
-const secret = process.env.JWT_SECRET || "Default_JWT-Secret";
+if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET env.var missing!");
+const secret = process.env.JWT_SECRET;
 
 passport.use(
   new LocalStrategy(
@@ -34,18 +35,28 @@ passport.use(
   )
 );
 
+var cookieExtractor = function(req) {
+  var token = null;
+  if (req && req.cookies) {
+    token = req.cookies["jwt"];
+  }
+  return token;
+};
+
 passport.use(
   new JWTStrategy(
     {
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
       secretOrKey: secret
     },
-    (jwtPayload, done) => {
+    async (jwtPayload, done) => {
       const user = new User({ id: jwtPayload.id });
-      return user
+      user
         .read()
-        .then(() => done(null, user))
-        .catch(err => done(null, null, err));
+        .then(userData => {
+          done(null, userData[0]);
+        })
+        .catch(err => done(err, false));
     }
   )
 );
