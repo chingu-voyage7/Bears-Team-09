@@ -1,4 +1,5 @@
 const express = require("express");
+const passport = require("passport");
 const Event = require("../models/Event");
 const Attendee = require("../models/EventAttendee");
 const APIError = require("../utils/APIError.js");
@@ -21,7 +22,7 @@ router.get("/", (req, res) => {
 });
 
 // create an event
-router.post("/", authenticate("jwt"), (req, res) => {
+router.post("/", passport.authenticate("jwt"), (req, res) => {
   const newEvent = new Event({ author_id: req.user.data.id, ...req.body });
   newEvent
     .create()
@@ -76,7 +77,7 @@ router.get("/:id/attendees", (req, res) => {
 });
 
 // delete an event
-router.delete("/:id", authenticate("jwt"), (req, res) => {
+router.delete("/:id", passport.authenticate("jwt"), (req, res) => {
   const newEvent = new Event({ id: req.params.id });
   newEvent
     .read()
@@ -84,10 +85,7 @@ router.delete("/:id", authenticate("jwt"), (req, res) => {
       if (data === undefined) {
         throw new APIError(`event #${req.params.id} not found`, 404);
       } else if (data.author_id !== req.user.data.id) {
-        throw new APIError(
-          `you are not the author of event #${req.params.id}`,
-          403
-        );
+        throw new APIError(`you are not the author of event #${req.params.id}`, 403);
       }
       return newEvent.delete();
     })
@@ -100,7 +98,7 @@ router.delete("/:id", authenticate("jwt"), (req, res) => {
 });
 
 // update an event
-router.put("/:id", authenticate("jwt"), (req, res) => {
+router.put("/:id", passport.authenticate("jwt"), (req, res) => {
   const { id, ...newData } = req.body;
   const newEvent = new Event({ id: req.params.id, ...newData });
   new Event({ id: req.params.id })
@@ -109,10 +107,7 @@ router.put("/:id", authenticate("jwt"), (req, res) => {
       if (data === undefined) {
         throw new APIError(`event #${req.params.id} not found`, 404);
       } else if (data.author_id !== req.user.data.id) {
-        throw new APIError(
-          `you are not the author of event #${req.params.id}`,
-          403
-        );
+        throw new APIError(`you are not the author of event #${req.params.id}`, 403);
       }
       return newEvent.update();
     })
@@ -125,7 +120,7 @@ router.put("/:id", authenticate("jwt"), (req, res) => {
 });
 
 // subscribe to attend an event
-router.post("/:id/attend", authenticate("jwt"), (req, res) => {
+router.post("/:id/attend", passport.authenticate("jwt"), (req, res) => {
   const attendees = new Attendee({ event_id: req.params.id });
   const attendee = new Attendee({
     user_id: req.user.data.id,
@@ -159,7 +154,7 @@ router.post("/:id/attend", authenticate("jwt"), (req, res) => {
     });
 });
 
-router.post("/:id/images", authenticate("jwt"), (req, res) => {
+router.post("/:id/images", passport.authenticate("jwt"), (req, res) => {
   const imageHandler = upload("events", {
     width: 500,
     height: 500,
@@ -172,10 +167,7 @@ router.post("/:id/images", authenticate("jwt"), (req, res) => {
       if (data === undefined) {
         throw new APIError(`event #${req.params.id} not found`, 404);
       } else if (data.author_id !== req.user.data.id) {
-        throw new APIError(
-          `you are not the author of event #${req.params.id}`,
-          403
-        );
+        throw new APIError(`you are not the author of event #${req.params.id}`, 403);
       }
     })
     .then(() => {
@@ -202,7 +194,7 @@ router.post("/:id/images", authenticate("jwt"), (req, res) => {
 });
 
 // unsubscribe from attending an event
-router.delete("/:id/attend", authenticate("jwt"), (req, res) => {
+router.delete("/:id/attend", passport.authenticate("jwt"), (req, res) => {
   const attendee = new Attendee({
     user_id: req.user.data.id,
     event_id: req.params.id

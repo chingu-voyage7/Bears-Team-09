@@ -1,4 +1,5 @@
 const express = require("express");
+const passport = require("passport");
 const Activity = require("../models/Activity");
 const APIError = require("../utils/APIError.js");
 const authenticate = require("../middleware/localAuth");
@@ -17,7 +18,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/", authenticate("jwt"), (req, res) => {
+router.post("/", passport.authenticate("jwt"), (req, res) => {
   const activity = new Activity(req.body);
   activity
     .create()
@@ -44,7 +45,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.delete("/:id", authenticate("jwt"), (req, res) => {
+router.delete("/:id", passport.authenticate("jwt"), (req, res) => {
   const activity = new Activity({ id: req.params.id });
   activity
     .delete()
@@ -56,7 +57,7 @@ router.delete("/:id", authenticate("jwt"), (req, res) => {
     });
 });
 
-router.put("/:id", authenticate("jwt"), (req, res) => {
+router.put("/:id", passport.authenticate("jwt"), (req, res) => {
   const { id, ...newData } = req.body;
   const activity = new Activity({ id: req.params.id, ...newData });
   activity

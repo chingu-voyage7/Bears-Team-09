@@ -5,16 +5,12 @@ require("../middleware/googleAuth");
 
 const router = express.Router();
 
-router.get("/", passport.authenticate("jwt"), (req, res) => {
-  const token = req.user.refreshToken();
-  return res.json({ token });
-});
+function loginSuccessRedirect(req, res) {
+  const token = new User({ id: req.user.id }).refreshToken();
+  res.redirect(`http://localhost:3100?jwt=${token}`);
+}
 
-// router.post('/login', authenticate('local'), (req, res) => {
-//     const token = req.user.refreshToken();
-//     return res.json({ ...req.user.data, token });
-// });
-
+// Create an account using google oAuth
 router.get(
   "/google",
   passport.authenticate("google", {
@@ -24,19 +20,19 @@ router.get(
   })
 );
 
-router.get("/googleAuthSuccess", passport.authenticate("google"), (req, res) => {
-  const token = new User({ id: req.user.id }).refreshToken();
-  res.redirect(`http://localhost:3100?jwt=${token}`);
-});
+// Send JWT back to front end
+router.get("/googleAuthSuccess", passport.authenticate("google"), loginSuccessRedirect);
 
+// Test route to view current user info and token
 router.get("/view", passport.authenticate("jwt"), (req, res) => {
   // res.header({ "test-header": "test-value" });
   res.send({ cookies: req.cookies, user: req.user });
 });
 
+// Register using login/password
 router.post("/register", (req, res) => {
   const { password } = req.body;
-  // temporary, replace with proper validation
+  // ToDo: replace with proper validation
   if (!password) {
     return res.status(400).json({ message: "password not set" });
   }
@@ -47,9 +43,14 @@ router.post("/register", (req, res) => {
       res.status(201).json({ ...user.data, token: user.refreshToken() });
     })
     .catch(err => {
-      res.status(err.statusCode || 400).json({ message: err.message });
+      res.status(err.statusCode || 500).json({ message: err.message });
     });
-  return res;
+});
+
+// Log in using login/password
+router.post("/login", passport.authenticate("local"), (req, res) => {
+  const token = new User({ id: req.user.id }).refreshToken();
+  res.status(201).json({ ...user.data, token });
 });
 
 module.exports = router;

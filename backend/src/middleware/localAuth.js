@@ -20,28 +20,20 @@ passport.use(
       const user = new User({ email });
       return user
         .read()
-        .then(([data]) => {
+        .then(([userData]) => {
           // refuse to authenticate if user db record has no password
-          if (data.password === null) {
+          if (!userData.password) {
             throw new ApiError("This account can be authenticated with google only", 403);
           }
-          return bcrypt.compare(password, data.password);
+          return bcrypt.compare(password, userData.password) ? userData : null;
         })
-        .then(isAuthenticated =>
-          isAuthenticated ? done(null, user) : done(null, null, "Incorrect username or password")
-        )
-        .catch(err => done(null, null, err));
+        .then(userData => (userData ? done(null, userData) : done("Incorrect username or password", null)))
+        .catch(err => done(err, null));
     }
   )
 );
 
-var cookieExtractor = function(req) {
-  var token = null;
-  if (req && req.cookies) {
-    token = req.cookies["jwt"];
-  }
-  return token;
-};
+const cookieExtractor = req => req && req.cookies && req.cookies.jwt;
 
 passport.use(
   new JWTStrategy(
@@ -60,19 +52,3 @@ passport.use(
     }
   )
 );
-
-module.exports = strategy => (req, res, next) =>
-  passport.authenticate(strategy, { session: false }, (err, user, info) => {
-    if (err || !user) {
-      return res.status(info.statusCode || 401).json({ message: info.message });
-    }
-    req.login(user, { session: false }, error => {
-      if (error) {
-        return res.status(error.statusCode || 400).json({ message: error.message });
-      }
-      return res;
-    });
-    return next();
-  })(req, res, next);
-
-// https://accounts.google.com/o/oauth2/v2/auth?scope=profile email&include_granted_scopes=true&state=state_parameter_passthrough_value&redirect_uri=http://localhost:8080&response_type=token&client_id=684648441225-amk5cicaad9umrfjrc5pbv1qo1it1iun.apps.googleusercontent.com
