@@ -6,9 +6,9 @@ import omit from "lodash/omit";
 export default ({ children }) => {
   const router = useRouter();
   useEffect(() => {
-    if (router && router.query.jwt) {
-      Cookies.set("jwt", router.query.jwt);
-      router.replace({ pathname: router.pathname, query: omit(router.query, "jwt") });
+    if (router && router.query.token) {
+      Cookies.set("token", router.query.token);
+      router.replace({ pathname: router.pathname, query: omit(router.query, "token") });
     }
   });
 

@@ -7,7 +7,7 @@ const router = express.Router();
 
 function loginSuccessRedirect(req, res) {
   const token = new User({ id: req.user.id }).refreshToken();
-  res.redirect(`http://localhost:3100?jwt=${token}`);
+  res.redirect(`http://localhost:3100?token=${token}`);
 }
 
 // Create an account using google oAuth
@@ -49,8 +49,11 @@ router.post("/register", (req, res) => {
 
 // Log in using login/password
 router.post("/login", passport.authenticate("local"), (req, res) => {
+  console.log("In login route");
+  console.log(req.user);
+
   const token = new User({ id: req.user.id }).refreshToken();
-  res.status(201).json({ ...user.data, token });
+  res.status(201).json({ ...req.user, token });
 });
 
 module.exports = router;

@@ -17,17 +17,26 @@ passport.use(
       passwordField: "password"
     },
     (email, password, done) => {
+      console.log("In local strategy");
       const user = new User({ email });
+      console.log({ user });
+
       return user
         .read()
         .then(([userData]) => {
+          console.log({ userData });
+
           // refuse to authenticate if user db record has no password
           if (!userData.password) {
             throw new ApiError("This account can be authenticated with google only", 403);
           }
           return bcrypt.compare(password, userData.password) ? userData : null;
         })
-        .then(userData => (userData ? done(null, userData) : done("Incorrect username or password", null)))
+        .then(
+          userData =>
+            console.log({ userData }) ||
+            (userData ? done(null, userData) : done("Incorrect username or password", null))
+        )
         .catch(err => done(err, null));
     }
   )

@@ -42,7 +42,7 @@ function RegisterForm() {
       )
       .then(res => {
         // props.context.logIn({ data: res.data, method: "password" });
-        Cookies.set("jwt", res.data.token);
+        Cookies.set("token", res.data.token);
         // router.push("/");
       })
       .catch(err => {
