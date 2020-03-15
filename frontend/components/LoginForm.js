@@ -30,7 +30,7 @@ export default () => {
         }
       )
       .then(res => {
-        router.push("/");
+        // router.push("/");
         // props.context.logIn({ data: res.data, method: "password" });
       })
       .catch(err => {
